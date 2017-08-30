@@ -1,6 +1,8 @@
 #!/bin/bash
+export GOPATH="$HOME/.golang/"
 echo "Backup"
 cp bin/app bin/app-backup
+rm -f bin/app
 echo "ok!"
 echo "Build project"
 go build -o bin/app src/*.go
