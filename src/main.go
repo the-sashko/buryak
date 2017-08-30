@@ -69,6 +69,7 @@ func render() {
 }
 
 func main() {
+	test()
 	go http.HandleFunc("/", router)
 	//http.ListenAndServe(":1199", nil)
 	listener, err := net.Listen("tcp", "127.0.0.1:9000")
