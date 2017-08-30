@@ -149,9 +149,9 @@
 		</footer>
 	</div>
 	<div id="footer-background"></div>
-	<script src="assets/js/lib/jquery.min.js"></script>
-	<script src="assets/js/lib/foundation.min.js"></script>
-	<script src="assets/js/app.js"></script>
+	<script src="/assets/js/lib/jquery.min.js"></script>
+	<script src="/assets/js/lib/foundation.min.js"></script>
+	<script src="/assets/js/app.js"></script>
 </body>
 </html>
 {{end}}

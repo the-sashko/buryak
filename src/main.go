@@ -22,18 +22,20 @@ var WebPageData webPageData
 
 func router(httpResp http.ResponseWriter, r *http.Request) {
 	fmt.Println("url: ", r.URL.Path)
-	WebPageData.Content = "AAA"
 	URLPath = strings.Split(r.URL.Path, "/")
 	HTTPResponse = httpResp
 	WebPageTemplate = template.New("main")
-	WebPageTemplate, _ = WebPageTemplate.ParseFiles("../tpl/main/main.tpl")
-	switch URLPath[1] {
-	case "all":
-		allPage()
-		//	default:
-
+	WebPageTemplate, _ = WebPageTemplate.ParseFiles("tpl/main/main.tpl")
+	path := URLPath[1]
+	if path == "" {
+		path = "all"
 	}
-	//T := "<script>alert('you have been pwned')</script>"
+	switch path {
+	case "":
+		allPage()
+	default:
+		errorPage(404)
+	}
 	err := WebPageTemplate.ExecuteTemplate(HTTPResponse, "Data", WebPageData)
 	if err != nil {
 		fmt.Println(err)
@@ -53,15 +55,11 @@ func mainPage() {
 }
 
 func allPage() {
-	//	t := template.New("some template").Parse(`Test 123`)
-	//t, _ = t.ParseFiles("/home/sashko/go/tpl/main/main.tpl", nil)
-	//	user := 1
-	//	t.Execute(HTTPResponse, user)
-	//	fmt.Println("test")
+	WebPageData.Content = "all"
 }
 
 func errorPage(code int) {
-	fmt.Println("code: ", code)
+	WebPageData.Content = "eror"
 }
 
 func render() {
