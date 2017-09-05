@@ -6,7 +6,10 @@ import (
 	"net"
 	"net/http"
 	"net/http/fcgi"
+	"strconv"
 	"strings"
+
+	"gopkg.in/mgo.v2/bson"
 )
 
 type webPageData struct {
@@ -27,12 +30,21 @@ func router(httpResp http.ResponseWriter, r *http.Request) {
 	WebPageTemplate = template.New("main")
 	WebPageTemplate, _ = WebPageTemplate.ParseFiles("tpl/main/main.tpl")
 	path := URLPath[1]
-	if path == "" {
+	if path == "" || path == "/" {
 		path = "all"
 	}
 	switch path {
-	case "":
+	case "all":
 		allPage()
+	case "error":
+		code := 404
+		if len(URLPath) >= 4 {
+			code, err := strconv.Atoi(URLPath[2])
+			if err != nil && code >= 200 && code <= 511 {
+				code = 404
+			}
+		}
+		errorPage(code)
 	default:
 		errorPage(404)
 	}
@@ -55,11 +67,24 @@ func mainPage() {
 }
 
 func allPage() {
+	dbSession := dbConnect()
+	testdata, err := dbSession.DB("fajno").C("posts").Find(bson.M{}).Count()
+	if err == nil {
+		fmt.Println(testdata)
+	}
 	WebPageData.Content = "all"
 }
 
 func errorPage(code int) {
-	WebPageData.Content = "eror"
+	if code == 404 && strings.Join(URLPath, "/") != "/error/404/" {
+		HTTPResponse.Header().Set("Location", "/error/404/")
+		HTTPResponse.WriteHeader(302)
+		WebPageData.Content = "Error"
+	} else {
+		HTTPResponse.WriteHeader(code)
+		WebPageData.Content = "error"
+	}
+
 }
 
 func render() {
@@ -69,7 +94,6 @@ func render() {
 func main() {
 	test()
 	go http.HandleFunc("/", router)
-	//http.ListenAndServe(":1199", nil)
 	listener, err := net.Listen("tcp", "127.0.0.1:9000")
 	if err != nil {
 		fmt.Println(err)
