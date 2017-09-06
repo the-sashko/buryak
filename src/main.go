@@ -18,6 +18,28 @@ type webPageData struct {
 	Content string
 }
 
+type postImage struct {
+	Type string
+	URI  string
+	NSWF bool
+	GIF  bool
+}
+
+type post struct {
+	ID         int
+	RelativeID int
+	Title      string
+	Text       string
+	Media      postImage
+	Pass       string
+	Username   string
+	Tripcode   string
+	Time       int
+	UPD        int
+	IP         string
+	IsActive   bool
+}
+
 var URLPath []string
 var HTTPResponse http.ResponseWriter
 var WebPageTemplate *template.Template
@@ -35,7 +57,7 @@ func router(httpResp http.ResponseWriter, r *http.Request) {
 	}
 	switch path {
 	case "all":
-		allPage()
+		mainPage()
 	case "error":
 		code := 404
 		if len(URLPath) >= 4 {
@@ -62,15 +84,19 @@ func section() {
 
 }
 
-func mainPage() {
+func allTreads() {
 
 }
 
-func allPage() {
+func mainPage() {
 	dbSession := dbConnect()
-	testdata, err := dbSession.DB("fajno").C("posts").Find(bson.M{}).Count()
+	var testdata []post
+	err := dbSession.DB("fajno").C("posts").Find(bson.M{}).All(&testdata)
 	if err == nil {
+		defer dbSession.Close()
 		fmt.Println(testdata)
+	} else {
+		panic(err)
 	}
 	WebPageData.Content = "all"
 }

@@ -34,6 +34,5 @@ func imageProcess() {
 	draw.Draw(m, m.Bounds(), img1, image.Point{0, 0}, draw.Src)
 	toimg, _ := os.Create("new.jpg")
 	defer toimg.Close()
-
 	jpeg.Encode(toimg, m, &jpeg.Options{jpeg.DefaultQuality})*/
 }

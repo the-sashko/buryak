@@ -9,8 +9,8 @@ import (
 func test() {
 	dbSession := dbConnect()
 	if dbSession != nil {
-		fmt.Println("Mongo - ok!")
 		defer dbSession.Close()
+		fmt.Println("Mongo - ok!")
 	} else {
 		panic("Can not connect to data base!")
 	}
