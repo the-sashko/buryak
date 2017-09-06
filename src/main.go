@@ -26,6 +26,7 @@ type postImage struct {
 }
 
 type post struct {
+	_id        int
 	ID         int
 	RelativeID int
 	Title      string
@@ -42,13 +43,15 @@ type post struct {
 
 var URLPath []string
 var HTTPResponse http.ResponseWriter
+var HTTPRequest *http.Request
 var WebPageTemplate *template.Template
 var WebPageData webPageData
 
-func router(httpResp http.ResponseWriter, r *http.Request) {
-	fmt.Println("url: ", r.URL.Path)
-	URLPath = strings.Split(r.URL.Path, "/")
+func router(httpResp http.ResponseWriter, httpReq *http.Request) {
+	fmt.Println("url: ", httpReq.URL.Path)
+	URLPath = strings.Split(httpReq.URL.Path, "/")
 	HTTPResponse = httpResp
+	HTTPRequest = httpReq
 	WebPageTemplate = template.New("main")
 	WebPageTemplate, _ = WebPageTemplate.ParseFiles("tpl/main/main.tpl")
 	path := URLPath[1]
@@ -58,6 +61,8 @@ func router(httpResp http.ResponseWriter, r *http.Request) {
 	switch path {
 	case "all":
 		mainPage()
+	case "write":
+		writePost()
 	case "error":
 		code := 404
 		if len(URLPath) >= 4 {
@@ -99,6 +104,34 @@ func mainPage() {
 		panic(err)
 	}
 	WebPageData.Content = "all"
+}
+
+func writePost() bool {
+	if HTTPRequest.Method == "POST" {
+		HTTPRequest.ParseForm()
+		if HTTPRequest.Form["token"][0] == "70K3n" {
+			fmt.Println("test")
+			WebPageData.Content = "Error"
+			/*title := HTTPRequest.Form["title"][0]
+			username := HTTPRequest.Form["username"][0]
+			psswd := HTTPRequest.Form["psswd"][0]*/
+			text := HTTPRequest.Form["text"][0]
+			dbSession := dbConnect()
+			//var resp string
+			//dbSession.DB("fajno").Run(bson.M{"eval": "loadServerScripts();"}, &resp)
+			//dbSession.DB("fajno").Run(bson.M{"eval": "getNextSeq('userid');"}, &resp)
+			//dbSession.DB("fajno").Run(bson.M{"eval": "getNextSeq('userid');"})
+			//fmt.Println(resp)
+			dbSession.DB("fajno").C("posts").Insert(&post{Text: text})
+			defer dbSession.Close()
+			/*captcha := HTTPRequest.Form["captcha"][0]*/
+			return true
+		}
+	}
+	HTTPResponse.Header().Set("Location", "/error/403/")
+	HTTPResponse.WriteHeader(302)
+	WebPageData.Content = "Error"
+	return false
 }
 
 func errorPage(code int) {

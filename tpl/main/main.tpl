@@ -106,7 +106,7 @@
 				</div>
 				<h1 id="main-title">Зв'язок</h1>
 				<div id="post-form">
-					<form method="POST" enctype="multipart/form-data" action="/write/">
+					<form method="POST" action="/write/"> <!-- enctype="multipart/form-data" -->
 						<div class="row fullWidth form-input-row">
 							<input type="text" name="title" placeholder="Заголовок" id="post-form-title" class="large-12 medium-12 small-12 columns">
 						</div>
@@ -142,6 +142,7 @@
 						</div>
 						<input type="hidden" name="threadID" value="0">
 						<input type="hidden" name="section" value="b">
+						<input type="hidden" name="token" value="70K3n">
 						<div class="row fullWidth form-input-row">
 							<div  class="large-12 medium-12 small-12 columns">
 								<img src="https://fajno.in/1504688137/captcha.png" id="captcha-image">
