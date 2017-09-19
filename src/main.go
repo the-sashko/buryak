@@ -152,6 +152,7 @@ func render() {
 
 func main() {
 	test()
+	fmt.Println(makeFormToken())
 	go http.HandleFunc("/", router)
 	listener, err := net.Listen("tcp", "127.0.0.1:9000")
 	if err != nil {

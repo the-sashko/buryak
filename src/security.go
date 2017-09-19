@@ -1,8 +1,13 @@
 package main
 
 import (
+	"crypto/sha1"
+	"encoding/base64"
+	"math/rand"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 	"unsafe"
 )
 
@@ -45,4 +50,39 @@ func makeTripCode(input string) string {
 	salt = replacer.Replace(salt)
 	code := crypt(input, salt)
 	return "!" + string(code[len(code)-10:])
+}
+
+func makeFormToken() string {
+	return makeToken("form")
+}
+
+func makeSessionToken() string {
+	return makeToken()
+}
+
+func makeAuthToken() string {
+	return makeToken()
+}
+
+func makeHash(input string) string {
+	if input == nil {
+		input = ""
+	}
+	hash := sha1.New()
+	hash.Write([]byte(input))
+	return base64.URLEncoding.EncodeToString(hash.Sum(nil))
+}
+
+func makeToken(input string) string {
+	if input == nil {
+		input = ""
+	}
+	salt := "wUenr5#1"
+	timestamp := strconv.FormatInt(time.Now().UnixNano(), 10)
+	hashString := strconv.Itoa(rand.Int()) + salt + input + timestamp + strconv.Itoa(rand.Int())
+	saltString := strconv.Itoa(rand.Int()) + salt + timestamp + strconv.Itoa(rand.Int())
+	hashString = makeHash(hashString)
+	saltString = makeHash(saltString)
+	hash := crypt(hashString, saltString)
+	return string(hash)
 }

@@ -19,29 +19,37 @@ a:hover{
 a:active{
     color: #EE6A6A !important;
 }
-input {
+textarea {
+    resize: none;
+    height: 17em !important;
+    line-height: 1.25em !important;
+}
+textarea, input {
     font-size: 1em !important;
-    height: 1.75em !important;
     padding: 0.5em !important;
+    margin: 0 !important;
     border: 1px solid #C5C5BB !important;
     border-radius: 0.125em !important;
+}
+input {
+    height: 1.75rem !important;
 }
 input[type=file] {
     display: none;
 }
-input::-webkit-input-placeholder {
+textarea::-webkit-input-placeholder, input::-webkit-input-placeholder {
     color: #6A6A6A !important;
 }
-input::-moz-placeholder {
+textarea::-moz-placeholder, input::-moz-placeholder {
     color: #6A6A6A !important;
 }
-input:-ms-input-placeholder {
+textarea:-ms-input-placeholder, input:-ms-input-placeholder {
     color: #6A6A6A !important;
 }
-input:-moz-placeholder {
+textarea:-moz-placeholder, input:-moz-placeholder {
     color: #6A6A6A !important;
 }
-input:placeholder{
+textarea:placeholder, input:placeholder{
     color: #6A6A6A !important;
 }
 #header{
@@ -242,7 +250,9 @@ input:placeholder{
     background-color: #F42 !important;
     font-size: 0.825em !important;
     text-transform: uppercase !important;
-    font-weight: bold !important; 
+    font-weight: bold !important;
+    border: 0 !important;
+    border-radius: 0 !important;
 }
 .last-p {
     margin-bottom: 0;
@@ -293,6 +303,9 @@ input:placeholder{
 #post-form{
     text-align: center;
 }
+#post-form textarea{
+
+}
 #post-form form{
     border: 0.0625em solid #DADADA;
     border-radius: 0.25em;
@@ -301,7 +314,6 @@ input:placeholder{
     max-width: 640px;
     display: inline-block;
     text-align: left;
-    padding: 0.5em;
 }
 .form-input-row {
     padding: 0 1em;
@@ -368,6 +380,18 @@ input:placeholder{
     margin-top: 0.3em;
     -webkit-animation: magic-mouse 1.5s infinite ease;
     animation: magic-mouse 1.5s infinite ease;
+}
+.input-wrapper{
+    padding: 0 !important;
+    line-height: 0 !important;
+}
+.input-wrapper label{
+    display: block;
+    margin: -2em 0 0 1.5em;
+}
+.editor-button{
+    margin: 0 0.5em 0 0 !important;
+    min-width: 2em;
 }
 @keyframes magic-mouse{
     0%{

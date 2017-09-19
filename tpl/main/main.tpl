@@ -111,32 +111,32 @@
 							<input type="text" name="title" placeholder="Заголовок" id="post-form-title" class="large-12 medium-12 small-12 columns">
 						</div>
 						<div class="row fullWidth form-input-row">
-							<div class="large-5 medium-6 small-12 columns">
+							<div class="large-5 medium-6 small-12 columns input-wrapper">
 								<div id="post-form-media-btn" class="button"><i class="fa fa-upload" aria-hidden="true"></i>&nbsp;Завантажити файл</div>
 								<input type="file" name="media" id="post-form-media">
 							</div>
-							<div class="large-7 medium-6 small-12 columns">
-								<input type="checkbox" name="no-media">&nbsp;Без&nbsp;медіафайлу
+							<div class="large-7 medium-6 small-12 columns input-wrapper">
+								<input type="checkbox" name="no-media" id="form-no-media"><label for="form-no-media">Без&nbsp;медіафайлу</label>
 							</div>
 						</div>
 						<div class="row fullWidth form-input-row">
-							<div  class="large-4 medium-4 small-12 columns">
+							<div  class="large-4 medium-4 small-12 columns input-wrapper">
 								<input type="text" name="name" placeholder="Ім'я">
 							</div>
-							<div  class="large-4 medium-4 small-12 columns">
+							<div  class="large-4 medium-4 small-12 large-offset-1 medium-offset-1 columns input-wrapper">
 								<input type="password" name="psswd" placeholder="Пароль" class="large-7 medium-6 small-12 columns">
 							</div>
-							<div class="large-4 medium-4 small-12 columns">
-								<input type="checkbox" name="trip-code">&nbsp;Тріпкод
+							<div class="large-2 medium-2 small-12 columns input-wrapper">
+								<input type="checkbox" name="trip-code" id="form-trip-code"><label for="trip-code">Тріпкод</label>
 							</div>
 						</div>	
 						<div class="row fullWidth form-input-row">
-							<div  class="large-12 medium-12 small-12 columns" id="post-form-edit-buttons">
-								<a href="#" data-action="bold" class="button"><strong>b</strong></a><a href="#" data-action="italic" class="button"><em>i</em></a><a href="#" data-action="strike" class="button"><del>s</del></a><a href="#" data-action="spoiler" class="button">Прихований</a>
+							<div  class="large-12 medium-12 small-12 columns input-wrapper" id="post-form-edit-buttons">
+								<a href="#" data-action="bold" class="button editor-button"><strong>b</strong></a><a href="#" data-action="italic" class="button editor-button"><em>i</em></a><a href="#" data-action="strike" class="button editor-button"><del>s</del></a><a href="#" data-action="spoiler" class="button editor-button">Прихований</a>
 							</div>
 						</div>
 						<div class="row fullWidth form-input-row">
-							<div  class="large-12 medium-12 small-12 columns">
+							<div  class="large-12 medium-12 small-12 columns input-wrapper">
 								<textarea name="text" placeholder="Текст" id="post-form-text"></textarea>
 							</div>
 						</div>
@@ -144,20 +144,14 @@
 						<input type="hidden" name="section" value="b">
 						<input type="hidden" name="token" value="70K3n">
 						<div class="row fullWidth form-input-row">
-							<div  class="large-12 medium-12 small-12 columns">
+							<div  class="large-5 medium-5 small-12 columns input-wrapper">
 								<img src="https://fajno.in/1504688137/captcha.png" id="captcha-image">
 								<a href="#" id="reload-captcha">Інше зображення</a>
-							</div>
-							<div  class="large-12 medium-12 small-12 columns">
 								<input type="text" name="captcha" placeholder="Введіть слова з картинки" id="captcha">
 							</div>
-						</div>
-						<div class="row fullWidth form-input-row">
-							<div  class="large-12 medium-12 small-12 columns">
-								<input type="radio" name="after" value="go2thread" checked="">&nbsp;До&nbsp;теми
-								<input type="radio" name="after" value="go2section">&nbsp;До&nbsp;розділу
-							</div>
-							<div  class="large-12 medium-12 small-12 columns">
+							<div  class="large-5 medium-5  large-offset-2 medium-offset-2 small-12 columns input-wrapper">
+								<input type="radio" name="after" value="go2thread" id="form-after-thread" checked=""><label for="form-after-thread">До&nbsp;теми</label>
+								<input type="radio" name="after" value="go2section" id="form-after-section"><label for="form-after-section">До&nbsp;розділу</label>
 								<input type="submit" value="Написати" class="button">
 							</div>
 						</div>
