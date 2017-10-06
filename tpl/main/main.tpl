@@ -108,7 +108,9 @@
 				<div id="post-form">
 					<form method="POST" action="/write/"> <!-- enctype="multipart/form-data" -->
 						<div class="row fullWidth form-input-row">
-							<input type="text" name="title" placeholder="Заголовок" id="post-form-title" class="large-12 medium-12 small-12 columns">
+							<div  class="large-12 medium-12 small-12 columns input-wrapper">
+								<input type="text" name="title" placeholder="Заголовок" id="post-form-title" class="large-12 medium-12 small-12 columns">
+							</div>
 						</div>
 						<div class="row fullWidth form-input-row">
 							<div class="large-5 medium-6 small-12 columns input-wrapper">
@@ -123,10 +125,10 @@
 							<div  class="large-4 medium-4 small-12 columns input-wrapper">
 								<input type="text" name="name" placeholder="Ім'я">
 							</div>
-							<div  class="large-4 medium-4 small-12 large-offset-1 medium-offset-1 columns input-wrapper">
+							<div  class="large-4 medium-4 small-12 columns input-wrapper">
 								<input type="password" name="psswd" placeholder="Пароль" class="large-7 medium-6 small-12 columns">
 							</div>
-							<div class="large-2 medium-2 small-12 columns input-wrapper">
+							<div class="large-4 medium-4 small-12 columns input-wrapper">
 								<input type="checkbox" name="trip-code" id="form-trip-code"><label for="trip-code">Тріпкод</label>
 							</div>
 						</div>	
@@ -144,12 +146,12 @@
 						<input type="hidden" name="section" value="b">
 						<input type="hidden" name="token" value="70K3n">
 						<div class="row fullWidth form-input-row">
-							<div  class="large-5 medium-5 small-12 columns input-wrapper">
+							<div  class="large-6 medium-6 small-12 columns input-wrapper">
 								<img src="https://fajno.in/1504688137/captcha.png" id="captcha-image">
 								<a href="#" id="reload-captcha">Інше зображення</a>
 								<input type="text" name="captcha" placeholder="Введіть слова з картинки" id="captcha">
 							</div>
-							<div  class="large-5 medium-5  large-offset-2 medium-offset-2 small-12 columns input-wrapper">
+							<div  class="large-6 medium-6 small-12 columns input-wrapper">
 								<input type="radio" name="after" value="go2thread" id="form-after-thread" checked=""><label for="form-after-thread">До&nbsp;теми</label>
 								<input type="radio" name="after" value="go2section" id="form-after-section"><label for="form-after-section">До&nbsp;розділу</label>
 								<input type="submit" value="Написати" class="button">

@@ -1,8 +1,6 @@
 package main
 
 import (
-	"crypto/sha1"
-	"encoding/base64"
 	"math/rand"
 	"regexp"
 	"strconv"
@@ -53,30 +51,30 @@ func makeTripCode(input string) string {
 }
 
 func makeFormToken() string {
-	return makeToken("form")
+	return makeHash("form")
 }
 
 func makeSessionToken() string {
-	return makeToken()
+	return makeHash("")
 }
 
 func makeAuthToken() string {
-	return makeToken()
+	return makeHash("")
 }
 
 func makeHash(input string) string {
-	if input == nil {
-		input = ""
+	/*if input == nil {
+			input = ""
+		}*
+		hash := sha1.New()
+		hash.Write([]byte(input))
+		return base64.URLEncoding.EncodeToString(hash.Sum(nil))
 	}
-	hash := sha1.New()
-	hash.Write([]byte(input))
-	return base64.URLEncoding.EncodeToString(hash.Sum(nil))
-}
 
-func makeToken(input string) string {
-	if input == nil {
-		input = ""
-	}
+	func makeToken(input string) string {
+		/*if input == nil {
+			input = ""
+		}*/
 	salt := "wUenr5#1"
 	timestamp := strconv.FormatInt(time.Now().UnixNano(), 10)
 	hashString := strconv.Itoa(rand.Int()) + salt + input + timestamp + strconv.Itoa(rand.Int())

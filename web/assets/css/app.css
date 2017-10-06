@@ -303,9 +303,6 @@ textarea:placeholder, input:placeholder{
 #post-form{
     text-align: center;
 }
-#post-form textarea{
-
-}
 #post-form form{
     border: 0.0625em solid #DADADA;
     border-radius: 0.25em;
@@ -382,7 +379,7 @@ textarea:placeholder, input:placeholder{
     animation: magic-mouse 1.5s infinite ease;
 }
 .input-wrapper{
-    padding: 0 !important;
+    padding: 0.5em !important;
     line-height: 0 !important;
 }
 .input-wrapper label{
