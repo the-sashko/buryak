@@ -1,2 +1,2 @@
 # buryak-board
-Modern imageboard engine, written on golang
+Modern imageboard engine
