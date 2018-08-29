@@ -3,3 +3,4 @@
 protected/config/db.json
 protected/config/security.json
 protected/res/sessions/
+protectes/res/log/
