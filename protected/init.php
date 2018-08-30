@@ -49,7 +49,7 @@
 		!preg_match('/^([a-z]+)$/su',$action) ||
 		(
 			$param != NULL &&
-			!preg_match('/^([a-z0-9\-\_]+)$/su',$param) &&
+			!preg_match('/^([a-zA-Z0-9\-\_]+)$/su',$param) &&
 			!preg_match('/^([\-\_]+)(.*?)([\-\_]+)$/su',$param)
 		) ||
 		!strlen($action)>0 ||
@@ -70,6 +70,8 @@
 
 	$controller = mb_convert_case($controller,MB_CASE_TITLE);
 	$controller = "{$controller}Controller";
+	$controller = $controller!='ApiController'?$controller:'APIController';//fix controller name for API
+	$controller = $controller!='AjaxController'?$controller:'AJAXController';//fix controller name for Ajax
 	$action = strlen($action)>0&&$action!='default'?'action'.mb_convert_case($action,MB_CASE_TITLE):'default';
 	if(
 		$param != NULL &&
@@ -78,19 +80,13 @@
 		$param = explode('_',$param);
 	}
 	unset($URIPath);
-
-			var_dump($controller);
-			var_dump($action);
-			var_dump($param);
-			die();
-
 	if(is_file(getcwd()."/../protected/controllers/{$controller}.php")){ // if Controller file is exist
 		require_once(getcwd().'/../protected/common/lib/init.php'); // include all libraries
 		require_once(getcwd().'/../protected/common/classes/controller.class.php'); // include base class for all controllers
 		require_once(getcwd().'/../protected/common/classes/model.class.php'); // include base class for all models
 		require_once(getcwd()."/../protected/controllers/{$controller}.php"); // include base class for controller
-		if(class_exists($controllerClass)){ // if Controller class loaded
-			$controller = new $controllerClass($_POST,$_GET); // create instance of controller class with sending input post/get parameters
+		if(class_exists($controller)){ // if Controller class loaded
+			$controller = new $controller($_POST,$_GET); // create instance of controller class with sending input post/get parameters
 
 			/*
 				Clearing input post/get parameters for security reasons.
@@ -169,6 +165,7 @@
 			preg_match('/^\/main\/(.*?)$/su',$uri) ||
 			preg_match('/^\/section\/(.*?)$/su',$uri) ||
 			preg_match('/^\/default\/(.*?)$/su',$uri) ||
+			preg_match('/^\/post\/(.*?)$/su',$uri) ||
 			preg_match('/^(.*?)_(.*?)$/su',$uri)
 		){
 			header("Location: /",true,301);
@@ -212,33 +209,98 @@
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/([a-z]+)\/$/su','/section/list/$1_1/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/([a-z]+)\/page\-([0-9]+)\/$/su','/section/list/$1_$2/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/([a-z]+)\/([0-9]+)\/$/su','/section/thread/$1_$2/',$_SERVER['REQUEST_URI']);
-		$_SERVER['REQUEST_URI'] = preg_replace('/^\/write\/$/su','/section/write/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/write\/$/su','/post/write/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/error\/([0-9]+)\/$/su','/main/error/$1/',$_SERVER['REQUEST_URI']);
-		$_SERVER['REQUEST_URI'] = preg_replace('/^\/remove\/([0-9]+)\/$/su','/section/remove/$1/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/remove\/([0-9]+)\/$/su','/post/remove/$1/',$_SERVER['REQUEST_URI']);
 
 		/* rewriting for back-office */
 
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/admin\/login\/$/su','/admin/login/admin/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/admin\/logout\/$/su','/admin/logout/admin/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/admin\/login\/restore\/$/su','/admin/restore/admin/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/admin\/login\/set\/$/su','/admin/setpassword/admin/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/admin\/section\/([a-z]+)\/$/su','/admin/editsection/$1/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/admin\/user\/([0-9]+)\/$/su','/admin/edituser/$1/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/admin\/posts\/$/su','/admin/posts/1/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/admin\/posts\/page-([0-9]+)\/$/su','/admin/posts/$1/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/admin\/post\/([0-9]+)\/$/su','/admin/editpost/$1/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/admin\/ban\/$/su','/admin/ban/1/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/admin\/ban\/page-([0-9]+)\/$/su','/admin/ban/$1/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/admin\/ban\/([0-9]+)\/$/su','/admin/editban/$1/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/admin\/inbox\/$/su','/admin/inbox/1/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/admin\/inbox\/([0-9]+)\/$/su','/admin/inbox/$1/',$_SERVER['REQUEST_URI']);
-		$_SERVER['REQUEST_URI'] = preg_replace('/^\/admin\/inbox\/([0-9]+)\/$/su','/admin/message/$1/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/admin\/inbox\/([0-9]+)\/$/su','/admin/messages/$1/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/mod\/login\/$/su','/admin/login/mod/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/mod\/logout\/$/su','/admin/logout/mod/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/mod\/login\/restore\/$/su','/admin/restore/mod/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/mod\/login\/set\/$/su','/admin/setpassword/mod/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/mod\/posts\/$/su','/admin/posts/1/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/mod\/posts\/page-([0-9]+)\/$/su','/admin/posts/$1/',$_SERVER['REQUEST_URI']);
-		$_SERVER['REQUEST_URI'] = preg_replace('/^\/mod\/post\/([0-9]+)\/$/su','/admin/post/$1/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/mod\/post\/([0-9]+)\/$/su','/admin/editpost/$1/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/mod\/inbox\/$/su','/admin/inbox/1/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/mod\/inbox\/([0-9]+)\/$/su','/admin/inbox/$1/',$_SERVER['REQUEST_URI']);
-		$_SERVER['REQUEST_URI'] = preg_replace('/^\/mod\/inbox\/([0-9]+)\/$/su','/admin/message/$1/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/mod\/inbox\/([0-9]+)\/$/su','/admin/messages/$1/',$_SERVER['REQUEST_URI']);
+
+		/* rewriting for API */
+
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/api\/(.*?)\/login\/$/su','/admin/login/admin/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/admin\/logout\/$/su','/admin/logout/admin/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/admin\/login\/restore\/$/su','/admin/restore/admin/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/admin\/login\/set\/$/su','/admin/setpassword/admin/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/admin\/section\/([a-z]+)\/$/su','/admin/editsection/$1/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/admin\/user\/([0-9]+)\/$/su','/admin/edituser/$1/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/admin\/posts\/$/su','/admin/posts/1/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/admin\/posts\/page-([0-9]+)\/$/su','/admin/posts/$1/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/admin\/post\/([0-9]+)\/$/su','/admin/editpost/$1/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/admin\/ban\/$/su','/admin/ban/1/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/admin\/ban\/page-([0-9]+)\/$/su','/admin/ban/$1/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/admin\/ban\/([0-9]+)\/$/su','/admin/editban/$1/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/admin\/inbox\/$/su','/admin/inbox/1/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/admin\/inbox\/([0-9]+)\/$/su','/admin/inbox/$1/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/admin\/inbox\/([0-9]+)\/$/su','/admin/messages/$1/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/mod\/login\/$/su','/admin/login/mod/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/mod\/logout\/$/su','/admin/logout/mod/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/mod\/login\/restore\/$/su','/admin/restore/mod/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/mod\/login\/set\/$/su','/admin/setpassword/mod/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/mod\/posts\/$/su','/admin/posts/1/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/mod\/posts\/page-([0-9]+)\/$/su','/admin/posts/$1/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/mod\/post\/([0-9]+)\/$/su','/admin/editpost/$1/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/mod\/inbox\/$/su','/admin/inbox/1/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/mod\/inbox\/([0-9]+)\/$/su','/admin/inbox/$1/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/mod\/inbox\/([0-9]+)\/$/su','/admin/messages/$1/',$_SERVER['REQUEST_URI']);
+	}
+?>
+
+
+<?php
+	/*
+		Controller for API
+	*/
+	class APIController extends ControllerCore {
+		public function __construct(array $postData = [], array $getData = []){
+			parent::__construct($postData,$getData);
+			die('Forbidden! Comming soon...');
+		}
+		public function actionPosts(array $data = []) : void {
+			die('Comming soon...');
+		}
+		public function actionPost(array $data = []) : void {
+			die('Comming soon...');
+		}
+		public function actionThreads(array $data = []) : void {
+			die('Comming soon...');
+		}
+		public function actionThread(array $data = []) : void {
+			die('Comming soon...');
+		}
+		public function actionSections(array $data = []) : void {
+			die('Comming soon...');
+		}
+		public function actionWrite(array $data = []) : void {
+			die('Comming soon...');
+		}
+		public function actionPages(array $data = []) : void {
+			die('Comming soon...');
+		}
 	}
 ?>
