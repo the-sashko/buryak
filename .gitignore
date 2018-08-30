@@ -1,6 +1,5 @@
 .vscode/
 .env/
-protected/config/db.json
-protected/config/security.json
+protected/config/
 protected/res/sessions/
 protectes/res/log/
