@@ -7,6 +7,9 @@
 			parent::__construct($postData,$getData);
 			die('Forbidden! Comming soon...');
 		}
+		public function default() : void {
+			$this->redirect('/error/403/',301);
+		}
 		public function actionPosts(array $data = []) : void {
 			// ...
 			$this->checkToken($data['token']);

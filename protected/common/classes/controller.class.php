@@ -48,10 +48,9 @@
 		/*
 			function for including class and make instance of model
 		*/
-		public function initModel(string $modelName = '') : object{
+		public function initModel(string $modelName = '') : void {
 			$modelName = mb_convert_case($modelName,MB_CASE_TITLE);
 			include_once(getcwd()."/../protected/models/{$modelName}.php");
-			return (new $modelName);
 		}
 
 		/*
@@ -71,7 +70,7 @@
 			$status - is general status of executing XHR request (true - success, false - error)
 			$data - some data that is result of executing XHR request
 		*/
-		public function returnJSON(boll $status = true, array $data = []) : void {
+		public function returnJSON(bool $status = true, array $data = []) : void {
 			$dataJSON = [
 				'status' => $status,
 				'data' => $data

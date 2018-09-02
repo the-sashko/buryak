@@ -89,13 +89,13 @@
 				$$param = $value;
 			}
 
-			include_once(getcwd().'/../tpl/'.$this->templateScope.'/index.tpl'); //include inital tamplate file
+			include_once(getcwd().'/../protected/tpl/'.$this->templateScope.'/index.tpl'); //include inital tamplate file
 
 			/*
 				if disabled caching whole HTML of page stoped executing stript after render
 			*/
 
-			if(!$this->mainCache){
+			if(!$this->pageCache){
 				die();
 			}
 		}

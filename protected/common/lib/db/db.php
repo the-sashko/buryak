@@ -8,7 +8,7 @@
 
 		/* connect to database with data form config file */
 
-		public function DBConnect() : object {
+		public function DBConnect() : PDO {
 
 			/*
 				Read data from config file
