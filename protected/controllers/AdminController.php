@@ -8,7 +8,6 @@
 		public $templateScope = 'admin';
 
 		public function __construct(array $postData = [], array $getData = []){
-			//var_dump($_SERVER); die();
 			parent::__construct($postData,$getData);
 			$this->initModel('auth');
 			$auth = new Auth();
@@ -72,6 +71,10 @@
 			die('Comming soon...');
 		}
 
+		public function actionDelpost(int $id = 0) : void {
+			die('Comming soon...');
+		}
+
 		public function actionSpam() : void {
 			die('Comming soon...');
 		}
@@ -84,6 +87,10 @@
 			die('Comming soon...');
 		}
 
+		public function actionDelban(int $id = 0) : void {
+			die('Comming soon...');
+		}
+
 		public function actionInbox(int $page = 1) : void {
 			die('Comming soon...');
 		}
@@ -93,10 +100,48 @@
 		}
 
 		public function actionSections() : void {
-			die('Comming soon...');
+			$succ = false;
+			$err = [];
+			$formData = $this->post;
+			$this->initModel('Section');
+			$this->initModel('Dictionary');
+			$section = new Section();
+			if(
+				isset($this->post['title']) &&
+				strlen($this->post['title'])>0 &&
+				isset($this->post['name']) &&
+				strlen($this->post['name'])>0 &&
+				isset($this->post['desription']) &&
+				strlen($this->post['desription'])>0
+			){
+				$title = $this->post['title'];
+				$name = $this->post['name'];
+				$desription = $this->post['desription'];
+				$defaultUserName = isset($this->post['default_user_name'])&&strlen($this->post['default_user_name'])>0?$this->post['default_user_name']:'';
+				$ageRestriction = isset($this->post['age_restriction'])&&intval($this->post['age_restriction'])>0?(int)$this->post['age_restriction']:0;
+				$statusID = isset($this->post['status_id'])&&intval($this->post['status_id'])>0?(int)$this->post['status_id']:1;
+				$sort = isset($this->post['sort'])&&intval($this->post['sort'])>0?(int)$this->post['sort']:0;
+				list($status,$err) = $section->create($name,$title,$desription,$defaultUserName,$ageRestriction,$statusID,$sort);
+				if($status){
+					$succ = true;
+					$formData = [];
+				}
+			}
+			$this->render('admin/section/list',[
+				'sections' => $section->list(),
+				'statuses' => (new Dictionary)->getSectionStatuses(),
+				'err' => $err,
+				'succ' => $succ,
+				'successMessage' => 'Section created!',
+				'formData' => $formData
+			]);
 		}
 
 		public function actionEditsection(string $name = '') : void {
+			die('Comming soon...');
+		}
+
+		public function actionDelsection(int $id = 0) : void {
 			die('Comming soon...');
 		}
 
@@ -109,11 +154,23 @@
 		}
 
 		public function actionUsers() : void {
-			die('Comming soon...');
+			$this->initModel('Dictionary');
+			$auth = new Auth();
+			$this->render('admin/user/list',[
+				'users' => $auth->list(),
+				'roles' => (new Dictionary)->getAdminRoles()
+			]);
 		}
 
 		public function actionEdituser(int $id = 0) : void {
 			die('Comming soon...');
+		}
+
+		public function actionDeluser(int $id = 0) : void {
+			if((new Auth)->remove($id)){
+				$this->redirect('/admin/user');
+			}
+			die('Internal error!');
 		}
 
 		public function actionRestore(string $scope = 'mod') : void {

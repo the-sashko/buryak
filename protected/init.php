@@ -19,7 +19,10 @@
 	
 	/* redirecting form URL that have wrong format (less than 3 sections) */
 
-	if(!preg_match('/^\/(.*?)\/(.*?)\/(.*?)\/$/su', $URIPath)){
+	if(
+		!preg_match('/^\/(.*?)\/(.*?)\/(.*?)\/$/su', $URIPath) &&
+		!preg_match('/^\/(.*?)\/(.*?)\/$/su', $URIPath)
+	){
 		header('Location: /');
 		die();
 	}
@@ -271,11 +274,11 @@
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/page\/([a-z0-9-]+)\/$/su','/main/options/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/options\/$/su','/main/options/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/ban\/$/su','/main/ban/',$_SERVER['REQUEST_URI']);
-		$_SERVER['REQUEST_URI'] = preg_replace('/^\/([a-z]+)\/$/su','/section/list/$1_1/',$_SERVER['REQUEST_URI']);
-		$_SERVER['REQUEST_URI'] = preg_replace('/^\/([a-z]+)\/page\-([0-9]+)\/$/su','/section/list/$1_$2/',$_SERVER['REQUEST_URI']);
-		$_SERVER['REQUEST_URI'] = preg_replace('/^\/([a-z]+)\/([0-9]+)\/$/su','/section/thread/$1_$2/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/write\/$/su','/post/write/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/error\/([0-9]+)\/$/su','/main/error/$1/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/remove\/([0-9]+)\/$/su','/post/remove/$1/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/([a-z]+)\/$/su','/section/list/$1_1/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/([a-z]+)\/page\-([0-9]+)\/$/su','/section/list/$1_$2/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/([a-z]+)\/([0-9]+)\/$/su','/section/thread/$1_$2/',$_SERVER['REQUEST_URI']);
 	}
 ?>

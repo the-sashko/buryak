@@ -90,7 +90,10 @@
 		}
 
 		public function remove(int $id = 0) : bool {
-			die('Comming soon...');
+			$sql = "
+				DELETE FROM `admin_users`
+				WHERE `id` = {$id};";
+			return $this->request($sql,'auth');
 		}
 
 		public function setSectionRights(int $id = 0, int $sectionID = 0) : bool {
@@ -111,6 +114,19 @@
 
 		public function checkRights(int $sectionID = 0) : bool {
 			return in_array($sectionID,$this->openSections);
+		}
+		public function list() : array{
+			$sql = "
+				SELECT
+					u.`id` AS 'id',
+					u.`name` AS 'name',
+					u.`email` AS 'email',
+					r.`title` AS 'role',
+					u.`is_active` AS 'status'
+				FROM `admin_users` AS u
+				LEFT JOIN `dictionary_admin_roles` AS r ON r.`id` = u.`role_id`;
+			";
+			return $this->select($sql,'auth');
 		}
 	}
 ?>

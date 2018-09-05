@@ -32,7 +32,13 @@
 			$timestamp = (string)time();
 			$salt1 = $this->configData['security']['salt'][2];
 			$salt2 = $this->configData['security']['salt'][3];
-			return hash('sha512',hash('sha256', $login.$salt1).$pswd.$timestamp.hash('md5', $timestamp.$salt2));
+			return hash('sha512',hash('sha256', $email.$salt1).$email.$timestamp.hash('md5', $timestamp.$salt2));
+		}
+		public function adminEmailToken(string $email = '') : string{ // make session token for admin users or moderators
+			$timestamp = (string)time();
+			$salt1 = $this->configData['security']['salt'][3];
+			$salt2 = $this->configData['security']['salt'][4];
+			return substr(hash('sha256', $salt1.$email.$timestamp.$salt2),3,16);
 		}
 	}
 ?>

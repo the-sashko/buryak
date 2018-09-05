@@ -9,7 +9,8 @@
 		}
 
 		public function actionAllposts(int $page = 1) : void {
-			die('Comming soon...');
+			$this->render('main',[
+			]);
 		}
 
 		public function actionPage(string $slug = '') : void {
@@ -21,7 +22,13 @@
 		}
 
 		public function actionError(int $code = 404) : void {
-			die('Comming soon...');
+			if($code<400&&$code>526){
+				$this->header('/error/404/',301);
+			}
+			http_response_code($code);
+			$this->render('error',[
+				'code' => $code
+			]);
 		}
 
 		public function actionBan() : void {

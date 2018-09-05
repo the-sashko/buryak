@@ -9,10 +9,18 @@
 		}
 
 		public function actionGetnewposts(int $maxPostID = -1) : void {
-			die('Comming soon...');
+			;
 		}
 
-		public function actionWrite() : void {
+		public function actionUpdthread(array $params = []) : void {
+			;
+		}
+
+		public function actionUpdmetadata(int $timestamp = 0) : void {
+			;
+		}
+
+		public function actionWrite(array $params = []) : void {
 			die('Comming soon...');
 		}
 	}

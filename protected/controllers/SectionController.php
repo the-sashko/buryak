@@ -9,7 +9,8 @@
 		}
 
 		public function actionList(array $params = ['all',1]) : void {
-			die('Comming soon...');
+			$this->initModel('section');
+			die('Loading...');
 		}
 
 		public function actionThead(int $int = 0) : void {
