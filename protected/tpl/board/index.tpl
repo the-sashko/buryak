@@ -1,4 +1,6 @@
 <?php _part('header'); ?>
-<h1 class="main_title">Main title</h1>
+<?php if(!$isMainPage&&strlen($pageTitle)>0): ?>
+<h1 class="main_title"><?=$pageTitle;?></h1>
+<?php endif; ?>
 <?php _page($template); ?>
 <?php _part('footer'); ?>

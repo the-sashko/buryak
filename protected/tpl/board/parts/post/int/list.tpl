@@ -1,6 +1,1 @@
-<?php _part('post/card'); ?>
-<div class="related_posts">
-	<?php _part('post/card'); ?>
-	<?php _part('post/card'); ?>
-	<?php _part('post/card'); ?>
-</div>
+<?php _part('post/int/card'); ?>

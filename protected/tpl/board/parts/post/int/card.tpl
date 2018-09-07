@@ -11,5 +11,5 @@
 		<p><?php _part('post/int/media'); ?>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec ante pharetra neque sodales lacinia. Vestibulum euismod ligula quis mollis ultricies. In facilisis nec lorem eget consequat. Nulla facilisi. In ut pulvinar tellus. Maecenas eu libero vel dolor scelerisque lobortis. Morbi tristique quam ac risus egestas, sit amet laoreet eros tincidunt. Pellentesque eget sollicitudin lacus.</p>
 	</div>
 	<a href="#" class="button">Go to thread<i class="fa fa-arrow-right" aria-hidden="true" style="margin-left:0.5em"></i></a>
-	<span><a href="#">500 повідомлень приховано</a></span>
+	<span><a href="#">500 messages hidden</a></span>
 </article>

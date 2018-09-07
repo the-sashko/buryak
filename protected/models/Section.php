@@ -10,7 +10,7 @@
 					`id` AS 'id',
 					`name` AS 'name',
 					`title` AS 'title',
-					`desription` AS 'desription',
+					`description` AS 'description',
 					`default_user_name` AS 'default_user_name',
 					`age_restriction` AS 'age_restriction',
 					`status_id` AS 'status_id',
@@ -21,23 +21,27 @@
 			";
 			return $this->select($sql,'section');
 		}
-		public function getBySlug(bool $viewHidden = true) : array {
+		public function getByName(string $name = '') : array {
 			$sql = "
 				SELECT
 					`id` AS 'id',
 					`name` AS 'name',
 					`title` AS 'title',
-					`desription` AS 'desription',
+					`description` AS 'description',
 					`default_user_name` AS 'default_user_name',
 					`age_restriction` AS 'age_restriction'
 				FROM `sections`
-				WHERE
-					`status_id` == 1 OR
-					`status_id` == 2;
+				WHERE `name` = '{$name}';
 			";
-			return $this->select($sql,'section');
+			$res = $this->select($sql,'section');
+			if(count($res)>0&&is_array($res[0])&&isset($res[0]['id'])&&intval($res[0]['id'])>0){
+				$res = $res[0];
+			} else {
+				$res = [];
+			}
+			return $res;
 		}
-		public function create(string $name = '', string $title = '', string $desription = '', string $defaultUserName = '', int $ageRestriction = 0, int $statusID = 1, int $sort = 0) : array {
+		public function create(string $name = '', string $title = '', string $description = '', string $defaultUserName = '', int $ageRestriction = 0, int $statusID = 1, int $sort = 0) : array {
 			$status = false;
 			$err = [];
 			$sql = "
@@ -65,7 +69,7 @@
 					INSERT INTO `sections` (
 						`name`,
 						`title`,
-						`desription`,
+						`description`,
 						`default_user_name`,
 						`age_restriction`,
 						`status_id`,
@@ -73,7 +77,7 @@
 					) VALUES (
 						'{$name}',
 						'{$title}',
-						'{$desription}',
+						'{$description}',
 						'{$defaultUserName}',
 						'{$ageRestriction}',
 						'{$statusID}',

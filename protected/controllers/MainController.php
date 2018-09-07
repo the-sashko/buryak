@@ -10,6 +10,7 @@
 
 		public function actionAllposts(int $page = 1) : void {
 			$this->render('main',[
+				'isMainPage' => true
 			]);
 		}
 
@@ -25,6 +26,13 @@
 			if($code<400&&$code>526){
 				$this->header('/error/404/',301);
 			}
+			$this->commonData['pageTitle'] = "Error {$code}";
+			$this->commonData['URLPath'] = [
+				0 => [
+					'url' => "/error/{$code}/",
+					'title' => "Error {$code}"
+				] 
+			];
 			http_response_code($code);
 			$this->render('error',[
 				'code' => $code

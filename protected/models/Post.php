@@ -68,7 +68,7 @@
 			$where = $sectionID>0?"`section_id` = {$sectionID}":'1';
 			$where = "
 				{$where} AND
-				`parent_id` = 0,
+				`parent_id` = 0
 			";
 			$page = $page>0?$page:1;
 			$limit = $this->countOnPage;
@@ -209,7 +209,7 @@
 					$post['count_hidden_posts'] = $post['count_posts'] - 4;
 					$post['count_hidden_posts'] = $post['count_hidden_posts']>0?$post['count_hidden_posts']:0;
 					if($post['count_hidden_posts'] > 0){
-						$post['recent_posts'] = 
+						$post['recent_posts'] = [];
 					}
 				}
 				$post['created'] = date('d.m.Y H:i',$post['created']);

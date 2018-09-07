@@ -33,6 +33,14 @@
 
 			$this->initConfig('main');
 			$this->initConfig('security');
+
+			/* Get some data for templates */
+
+			$this->initModel('section');
+			$this->commonData['sections'] = (new Section)->list();
+			$this->commonData['isMainPage'] = false;
+			$this->commonData['URLPath'] = [];
+			$this->commonData['pageTitle'] = '';
 		}
 
 		/*
