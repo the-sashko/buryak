@@ -10,7 +10,7 @@
 
 		public function getByID(int $id = 0, bool $viewHidden = false) : array {
 			$where = "`id` = {$id}";
-			$res = $this->getPosts($where,$viewHidden);
+			$res = $this->getPosts($where,'',$viewHidden);
 			if(
 				count($res)>0 &&
 				is_array($res[0]) &&
@@ -25,7 +25,7 @@
 
 		public function getByRelativeID(int $id = 0, bool $viewHidden = false) : array {
 			$where = "`relative_id` = {$id}";
-			$res = $this->getPosts($where,$viewHidden);
+			$res = $this->getPosts($where,'',$viewHidden);
 			if(
 				count($res)>0 &&
 				is_array($res[0]) &&
@@ -38,7 +38,7 @@
 
 		public function getListByParentID(int $id = 0, bool $viewHidden = false) : array {
 			$where = "`parent_id` = {$id}";
-			return $this->getPosts($where,$viewHidden);
+			return $this->getPosts($where,'',$viewHidden);
 		}
 
 		public function getThreadByID(int $id = 0, bool $viewHidden = false) : array {
@@ -46,7 +46,7 @@
 				`parent_id` = 0 AND
 				`id` = {$id}
 			";
-			return $this->getPosts($where,$viewHidden);
+			return $this->getPosts($where,'',$viewHidden);
 		}
 
 		public function getThreadByRelativeID(int $id = 0, bool $viewHidden = false) : array {
@@ -54,7 +54,7 @@
 				`parent_id` = 0 AND
 				`relative_id` = {$id}
 			";
-			return $this->getPosts($where,$viewHidden);
+			return $this->getPosts($where,'',$viewHidden);
 		}
 
 		public function getPostList(int $sectionID = 0, int $page = 1, bool $viewHidden = false) : array {

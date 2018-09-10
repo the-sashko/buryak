@@ -6,6 +6,7 @@
 	<div class="post_metadata">
 		<?php
 			if(
+				$type != 'single' &&
 				$type != 'section' &&
 				$type != 'thread'
 			):
@@ -22,7 +23,16 @@
 	<div class="post_content">
 		<p><?php _part('post/media'); ?><?=$post['text'];?></p>
 	</div>
+	<?php
+		if(
+			$type != 'single' &&
+			$type != 'thread'
+		):
+	?>
 	<a href="/<?=$section['name'];?>/<?=$post['relative_id'];?>/" class="button">Go to thread<i class="fa fa-arrow-right" aria-hidden="true" style="margin-left:0.5em"></i></a>
-	<?php if($post['count_hidden_posts']>0): ?><span><a href="/<?=$section['name'];?>/<?=$post['relative_id'];?>/"><?=$post['count_hidden_posts'];?> messages hidden</a></span><?php endif;?>
+	<?php if(isset($post['count_hidden_posts'])&&$post['count_hidden_posts']>0): ?><span><a href="/<?=$section['name'];?>/<?=$post['relative_id'];?>/"><?=$post['count_hidden_posts'];?> messages hidden</a></span><?php endif;?>
+	<?php
+		endif;
+	?>
 </article>
 <br>

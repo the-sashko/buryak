@@ -56,8 +56,38 @@
 			]);
 		}
 
-		public function actionThead(int $int = 0) : void {
-			die('Comming soon...');
+		public function actionThread(array $params = ['all',1]) : void {
+			if(count($params)==2){
+				$sectionName = $params[0];
+				$threadID = (int)$params[1];
+				if($threadID>0){
+					$this->initModel('section');
+					$section = (new Section)->getByName($sectionName);
+					if(count($section)>0){
+						$this->initModel('post');
+						$post = new Post();
+						$threadPost = $post->getByRelativeID($threadID);
+						if(count($threadPost)>0){
+							if(intval($threadPost['parent_id'])>0){
+								$realThreadPost = $post->getByID($threadPost['parent_id']);
+								if(count($threadPost)>0){
+									$this->redirect("/{$sectionName}/{$realThreadPost['relative_id']}/#{$threadID}",301);
+								} else {
+									$this->redirect('/error/404/');
+								}
+							}
+							$threadReplies = $post->getListByParentID($threadPost['id']);
+							$this->render('thread',[
+								'threadID' => $threadPost['id'],
+								'section' => $section,
+								'originalPost' => $threadPost,
+								'posts' => $threadReplies
+							]);
+						}
+					}
+				}
+			}
+			$this->redirect('/error/404/');
 		}
 	}
 ?>

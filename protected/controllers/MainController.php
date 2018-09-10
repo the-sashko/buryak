@@ -9,13 +9,35 @@
 		}
 
 		public function actionAllposts(int $page = 1) : void {
+			if($page<1){
+				$this->redirect('/',301);
+			}
+			$this->initModel('post');
+			$allPosts = (new Post)->getPostList(0,$page);
+			if(count($allPosts)<1&&$page!=1){
+				$page--;
+				$this->redirect("/page-{$page}/");
+			}
 			$this->render('main',[
+				'posts' => $allPosts,
 				'isMainPage' => true
 			]);
 		}
 
 		public function actionPage(string $slug = '') : void {
-			die('Comming soon...');
+			if(strlen($slug)>0&&is_file(getcwd()."/../protected/res/static_pages/{$slug}.txt")){
+				$pageData = file_get_contents(getcwd()."/../protected/res/static_pages/{$slug}.txt");
+				$pageData = explode("\n===\n",$pageData);
+				if(count($pageData)>1){
+					$pageTitle = $pageData[0];
+					$pageText = $pageData[1];
+					$this->commonData['pageTitle'] = $pageTitle;
+					$this->render('page',[
+						'staticPageText' => $pageText
+					]);
+				}
+			}
+			$this->redirect('/error/404/');
 		}
 
 		public function actionOptions() : void {

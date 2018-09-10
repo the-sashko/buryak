@@ -271,7 +271,7 @@
 
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/$/su','/main/allposts/1/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/page\-([0-9]+)\/$/su','/main/allposts/$1/',$_SERVER['REQUEST_URI']);
-		$_SERVER['REQUEST_URI'] = preg_replace('/^\/page\/([a-z0-9-]+)\/$/su','/main/options/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/page\/([a-z0-9-]+)\/$/su','/main/page/$1/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/options\/$/su','/main/options/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/ban\/$/su','/main/ban/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/write\/$/su','/post/write/',$_SERVER['REQUEST_URI']);
