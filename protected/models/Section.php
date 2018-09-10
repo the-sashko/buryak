@@ -41,6 +41,27 @@
 			}
 			return $res;
 		}
+		public function getByID(int $id = 0) : array {
+			$sql = "
+				SELECT
+					`id` AS 'id',
+					`name` AS 'name',
+					`title` AS 'title',
+					`description` AS 'description',
+					`default_user_name` AS 'default_user_name',
+					`age_restriction` AS 'age_restriction',
+					`status_id` AS 'status_id'
+				FROM `sections`
+				WHERE `id` = '{$id}';
+			";
+			$res = $this->select($sql,'section');
+			if(count($res)>0&&is_array($res[0])&&isset($res[0]['id'])&&intval($res[0]['id'])>0){
+				$res = $res[0];
+			} else {
+				$res = [];
+			}
+			return $res;
+		}
 		public function create(string $name = '', string $title = '', string $description = '', string $defaultUserName = '', int $ageRestriction = 0, int $statusID = 1, int $sort = 0) : array {
 			$status = false;
 			$err = [];

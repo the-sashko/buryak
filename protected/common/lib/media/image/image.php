@@ -9,23 +9,17 @@
 		var $imageName = 'image'; // image file name
 		var $imageDir; // image directory absolute path (on server)
 		var $sizes = [ // sizes of image for resizing
-			'first'=> [
-				'height'=>800, // height number of pixels or NULL of autoscale it
-				'width'=>1200, // width number of pixels or NULL of autoscale it
-				'low_quality'=>false, // save image in very low quality
-				'prefix'=>'f' // prefix of resized file
+			'thumbnail' => [
+				'height' => 64, // height number of pixels or NULL of autoscale it
+				'width' => 64, // width number of pixels or NULL of autoscale it
+				'low_quality' => true, // save image in very low quality
+				'prefix' => 'thumb' // prefix of resized file
 			],
-			'second'=> [
-				'height'=>800,
-				'width'=>1200,
-				'low_quality'=>false,
-				'prefix'=>'s'
-			],
-			'thumbnail'=> [
-				'height'=>200,
-				'width'=>300,
-				'low_quality'=>true,
-				'prefix'=>'thumb'
+			'post' => [
+				'height' => NULL,
+				'width' => 200,
+				'low_quality' => false,
+				'prefix'=>'p'
 			]
 		];
 
@@ -131,14 +125,14 @@
 							*/
 
 							if($newWidth<$originalWidth){
-								$x=intval(($originalWidth-$newWidth)/2);
+								$x = intval(($originalWidth-$newWidth)/2);
 							} else {
-								$x=0;
+								$x = 0;
 							}
 							if($newHeight<$originalHeight){
-								$y=intval(($originalHeight-$newHeight)/2);
+								$y = intval(($originalHeight-$newHeight)/2);
 							} else {
-								$y=0;
+								$y = 0;
 							}
 
 							/*

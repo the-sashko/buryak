@@ -25,7 +25,8 @@
 			$sql = "
 				SELECT
 					`id` AS 'id',
-					`title` AS 'title'
+					`title` AS 'title',
+					`group` AS 'group',
 					`file_extention` AS 'file_extention'
 				FROM `dictionary_media_types`;
 			";

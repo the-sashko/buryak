@@ -41,6 +41,12 @@
 			$this->commonData['isMainPage'] = false;
 			$this->commonData['URLPath'] = [];
 			$this->commonData['pageTitle'] = '';
+			if(isset($_SESSION['flash_data'])&&is_array($_SESSION['flash_data'])&&count($_SESSION['flash_data'])>0){
+				foreach ($_SESSION['flash_data'] as $flashDataIDX => $flashDataVal) {
+					$this->commonData[$flashDataIDX] = $flashDataVal;
+				}
+			}
+			$_SESSION['flash_data'] = [];
 		}
 
 		/*

@@ -28,17 +28,29 @@
 				if($sectionPage > 1 && count($posts) < 1){
 					$this->redirect("/{$section['name']}/");
 				}
+				$this->commonData['URLPath'] = [
+					0 => [
+						'url' => "/{$section['name']}/",
+						'title' => $sectionPage>1?"{$section['title']} (page {$sectionPage})":"{$section['title']}"
+					] 
+				];
+				$this->commonData['pageTitle'] = $sectionPage>1?"{$section['title']} (page {$sectionPage})":"{$section['title']}";
 			} else {
+				$section = [];
 				$posts = (new Post)->getThreadList(0,$sectionPage);
+				if(count($posts)<1){
+					$this->redirect('/');
+				}
+				$this->commonData['URLPath'] = [
+					0 => [
+						'url' => "/all/",
+						'title' => $sectionPage>1?"All threads (page {$sectionPage})":"All threads"
+					] 
+				];
+				$this->commonData['pageTitle'] = $sectionPage>1?"All threads (page {$sectionPage})":"All threads";
 			}
-			$this->commonData['URLPath'] = [
-				0 => [
-					'url' => "/{$section['name']}/",
-					'title' => $sectionPage>1?"{$section['title']} (page {$sectionPage})":"{$section['title']}"
-				] 
-			];
-			$this->commonData['pageTitle'] = $sectionPage>1?"{$section['title']} (page {$sectionPage})":"{$section['title']}";
 			$this->render('section',[
+				'isAllSections' => $sectionName == 'all',
 				'section' => $section,
 				'posts' => $posts
 			]);

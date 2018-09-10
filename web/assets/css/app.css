@@ -119,6 +119,9 @@ textarea:placeholder, input:placeholder{
 .main{
     margin-bottom: 4em;
 }
+.main_page_wrapper{
+    text-align: center;
+}
 .sidebar {
     font-size: 1.0625em;
     font-weight: bold;
@@ -141,6 +144,11 @@ textarea:placeholder, input:placeholder{
     padding: 0.25em 0.5em;
     border-radius: 0.25em;
     margin-bottom: 0.125em;
+}
+.main_page_content{
+    display: inline-block;
+    float: none;
+    text-align: left;
 }
 .section_list {
     text-align: center;

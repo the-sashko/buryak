@@ -1,5 +1,7 @@
 <?php
-	_part('post/form');
+	if(!$isAllSections):
+		_part('post/form');
+	endif;
 	if(!count($posts)>0):
 ?>
 	<div class="text-center">There are no posts here...</div>

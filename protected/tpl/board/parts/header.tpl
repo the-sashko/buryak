@@ -25,7 +25,7 @@
 			<?php endif; ?>
 			<?php _part('menu/top'); ?>
 		</header>
-		<main class="row fullWidth main">
+		<main class="row fullWidth main<?=$isMainPage?' main_page_wrapper':'';?>">
 			<?php _part('menu/sidebar'); ?>
-			<div class="large-9 medium-9 small-12 columns content">
+			<div class="large-9 medium-9 small-12 columns content<?=$isMainPage?' main_page_content':'';?>">
 				<?php _part('menu/sections'); ?>
