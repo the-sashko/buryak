@@ -5,3 +5,6 @@ protected/res/sessions/
 protectes/res/log/
 protected/res/cache/
 media/img/
+protected/common/lib/media/youtube/cache/
+protected/common/lib/media/youtube/res/img/
+
