@@ -5,7 +5,10 @@
 	class Post extends ModelCore{
 
 		use Image;
-
+		use Markup;
+		use Youtube;
+		use Link;
+		
 		public $countOnPage = 10;
 
 		public function getByID(int $id = 0, bool $viewHidden = false) : array {
@@ -111,7 +114,9 @@
 				{$limit};
 			";
 			$posts = $this->select($sql,'post');
-			return array_map([$this,'appendMetadata'], $posts);
+			$posts = array_map([$this,'appendMetadata'], $posts);
+			$posts = array_map([$this,'formatText'], $posts);
+			return $posts;
 		}
 
 		public function getReplies(int $id = 0) : array {
@@ -186,6 +191,20 @@
 			$status = false;
 			$err = [];
 			$created = time();
+			if(strlen(trim($text))>0){
+				$text = $this->normalizeSyntax($text);
+				$text = $this->parseYoutubeID($text);
+				$text = $this->parseLink($text);
+				$text = $this->normalizeText($text);
+			} else {
+				$text = '';
+			}
+			$title = $this->normalizeText($title);
+			$title = preg_replace('/\s+/su',' ',$title);
+			$name = $this->normalizeText($name);
+			$name = preg_replace('/\s+/su',' ',$name);
+			$tripCode = trim($tripCode);
+			$userIP = trim($userIP);
 			$sql = "
 				SELECT
 					MAX(`relative_id`) AS 'id'
@@ -289,6 +308,24 @@
 				$fileName = '';
 				$filePath = '';
 			}
+			if($fileType==1){
+				if(preg_match('/(.*?)\[Youtube\:(.*?)\](.*?)/su',$text)){
+					$youtubeID = preg_replace('/(.*?)\[Youtube\:(.*?)\](.*?)/su','$2',$text);
+					$image = $this->getVideoThumbnail($youtubeID);
+					if(strlen($image)>0){
+						$fileDir = 'img/'.date('Y').'/'.date('m').'/'.date('d').'/'.date('H').'/'.date('i').'/'.date('s');
+						$res = mkdir(getcwd().'/../media/'.$fileDir,0755,true);
+						copy($image,getcwd()."/../media/{$fileDir}/{$youtubeID}.jpg");
+						$fileTitle = "{$youtubeID}";
+						$this->imageLoad("{$youtubeID}.jpg",$fileTitle,getcwd().'/../media/'.$fileDir);
+						$this->imageGen(['thumbnail','post']);
+						$videoMetaData = $this->getVideoMetaData($youtubeID);
+						$fileType = 5;
+						$fileName = isset($videoMetaData['title'])&&strlen($videoMetaData['title'])?$videoMetaData['title']:'Youtube video';
+						$filePath = "{$fileDir}/{$youtubeID}.jpg";
+					}
+				}
+			}
 			if(count($err)<1){
 				$sql = "
 					INSERT INTO `posts` (
@@ -375,14 +412,40 @@
 				if((
 					$post['media_type_id'] == 2 ||
 					$post['media_type_id'] == 3 ||
-					$post['media_type_id'] == 4) &&
+					$post['media_type_id'] == 4 ||
+					$post['media_type_id'] == 5) &&
 					strlen($post['media_path'])>0
 				){
 					$post['media_path_preview'] = preg_replace('/^(.*?)\.(png|gif|jpg)$/su','$1-p.png',$post['media_path']);
 					$post['media_path_thumbnail'] = preg_replace('/^(.*?)\.(png|gif|jpg)$/su','$1-thumb.gif',$post['media_path']);
 					$post['media_tag'] = preg_match('/^(.*?)\.gif$/su',$post['media_path'])?'gif':$post['media_tag'];
 				}
+				if(
+					$post['media_type_id'] == 5
+				){
+					$post['youtube_id'] = explode('/',$post['media_path']);
+					$post['youtube_id'] = end($post['youtube_id']);
+					$post['youtube_id'] = preg_replace('/^(.*?)\.jpg$/su','$1', $post['youtube_id']);
+					$post['youtube_id'] = trim($post['youtube_id']);
+					$post['youtube_id'] = strlen($post['youtube_id'])>0?$post['youtube_id']:'';
+				}
 				$post['media_tag'] = $post['media_type_id']!=5?$post['media_tag']:'youtube';
+				if(preg_match('/^(.*?)\[Link\:(.*?)\:\"(.*?)\"\](.*?)$/su',$post['text'])){
+					$linkURL = preg_replace('/^(.*?)\[Link\:(.*?)\:\"(.*?)\"\](.*?)$/su','$2',$post['text']);
+					$post['webLink'] = $this->getWebPageMetaData($linkURL);
+				} else {
+					$post['webLink'] = [];
+				}
+			}
+			return $post;
+		}
+
+		public function formatText(array $post = []) : array {
+			if(count($post)>0){
+				$post['text'] = $this->parseLinkShortCode($post['text']);
+				$post['text'] = $this->parseYoutubeShortCode($post['text']);
+				$post['text'] = $this->normalizeText($post['text']);
+				$post['text'] = $this->markup2HTML($post['text']);
 			}
 			return $post;
 		}

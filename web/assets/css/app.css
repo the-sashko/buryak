@@ -258,7 +258,7 @@ textarea:placeholder, input:placeholder{
     border-radius: 0.25em;
     background: #F4FBF4;
     width: 100%;
-    max-width: 640px;
+    max-width: 500px;
     display: inline-block;
     text-align: left;
 }
@@ -424,6 +424,29 @@ textarea:placeholder, input:placeholder{
     opacity: .5;
     margin: 3em 1em 0 0;
     cursor: pointer;
+}
+.post_link {
+    margin: 1em 0;
+    padding: 0 0 0 .5em;
+    border-left: 4px solid #8A8;
+}
+.post_link_image {
+    float: right;
+    min-width: 64px;
+    min-height: 64px;
+    max-width: 64px;
+    max-height: 64px;
+    margin: 0 0 0 .5em;
+    border: 1px solid #EAEAEA;
+    border-radius: 0.125em;
+}
+.post_link_title {
+    text-transform: uppercase;
+    color: #484;
+}
+.post_link_description{
+    font-weight: normal;
+    color: #282;
 }
 /*
 @media(max-height: 500px){

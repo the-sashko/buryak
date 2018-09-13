@@ -17,29 +17,27 @@
 			strlen($post['media_path'])>0
 		):
 	?>
-	<a href="<?=$post['media_path'];?>">
+	<a href="https://www.youtube.com/watch?v=<?=$post['youtube_id'];?>" target="_blank" rel="nofollow">
 	<?php
 		else:
 	?>
 	<a href="#">
 	<?php
 		endif;
-	?>
-		<?php
 			if(strlen($post['media_tag'])>0):
-		?>
+	?>
 		<span class="media_tag"><?=$post['media_tag'];?></span>
 		<?php
 			endif;
-		?>
-		<?php
-			if(strlen($post['media_name'])>0):
+			if(strlen($post['media_name'])>0&&$post['media_type_id'] != 5):
 		?>
 		<span class="post_filename">File: <?=$post['media_name'];?></span>
 		<?php
-			endif;
+			elseif(strlen($post['media_name'])>0&&$post['media_type_id'] == 5):
 		?>
+		<span class="post_filename">Video: <?=$post['media_name'];?></span>
 		<?php
+			endif;
 			if(
 				isset($post['media_path_preview']) &&
 				strlen($post['media_path_preview'])>0

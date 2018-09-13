@@ -38,7 +38,7 @@
 						$timeVideo = preg_match('/^([0-9]+)$/su',$timeVideo)?"{$timeVideo}s":$timeVideo;
 						$idVideo = "{$idVideo}?t={$timeVideo}";
 					}
-					$text = str_replace($link,'[[YouTube:'.$idVideo.']]',$text);
+					$text = str_replace($link,'[Youtube:'.$idVideo.']',$text);
 				} else {
 					$text = str_replace($link,'https://www.youtube.com',$text);
 				}
@@ -75,7 +75,7 @@
 						$timeVideo = preg_match('/^([0-9]+)$/su',$timeVideo)?"{$timeVideo}s":$timeVideo;
 						$idVideo = "{$idVideo}?t={$timeVideo}";
 					}
-					$text = str_replace($link,"[[YouTube:{$idVideo}]]",$text);
+					$text = str_replace($link,"[Youtube:{$idVideo}]",$text);
 				} else {
 					$text = str_replace($link,'https://www.youtube.com',$text);
 				}
@@ -85,18 +85,16 @@
 		}
 		public function parseYoutubeShortCode(string $text = '') : string {
 			if(
-				preg_match('/^(.*?)\[\[YouTube:(.*?)\]\](.*?)$/su',$text)
+				preg_match('/^(.*?)\[Youtube:(.*?)\](.*?)$/su',$text)
 			){
-				$idVideo = preg_replace('/^(.*?)\[\[YouTube:(.*?)\]\](.*?)$/su','$2',$text);
+				$idVideo = preg_replace('/^(.*?)\[Youtube:(.*?)\](.*?)$/su','$2',$text);
 				$youtubeURL = "https://www.youtube.com/watch?v={$idVideo}";
 				$videoData = $this->getVideoMetaData($idVideo);
-				$videoTitle = isset($videoData['title'])&&strlen(trim($videoData['title']))>0?$videoData['title']:'YouTube video';
+				$videoTitle = isset($videoData['title'])&&strlen(trim($videoData['title']))>0?$videoData['title']:'Youtube video';
 				$videoTitle = preg_replace('/\s+/su',' ', $videoTitle);
 				$videoTitle = preg_replace('/(^\s|\s$)/su','',$videoTitle);
-				$videoImage = $this->getVideoThumbnail($idVideo);
-				var_dump($videoImage); die();
 				$idVideoEmbed = preg_match('/(.*?)\?t=(.*?)/su',$idVideo)?$idVideo.'&':$idVideo.'?';
-				$text = str_replace("[[YouTube:{$idVideo}]]","
+				$text = str_replace("[Youtube:{$idVideo}]","
 					<div>
 						<a href=\"#\" onclick=\"document.getElementById('youtube_player_{$idVideo}').style.display='block';\">{$videoTitle}</a>
 					</div>

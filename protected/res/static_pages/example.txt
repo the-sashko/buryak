@@ -2,7 +2,7 @@ Example page
 
 ===
 
-*Lorem* **ipsum* [u]dolor[/u] %%sit amet%%, consectetur adipiscing elit. Donec euismod augue eu ex fermentum mollis. Integer risus purus, consequat ac fermentum in, gravida eu dolor. Fusce id nulla quis sapien convallis dapibus eu at enim. Donec non mattis dui. Ut nulla lectus, gravida sed mauris sit amet, laoreet aliquam risus. Ut nec dolor neque. Donec id odio ipsum. Nulla ornare venenatis eros sed pretium. Mauris congue massa id elit hendrerit lacinia.
+*Lorem* **ipsum** [u]dolor[/u] %%sit amet%%, consectetur adipiscing elit. Donec euismod augue eu ex fermentum mollis. Integer risus purus, consequat ac fermentum in, gravida eu dolor. Fusce id nulla quis sapien convallis dapibus eu at enim. Donec non mattis dui. Ut nulla lectus, gravida sed mauris sit amet, laoreet aliquam risus. Ut nec dolor neque. Donec id odio ipsum. Nulla ornare venenatis eros sed pretium. Mauris congue massa id elit hendrerit lacinia.
 
 [b]Nulla[/b] [i]sapien[/i] [u]ipsum[/u], [spoiler]porttitor[/spoiler] sit amet malesuada sed, tempor et risus. Ut mauris ligula, blandit in lacus vel, ullamcorper sagittis augue. Ut venenatis ullamcorper quam, congue viverra urna lobortis sed. Praesent in vulputate leo. Nullam et ligula magna. Cras malesuada laoreet tristique. Ut volutpat volutpat urna eget aliquet. Praesent ullamcorper ligula vel lectus rhoncus venenatis. Suspendisse in tortor vulputate, eleifend justo et, ultrices diam. Nullam magna orci, posuere at lectus non, viverra dapibus lorem. Nunc maximus ullamcorper ultrices. Mauris condimentum ligula massa. Curabitur viverra faucibus lorem, pulvinar lacinia libero facilisis nec.
 

@@ -24,6 +24,20 @@
 		<p><?php _part('post/media'); ?><?=$post['text'];?></p>
 	</div>
 	<?php
+		if(isset($post['webLink'])&&is_array($post['webLink'])&&count($post['webLink'])>0):
+	?>
+	<div class="post_link">
+		<a href="<?=$post['webLink']['URL'];?>" rel="nofollow" target="_blank">
+			<img src="<?=$post['webLink']['image'];?>" alt="<?=$post['webLink']['title'];?>" class="post_link_image">
+			<div class="post_link_title"><?=$post['webLink']['title'];?></div>
+			<div class="post_link_description"><?=$post['webLink']['description'];?></div>
+			<div class="clear"></div>
+		</a>
+	</div>
+	<?php
+		endif;
+	?>
+	<?php
 		if(
 			$type != 'single' &&
 			$type != 'thread'

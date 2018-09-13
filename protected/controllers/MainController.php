@@ -4,6 +4,10 @@
 	*/
 	class MainController extends ControllerCore {
 		
+		use Markup;
+		use Youtube;
+		use Link;
+
 		public function default() : void {
 			$this->redirect('/',301);
 		}
@@ -31,6 +35,13 @@
 				if(count($pageData)>1){
 					$pageTitle = $pageData[0];
 					$pageText = $pageData[1];
+					$pageText = $this->normalizeSyntax($pageText);
+					$pageText = $this->parseLink($pageText);
+					$pageText = $this->parseLinkShortCode($pageText);
+					$pageText = $this->parseYoutubeID($pageText);
+					$pageText = $this->parseYoutubeShortCode($pageText);
+					$pageText = $this->normalizeText($pageText);
+					$pageText = $this->markup2HTML($pageText);
 					$this->commonData['pageTitle'] = $pageTitle;
 					$this->render('page',[
 						'staticPageText' => $pageText
