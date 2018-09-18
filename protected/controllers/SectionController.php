@@ -24,10 +24,13 @@
 				if(count($section)<1){
 					$this->redirect('/error/404/');
 				}
+				$description = $section['description'];
+				$sectionSlug = $section['name'];
 				$posts = (new Post)->getThreadList($section['id'],$sectionPage);
 				if($sectionPage > 1 && count($posts) < 1){
 					$this->redirect("/{$section['name']}/");
-				}
+				}				
+				$postPageCout = (new Post)->getThreadPageCount($section['id']);
 				$this->commonData['URLPath'] = [
 					0 => [
 						'url' => "/{$section['name']}/",
@@ -37,10 +40,13 @@
 				$this->commonData['pageTitle'] = $sectionPage>1?"{$section['title']} (page {$sectionPage})":"{$section['title']}";
 			} else {
 				$section = [];
+				$description = 'threads from all sections';
+				$sectionSlug = 'all';
 				$posts = (new Post)->getThreadList(0,$sectionPage);
 				if(count($posts)<1){
 					$this->redirect('/');
 				}
+				$postPageCout = (new Post)->getThreadPageCount(0);
 				$this->commonData['URLPath'] = [
 					0 => [
 						'url' => "/all/",
@@ -52,7 +58,11 @@
 			$this->render('section',[
 				'isAllSections' => $sectionName == 'all',
 				'section' => $section,
-				'posts' => $posts
+				'description' => $description,
+				'posts' => $posts,
+				'sectionSlug' => $sectionSlug,
+				'pageCount' => $postPageCout,
+				'currPage' => $sectionPage
 			]);
 		}
 

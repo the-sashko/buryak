@@ -101,10 +101,10 @@ textarea:placeholder, input:placeholder{
     color: #FEFEFE;
 }
 .logo a:hover{
-    color: #FEFEFE;
+    color: #FEFEFE !important;
 }
 .logo a:active{
-    color: #FEFEFE;
+    color: #FEFEFE !important;
 }
 .top_menu {
     text-align: right;
@@ -250,8 +250,59 @@ textarea:placeholder, input:placeholder{
     margin: 1em 0 1em 0;
     font-weight: bold;
 }
+.main_subtitle{
+    width: 100%;
+    text-align: center;
+    color: #555;
+    font-size: 1.25em;
+    line-height: 1em;
+    padding: 0;
+    margin: -.25em 0 .5em 0;
+    font-weight: normal;
+}
 .post_form{
     text-align: center;
+}
+{
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin: .5em 0;
+    color: #060;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+.form_error{
+    border: 0.0625em solid #A88;
+    color: #800;
+    border-radius: 0.25em;
+    background: #FEE;
+    width: 100%;
+    max-width: 500px;
+    display: inline-block;
+    text-align: left;
+    padding: .5em 0;
+    margin: 0 0 1em 0;
+    list-style: none;
+}
+.form_error li{
+    font-weight: bold;
+    margin: 0 1em;
+    padding: 0;
+}
+.open_form_btn {
+    width: 100%;
+    margin: .5em 0;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: #060 !important;
+    display: block;
+}
+.open_form_btn:hover {
+    color: #080 !important;
+}
+.open_form_btn:active {
+    color: #080 !important;
 }
 .post_form form{
     border: 0.0625em solid #DADADA;
@@ -259,11 +310,41 @@ textarea:placeholder, input:placeholder{
     background: #F4FBF4;
     width: 100%;
     max-width: 500px;
-    display: inline-block;
     text-align: left;
+    padding: .5em 0;
+}
+.post_form_visible{
+    display: inline-block;
+}
+.post_form_hidden{
+    display: none;
 }
 .form_input_row {
     padding: 0 1em;
+}
+.form_radio,.form_checkbox{
+    float: left;
+    height: 100%;
+}
+.form_radio_label,.form_checkbox_label{
+    float: left;
+    line-height: 1.75em;
+}
+.form_input_row {
+    margin: .5em 0;
+}
+.editor_buttons a{
+    margin-right: .5em !important;
+    text-align: center;
+    min-width: 2em;
+}
+.editor_buttons a:hover{
+    color:#FEFEFE !important;
+    background-color: #060 !important;
+}
+.editor_buttons a:active{
+    color:#FEFEFE !important;
+    background-color: #060 !important;
 }
 .button {
     margin: 0 !important;
@@ -274,6 +355,15 @@ textarea:placeholder, input:placeholder{
     font-weight: bold !important;
     border: 0 !important;
     border-radius: 0 !important;
+}
+
+.button:hover{
+    color:#FEFEFE !important;
+    background-color: #060 !important;
+}
+.button:active{
+    color:#FEFEFE !important;
+    background-color: #060 !important;
 }
 .post_card {
     font-size: 0.875em;
@@ -361,8 +451,36 @@ textarea:placeholder, input:placeholder{
     line-height: 2em;
     display: block;
 }
+.utag {
+    text-decoration: underline;
+}
 .related_posts{
     padding-left: 4em;
+}
+.pagination{
+    width: 100%;
+    text-align: center;
+}
+.pagination a{
+    display: inline;
+    background: #080;
+    color: #FEFEFE;
+    margin: 0 .25em;
+    padding: .25em .375em;
+}
+.pagination a:hover{
+    background: #060;
+    color: #FEFEFE !important;
+}
+.pagination a:active{
+    background: #060;
+    color: #FEFEFE;
+}
+.pagination span{
+    display: inline;
+    color: #6A6A6A;
+    margin: 0 .25em;
+    padding: .25em .375em;
 }
 .footer{
 	background-color: #333;
@@ -407,7 +525,7 @@ textarea:placeholder, input:placeholder{
     cursor: pointer;
 }
 .scroll_top {
-    display: none;
+    display: block;
     color: #FEFEFE;
     background: #333;
     border: 1px solid #FEFEFE;
@@ -426,16 +544,14 @@ textarea:placeholder, input:placeholder{
     cursor: pointer;
 }
 .post_link {
-    margin: 1em 0;
+    margin: -.75em 0 1em 0;
     padding: 0 0 0 .5em;
     border-left: 4px solid #8A8;
 }
 .post_link_image {
     float: right;
-    min-width: 64px;
-    min-height: 64px;
-    max-width: 64px;
-    max-height: 64px;
+    width: 64px;
+    height: 64px;
     margin: 0 0 0 .5em;
     border: 1px solid #EAEAEA;
     border-radius: 0.125em;

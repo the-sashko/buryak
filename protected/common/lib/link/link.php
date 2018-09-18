@@ -22,8 +22,11 @@
 				$baseURL = explode('#',$URL)[0];
 				$baseURL = explode('&',$URL)[0];
 				$baseURL = explode('?',$URL)[0];
+				$protocol = preg_replace('/^(http|https)\:\/\/(.*?)$/su','$1',$baseURL);
 				$domain = explode('//',$baseURL);
 				$domain = isset($domain[1])?$domain[1]:$baseURL;
+				$domain =  explode('/',$domain)[0];
+				$baseURL = "{$protocol}://{$domain}";
 				$title = '';
 				$description = '';
 				$image = '';
@@ -145,6 +148,10 @@
 				$description = htmlspecialchars($description);
 				$description = addslashes($description);
 				$image = trim($image);
+				if(strlen(trim($image))>=5 && preg_match('/^\/\/(.*?)$/su',$image)){
+					$image = preg_replace('/^\/\/(.*?)$/su','$1',$image);
+					$image = "{$protocol}://{$image}";
+				}
 				if(strlen(trim($image))>=5 && preg_match('/^\/(.*?)$/su',$image)){
 					$image = "{$baseURL}/{$image}";
 					$image = preg_replace('/([\/]+)/su','/',$image);
@@ -170,7 +177,7 @@
 				$URL = $URLParts[0];
 				$URL = trim($URL);
 				if(preg_match('/^(.*?)([^0-9a-z\/_-]+)$/su',$URL)){
-					$endLine = preg_replace('/^(.*?)([^0-9a-z\/_-]+)$/su','$2',$URL);
+					$endLine = preg_replace('/^(.*?)([\s+])(.*?)$/su','$2$3',$URL);
 				} else {
 					$endLine = '';
 				}

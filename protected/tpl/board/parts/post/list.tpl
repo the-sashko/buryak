@@ -7,4 +7,9 @@
 			]);
 		endforeach;
 	endif;
+	if(isset($pageCount)&&intval($pageCount)>1&&!(isset($isMainPage)&&$isMainPage)):
+		_part('pagination',0,[
+			'pageSubURI' => "/{$sectionSlug}/"
+		]);
+	endif;
 ?>

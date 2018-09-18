@@ -75,5 +75,9 @@
 		public function actionBan() : void {
 			die('Comming soon...');
 		}
+		
+		public function actionCaptcha(string $id = '') : void {
+			die('Comming soon...');
+		}		
 	}
 ?>

@@ -139,6 +139,30 @@
 			return true;
 		}
 
+		public function getPostPageCount(int $sectionID = 0, bool $viewHidden = false) : int {
+			$where = $sectionID>0?"`section_id` = {$sectionID}":'1';
+			$countPosts = $this->countPosts($where,$viewHidden);
+			$countPages = intval($countPosts/$this->countOnPage);
+			if($countPages*$this->countOnPage<$countPosts){
+				$countPages++;
+			}
+			return $countPages;
+		}
+
+		public function getThreadPageCount(int $sectionID = 0, bool $viewHidden = false) : int {
+			$where = $sectionID>0?"`section_id` = {$sectionID}":'1';
+			$where = "
+				{$where} AND
+				`parent_id` = 0
+			";
+			$countThreads = $this->countPosts($where,$viewHidden);
+			$countPages = intval($countThreads/$this->countOnPage);
+			if($countPages*$this->countOnPage<$countThreads){
+				$countPages++;
+			}
+			return $countPages;
+		}
+
 		public function countPosts(string $where = '1', bool $viewHidden = false) : int {
 			$viewHidden = !$viewHidden?'`is_active` = 1':'1';
 			$sql = "

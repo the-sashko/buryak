@@ -44,7 +44,7 @@
 			$text = preg_replace('/\[u\](.*?)\[\/u\]/su','<span class="utag">$1</span>',$text);
 			$text = preg_replace('/\[q\](.*?)\[\/q\]/su','<blockquote>$1</blockquote>',$text);
 			$text = preg_replace('/\n+/su','</p><p>',$text);
-			$text = "<p>{$text}</p>";
+			$text = "{$text}";
 			return $text;
 		}
 		public function normalizeText(string $text = '') : string {

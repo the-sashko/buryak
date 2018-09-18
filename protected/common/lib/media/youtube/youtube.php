@@ -4,7 +4,6 @@
 			$text = preg_replace('/^(.*?)(https|http)\:\/\/(m\.youtube|www\.youtube|youtube)\.com\/watch(\s)(.*?)$/su','$1https://www.youtube.com$4$5',$text);
 			$text = preg_replace('/^(.*?)(https|http)\:\/\/(m\.youtube|www\.youtube|youtube)\.com\/watch$/su','$1https://www.youtube.com$4',$text);
 
-
 			$text = preg_replace('/^(.*?)(https|http)\:\/\/(m\.youtu|www\.youtu|youtu)\.be\/(\s)(.*?)$/su','$1https://www.youtube.com$4$5',$text);
 			$text = preg_replace('/^(.*?)(https|http)\:\/\/(m\.youtu|www\.youtu|youtu)\.be\/$/su','$1https://www.youtube.com$4',$text);
 
@@ -126,15 +125,51 @@
 			if(is_file(getcwd()."/../protected/common/lib/media/youtube/res/img/{$idVideo}.jpg")){
 				return getcwd()."/../protected/common/lib/media/youtube/res/img/{$idVideo}.jpg";
 			}
-			$content = file_get_contents("https://img.youtube.com/vi/{$idVideo}/maxresdefault.jpg");
-			$content = $content!=false?$content:file_get_contents("https://img.youtube.com/vi/{$idVideo}/sddefault.jpg");
-			$content = $content!=false?$content:file_get_contents("https://img.youtube.com/vi/{$idVideo}/hqdefault.jpg");
-			$content = $content!=false?$content:file_get_contents("https://img.youtube.com/vi/{$idVideo}/mqdefault.jpg");
-			$content = $content!=false?$content:file_get_contents("https://img.youtube.com/vi/{$idVideo}/default.jpg");
-			$content = $content!=false?$content:file_get_contents("https://img.youtube.com/vi/{$idVideo}/0.jpg");
-			$content = $content!=false?$content:file_get_contents("https://img.youtube.com/vi/{$idVideo}/1.jpg");
-			$content = $content!=false?$content:file_get_contents("https://img.youtube.com/vi/{$idVideo}/2.jpg");
-			$content = $content!=false?$content:file_get_contents("https://img.youtube.com/vi/{$idVideo}/3.jpg");
+			try{
+				$content = file_get_contents("https://img.youtube.com/vi/{$idVideo}/maxresdefault.jpg");
+			}catch(Exception $except){
+				$content = false;
+			}
+			try{
+				$content = $content!=false?$content:file_get_contents("https://img.youtube.com/vi/{$idVideo}/sddefault.jpg");
+			}catch(Exception $except){
+				$content = false;
+			}
+			try{
+				$content = $content!=false?$content:file_get_contents("https://img.youtube.com/vi/{$idVideo}/hqdefault.jpg");
+			}catch(Exception $except){
+				$content = false;
+			}
+			try{
+				$content = $content!=false?$content:file_get_contents("https://img.youtube.com/vi/{$idVideo}/mqdefault.jpg");
+			}catch(Exception $except){
+				$content = false;
+			}
+			try{
+				$content = $content!=false?$content:file_get_contents("https://img.youtube.com/vi/{$idVideo}/default.jpg");
+			}catch(Exception $except){
+				$content = false;
+			}
+			try{
+				$content = $content!=false?$content:file_get_contents("https://img.youtube.com/vi/{$idVideo}/0.jpg");
+			}catch(Exception $except){
+				$content = false;
+			}
+			try{
+				$content = $content!=false?$content:file_get_contents("https://img.youtube.com/vi/{$idVideo}/1.jpg");
+			}catch(Exception $except){
+				$content = false;
+			}
+			try{
+				$content = $content!=false?$content:file_get_contents("https://img.youtube.com/vi/{$idVideo}/2.jpg");
+			}catch(Exception $except){
+				$content = false;
+			}
+			try{
+				$content = $content!=false?$content:file_get_contents("https://img.youtube.com/vi/{$idVideo}/3.jpg");
+			}catch(Exception $except){
+				$content = false;
+			}
 			if($content!=false){
 				file_put_contents(getcwd()."/../protected/common/lib/media/youtube/res/img/{$idVideo}.jpg",$content);
 				return getcwd()."/../protected/common/lib/media/youtube/res/img/{$idVideo}.jpg";

@@ -28,7 +28,13 @@
 	?>
 	<div class="post_link">
 		<a href="<?=$post['webLink']['URL'];?>" rel="nofollow" target="_blank">
-			<img src="<?=$post['webLink']['image'];?>" alt="<?=$post['webLink']['title'];?>" class="post_link_image">
+			<div style="
+				background-image: url('<?=$post['webLink']['image'];?>');
+				background-position: center;
+				background-repeat: no-repeat;
+				background-size: cover;
+				background-color: #FEFEFE;
+			" class="post_link_image"></div>
 			<div class="post_link_title"><?=$post['webLink']['title'];?></div>
 			<div class="post_link_description"><?=$post['webLink']['description'];?></div>
 			<div class="clear"></div>
