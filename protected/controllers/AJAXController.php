@@ -23,5 +23,16 @@
 		public function actionWrite(array $params = []) : void {
 			die('Comming soon...');
 		}
+
+		public function actionTest($params = []) : void {
+			var_dump($_REQUEST);
+			$res = [
+				'params' => $params,
+				'get' => $this->get,
+				'post' => $this->post,
+				'request' => $_REQUEST
+			];
+			$this->returnJSON(true,$res);
+		}
 	}
 ?>

@@ -176,15 +176,10 @@
 			if(count($URLParts)>0&&strlen($URLParts[0])>0){
 				$URL = $URLParts[0];
 				$URL = trim($URL);
-				if(preg_match('/^(.*?)([^0-9a-z\/_-]+)$/su',$URL)){
-					$endLine = preg_replace('/^(.*?)([\s+])(.*?)$/su','$2$3',$URL);
-				} else {
-					$endLine = '';
-				}
 				$URL = preg_replace('/([^0-9a-z\/_=\-]+)$/su','',$URL);
 				$metaData = $this->getWebPageMetaData($URL);
 			}
-			$shortCode = " [Link:{$URL}:\"{$metaData['title']}\"] {$endLine} ";
+			$shortCode = " [Link:{$URL}:\"{$metaData['title']}\"] ";
 			return $shortCode;
 		}
 	}

@@ -18,7 +18,7 @@
 	?>
 		<input type="hidden" name="section_id" value="<?=$section['id'];?>">
 		<input type="hidden" name="thread_id" value="<?=isset($threadID)&&intval($threadID)>0?$threadID:'-1';?>">
-		<input type="file" name="media">
+		<input type="file" name="media" class="upload_media">
 		<div class="row fullWidth form_input_row">
 			<div class="large-12 medium-12 small-12 columns">
 				<input type="text" name="title" placeholder="Title" class="large-12 medium-12 small-12 columns post_form_title">
@@ -26,7 +26,7 @@
 		</div>
 		<div class="row fullWidth form_input_row">
 			<div class="large-5 medium-6 small-12 columns">
-				<div class="button" onclick=""><i class="fa fa-upload" aria-hidden="true"></i>&nbsp;Download file</div>
+				<div class="button upload_media_btn"><i class="fa fa-upload" aria-hidden="true"></i>&nbsp;Upload file</div>
 			</div>
 			<div class="large-7 medium-6 small-12 columns">
 				<input type="checkbox" name="no_media" value="on" class="form_checkbox"><span class="form_checkbox_label">&nbsp;Without&nbsp;file</span>
@@ -47,7 +47,7 @@
 		</div>	
 		<div class="row fullWidth form_input_row">
 			<div class="large-12 medium-12 small-12 columns editor_buttons">
-				<a href="#" data-action="bold" class="button"><strong>b</strong></a><a href="#" data-action="italic" class="button"><em>i</em></a><a href="#" data-action="strike" class="button"><del>s</del></a><a href="#" data-action="spoiler" class="button">Spoiler</a><a href="#" data-action="link" class="button">Link</a>
+				<a href="#" data-action="bold" class="button"><strong>b</strong></a><a href="#" data-action="italic" class="button"><em>i</em></a><a href="#" data-action="strike" class="button"><del>s</del></a><a href="#" data-action="underline" class="button"><span class="utag">u</span></a><a href="#" data-action="spoiler" class="button">Spoiler</a><a href="#" data-action="quote" class="button">Quote</a><a href="#" data-action="link" class="button">Link</a>
 			</div>
 		</div>
 		<div class="row fullWidth form_input_row">

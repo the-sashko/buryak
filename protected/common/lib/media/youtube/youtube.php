@@ -111,9 +111,10 @@
 			$idVideo = explode('?',$idVideo)[0];
 			if(is_file(getcwd()."/../protected/common/lib/media/youtube/cache/_{$idVideo}.dat")){
 				$content = file_get_contents(getcwd()."/../protected/common/lib/media/youtube/cache/_{$idVideo}.dat");
+				$content = base64_decode($content);
 			} else {
 				$content = file_get_contents("https://www.youtube.com/get_video_info?video_id={$idVideo}");
-				file_put_contents(getcwd()."/../protected/common/lib/media/youtube/cache/_{$idVideo}.dat",$content);
+				file_put_contents(getcwd()."/../protected/common/lib/media/youtube/cache/_{$idVideo}.dat",base64_encode($content));
 			}
 			parse_str($content, $content);
 			return $content;

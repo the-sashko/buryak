@@ -1,8 +1,9 @@
 <?php
 	$type = isset($type)&&strlen($type)?$type:'default';
+	$postURL = "/{$post['section_name']}/{$post['relative_id']}/";
 ?>
-<article class="post_card">
-	<i class="fa fa-chevron-down post_options_btn" data-postid="" aria-hidden="true"></i>
+<article class="post_card" data-postID="<?=$post['id'];?>" data-postRelID="<?=$post['relative_id'];?>" >
+	<i class="fa fa-chevron-down post_options_btn" aria-hidden="true"></i>
 	<div class="post_metadata">
 		<?php
 			if(
@@ -12,12 +13,12 @@
 			):
 		?>
 		<div class="post-parent">
-			Board: <strong>/<?=$section['name'];?>/</strong> Thread: <strong><?=$post['title'];?></strong>
+			Board: <strong>/<?=$post['section_name'];?>/</strong> Thread: <strong><?=$post['title'];?></strong>
 		</div>
 		<?php
 			endif;
 		?>
-		<span class="post_id">#<?=$post['relative_id'];?></span><?php if(strlen($post['title'])>0): ?>&nbsp;<span class="post_title"><a href="/<?=$section['name'];?>/<?=$post['relative_id'];?>/"><?=$post['title'];?></a></span><?php endif; ?>
+		<a href="<?=$postURL;?>" class="post_id">#<?=$post['relative_id'];?></a><?php if(strlen($post['title'])>0): ?>&nbsp;<span class="post_title"><a href="<?=$postURL;?>"><?=$post['title'];?></a></span><?php endif; ?>
 		<span class="post_time"><?=$post['created'];?></span>&nbsp;<span class="post_author"><?=$post['username'];?></span><?php if(strlen($post['tripcode'])>0): ?><span class="post_tripcode"><?=$post['tripcode'];?></span><?php endif; ?>
 	</div>
 	<div class="post_content">
@@ -49,8 +50,8 @@
 			$type != 'thread'
 		):
 	?>
-	<a href="/<?=$section['name'];?>/<?=$post['relative_id'];?>/" class="button">Go to thread<i class="fa fa-arrow-right" aria-hidden="true" style="margin-left:0.5em"></i></a>
-	<?php if(isset($post['count_hidden_posts'])&&$post['count_hidden_posts']>0): ?><span><a href="/<?=$section['name'];?>/<?=$post['relative_id'];?>/"><?=$post['count_hidden_posts'];?> messages hidden</a></span><?php endif;?>
+	<a href="<?=$postURL;?>" class="button">Go to thread<i class="fa fa-arrow-right" aria-hidden="true" style="margin-left:0.5em"></i></a>
+	<?php if(isset($post['count_hidden_posts'])&&$post['count_hidden_posts']>0): ?><span><a href="<?=$postURL;?>"><?=$post['count_hidden_posts'];?> messages hidden</a></span><?php endif;?>
 	<?php
 		endif;
 	?>

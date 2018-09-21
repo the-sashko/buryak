@@ -8,11 +8,12 @@
 		use Markup;
 		use Youtube;
 		use Link;
+		use Security;
 		
 		public $countOnPage = 10;
 
 		public function getByID(int $id = 0, bool $viewHidden = false) : array {
-			$where = "`id` = {$id}";
+			$where = "p.`id` = {$id}";
 			$res = $this->getPosts($where,'',$viewHidden);
 			if(
 				count($res)>0 &&
@@ -27,7 +28,7 @@
 		}
 
 		public function getByRelativeID(int $id = 0, bool $viewHidden = false) : array {
-			$where = "`relative_id` = {$id}";
+			$where = "p.`relative_id` = {$id}";
 			$res = $this->getPosts($where,'',$viewHidden);
 			if(
 				count($res)>0 &&
@@ -40,22 +41,22 @@
 		}
 
 		public function getListByParentID(int $id = 0, bool $viewHidden = false) : array {
-			$where = "`parent_id` = {$id}";
+			$where = "p.`parent_id` = {$id}";
 			return $this->getPosts($where,'',$viewHidden);
 		}
 
 		public function getThreadByID(int $id = 0, bool $viewHidden = false) : array {
 			$where = "
-				`parent_id` = 0 AND
-				`id` = {$id}
+				p.`parent_id` = 0 AND
+				p.`id` = {$id}
 			";
 			return $this->getPosts($where,'',$viewHidden);
 		}
 
 		public function getThreadByRelativeID(int $id = 0, bool $viewHidden = false) : array {
 			$where = "
-				`parent_id` = 0 AND
-				`relative_id` = {$id}
+				p.`parent_id` = 0 AND
+				p.`relative_id` = {$id}
 			";
 			return $this->getPosts($where,'',$viewHidden);
 		}
@@ -75,7 +76,7 @@
 			$where = $sectionID>0?"`section_id` = {$sectionID}":'1';
 			$where = "
 				{$where} AND
-				`parent_id` = 0
+				p.`parent_id` = 0
 			";
 			$page = $page>0?$page:1;
 			$limit = $this->countOnPage;
@@ -87,30 +88,33 @@
 		}
 
 		public function getPosts(string $where = '1', string $limit = '', bool $viewHidden = false) : array {
-			$viewHidden = !$viewHidden?'`is_active` = 1':'1';
+			$viewHidden = !$viewHidden?'p.`is_active` = 1':'1';
 			$sql = "
 				SELECT
-					`id` AS 'id',
-					`relative_id` AS 'relative_id',
-					`section_id` AS 'section_id',
-					`parent_id` AS 'parent_id',
-					`title` AS 'title',
-					`text` AS 'text',
-					`media_path` AS 'media_path',
-					`media_name` AS 'media_name',
-					`media_type_id` AS 'media_type_id',
-					`pswd` AS 'pswd',
-					`username` AS 'username',
-					`tripcode` AS 'tripcode',
-					`created` AS 'created',
-					`upd` AS 'upd',
-					`ip` AS 'ip',
-					`is_active` AS 'is_active'
-				FROM `posts`
+					p.`id` AS 'id',
+					p.`relative_id` AS 'relative_id',
+					s.`id` AS 'section_id',
+					s.`name` AS 'section_name',
+					s.`title` AS 'section_title',
+					p.`parent_id` AS 'parent_id',
+					p.`title` AS 'title',
+					p.`text` AS 'text',
+					p.`media_path` AS 'media_path',
+					p.`media_name` AS 'media_name',
+					p.`media_type_id` AS 'media_type_id',
+					p.`pswd` AS 'pswd',
+					p.`username` AS 'username',
+					p.`tripcode` AS 'tripcode',
+					p.`created` AS 'created',
+					p.`upd` AS 'upd',
+					p.`ip` AS 'ip',
+					p.`is_active` AS 'is_active'
+				FROM `posts` AS p
+				LEFT JOIN `sections` AS s ON s.`id` = p.`section_id`
 				WHERE
 					{$viewHidden} AND
 					{$where}
-				ORDER BY `upd` DESC
+				ORDER BY p.`upd` DESC
 				{$limit};
 			";
 			$posts = $this->select($sql,'post');
@@ -150,10 +154,10 @@
 		}
 
 		public function getThreadPageCount(int $sectionID = 0, bool $viewHidden = false) : int {
-			$where = $sectionID>0?"`section_id` = {$sectionID}":'1';
+			$where = $sectionID>0?"p.`section_id` = {$sectionID}":'1';
 			$where = "
 				{$where} AND
-				`parent_id` = 0
+				p.`parent_id` = 0
 			";
 			$countThreads = $this->countPosts($where,$viewHidden);
 			$countPages = intval($countThreads/$this->countOnPage);
@@ -164,11 +168,11 @@
 		}
 
 		public function countPosts(string $where = '1', bool $viewHidden = false) : int {
-			$viewHidden = !$viewHidden?'`is_active` = 1':'1';
+			$viewHidden = !$viewHidden?'p.`is_active` = 1':'1';
 			$sql = "
 				SELECT
-					COUNT(`id`) AS 'count'
-				FROM `posts`
+					COUNT(p.`id`) AS 'count'
+				FROM `posts` AS p
 				WHERE
 					{$viewHidden} AND
 					{$where};
@@ -188,25 +192,25 @@
 
 		public function getNewPostsByThreadID(int $threadID = 0, int $offsetPostID = 0, bool $viewHidden = false) : array {
 			$where = "
-				`parent_id` = {$threadID},
-				`id` > {$offsetPostID}
+				p.`parent_id` = {$threadID},
+				p.`id` > {$offsetPostID}
 			";
 			return $this->getPosts($where,'',$viewHidden);
 		}
 
 		public function getNewPosts(int $sectionID = 0, int $offsetPostID = 0, bool $viewHidden = false) : array {
 			$where = "
-				`section_id` = {$sectionID},
-				`id` > {$offsetPostID}
+				p.`section_id` = {$sectionID},
+				p.`id` > {$offsetPostID}
 			";
 			return $this->getPosts($where,'',$viewHidden);
 		}
 
 		public function getNewThreads(int $sectionID = 0, int $offsetPostID = 0, bool $viewHidden = false) : array {
 			$where = "
-				`section_id` = {$sectionID},
-				`id` > {$offsetPostID},
-				`parent_id` = 0
+				p.`section_id` = {$sectionID},
+				p.`id` > {$offsetPostID},
+				p.`parent_id` = 0
 			";
 			return $this->getPosts($where,'',$viewHidden);
 		}
@@ -345,7 +349,7 @@
 						$this->imageGen(['thumbnail','post']);
 						$videoMetaData = $this->getVideoMetaData($youtubeID);
 						$fileType = 5;
-						$fileName = isset($videoMetaData['title'])&&strlen($videoMetaData['title'])?$videoMetaData['title']:'Youtube video';
+						$fileName = isset($videoMetaData['title'])&&strlen($videoMetaData['title'])?$this->escapeInput($videoMetaData['title']):'Youtube video';
 						$filePath = "{$fileDir}/{$youtubeID}.jpg";
 					}
 				}

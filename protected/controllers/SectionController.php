@@ -81,7 +81,7 @@
 							if(intval($threadPost['parent_id'])>0){
 								$realThreadPost = $post->getByID($threadPost['parent_id']);
 								if(count($threadPost)>0){
-									$this->redirect("/{$sectionName}/{$realThreadPost['relative_id']}/#{$threadID}",301);
+									$this->redirect("/{$sectionName}/{$realThreadPost['relative_id']}/#post-{$threadID}",301);
 								} else {
 									$this->redirect('/error/404/');
 								}
