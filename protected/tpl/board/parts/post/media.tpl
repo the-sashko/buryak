@@ -10,14 +10,14 @@
 			strlen($post['media_path'])>0
 		):
 	?>
-	<a href="<?=$mediaBaseURL;?>/<?=$post['media_path'];?>">
+	<a href="<?=$mediaBaseURL;?>/<?=$post['media_path'];?>" data-type="image" class="post_media_link" id="post_media_link_<?=$post['id'];?>">
 	<?php
 		elseif(
 			$post['media_type_id'] == 5 &&
 			strlen($post['media_path'])>0
 		):
 	?>
-	<a href="https://www.youtube.com/watch?v=<?=$post['youtube_id'];?>" target="_blank" rel="nofollow">
+	<a href="https://www.youtube.com/watch?v=<?=$post['youtube_id'];?>" class="post_media_link" id="post_media_<?=$post['id'];?>" id="post_media_link_<?=$post['id'];?>" target="_blank" rel="nofollow">
 	<?php
 		else:
 	?>
@@ -43,7 +43,7 @@
 				strlen($post['media_path_preview'])>0
 			):
 		?>
-		<img src="<?=$mediaBaseURL;?>/<?=$post['media_path_preview'];?>">
+		<img src="<?=$mediaBaseURL;?>/<?=$post['media_path_preview'];?>" id="post_media_<?=$post['id'];?>">
 		<?php
 			endif;
 		?>

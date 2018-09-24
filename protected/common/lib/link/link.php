@@ -5,7 +5,7 @@
 			return $text;
 		}
 		function parseLinkShortCode(string $text = '') : string {
-			$text = preg_replace('/\[Link\:(.*?)\:\"(.*?)\"\]/su','<a href="$1" target="_blank" rel="nofollow">$2</a>',$text);
+			$text = preg_replace('/\[Link\:(.*?)\:\"(.*?)\"\]/su','<a href="$1" target="_blank" rel="nofollow"><i class="fas fa-link"></i>&nbsp;$2</a>',$text);
 			return $text;
 		}
 		function getWebPageMetaData(string $URL = '') : array {
@@ -153,6 +153,12 @@
 					$image = "{$protocol}://{$image}";
 				}
 				if(strlen(trim($image))>=5 && preg_match('/^\/(.*?)$/su',$image)){
+					$image = "{$baseURL}/{$image}";
+					$image = preg_replace('/([\/]+)/su','/',$image);
+					$image = preg_replace('/http\:\//su','http://',$image);
+					$image = preg_replace('/https\:\//su','https://',$image);
+				}
+				if(strlen(trim($image))>=5 && !preg_match('/^http(s|)\:\/\/(.*?)$/su',$image)){
 					$image = "{$baseURL}/{$image}";
 					$image = preg_replace('/([\/]+)/su','/',$image);
 					$image = preg_replace('/http\:\//su','http://',$image);

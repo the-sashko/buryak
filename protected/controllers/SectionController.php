@@ -31,12 +31,25 @@
 					$this->redirect("/{$section['name']}/");
 				}				
 				$postPageCout = (new Post)->getThreadPageCount($section['id']);
-				$this->commonData['URLPath'] = [
-					0 => [
-						'url' => "/{$section['name']}/",
-						'title' => $sectionPage>1?"{$section['title']} (page {$sectionPage})":"{$section['title']}"
-					] 
-				];
+				if($sectionPage>1){
+					$this->commonData['URLPath'] = [
+						0 => [
+							'url' => '#',
+							'title' => "Page: {$sectionPage}"
+						],
+						1 => [
+							'url' => "/{$section['name']}/",
+							'title' => $section['title']
+						]
+					];
+				} else {
+					$this->commonData['URLPath'] = [
+						0 => [
+							'url' => '#',
+							'title' => $section['title']
+						]
+					];
+				}
 				$this->commonData['pageTitle'] = $sectionPage>1?"{$section['title']} (page {$sectionPage})":"{$section['title']}";
 			} else {
 				$section = [];
@@ -47,12 +60,25 @@
 					$this->redirect('/');
 				}
 				$postPageCout = (new Post)->getThreadPageCount(0);
-				$this->commonData['URLPath'] = [
-					0 => [
-						'url' => "/all/",
-						'title' => $sectionPage>1?"All threads (page {$sectionPage})":"All threads"
-					] 
-				];
+				if($sectionPage>1){
+					$this->commonData['URLPath'] = [
+						0 => [
+							'url' => '#',
+							'title' => "Page: {$sectionPage}"
+						],
+						1 => [
+							'url' => '/all/',
+							'title' => 'All threads'
+						]
+					];
+				} else {
+					$this->commonData['URLPath'] = [
+						0 => [
+							'url' => '/all/',
+							'title' => 'All threads'
+						]
+					];
+				}
 				$this->commonData['pageTitle'] = $sectionPage>1?"All threads (page {$sectionPage})":"All threads";
 			}
 			$this->render('section',[
@@ -87,6 +113,17 @@
 								}
 							}
 							$threadReplies = $post->getListByParentID($threadPost['id']);
+							$this->commonData['pageTitle'] = strlen($threadPost['title'])>1?$threadPost['title']:"Thread #{$threadPost['relative_id']}";
+							$this->commonData['URLPath'] = [
+								0 => [
+									'url' => "/{$section['name']}/",
+									'title' => $section['title']
+								],
+								1 => [
+									'url' => '#',
+									'title' => strlen($threadPost['title'])>1?$threadPost['title']:"Thread #{$threadPost['relative_id']}"
+								]
+							];
 							$this->render('thread',[
 								'threadID' => $threadPost['id'],
 								'section' => $section,

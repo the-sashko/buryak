@@ -57,7 +57,7 @@
 		</div>
 		<div class="row fullWidth form_input_row">
 			<div class="large-6 medium-6 small-12 columns">
-				<img src="https://fajno.in/1504688137/captcha.png" id="captcha-image">
+				<img src="#" id="captcha-image"><!--https://fajno.in/1504688137/captcha.png-->
 				<a href="#" id="reload-captcha">Other image</a>
 				<input type="text" name="captcha" placeholder="Enter words form picture" id="captcha">
 			</div>

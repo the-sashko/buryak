@@ -2,7 +2,7 @@
 	$type = isset($type)&&strlen($type)?$type:'default';
 	$postURL = "/{$post['section_name']}/{$post['relative_id']}/";
 ?>
-<article class="post_card" data-postID="<?=$post['id'];?>" data-postRelID="<?=$post['relative_id'];?>" >
+<article id="post_<?=$post['id'];?>" class="post_card" data-postID="<?=$post['id'];?>" data-postRelID="<?=$post['relative_id'];?>">
 	<i class="fa fa-chevron-down post_options_btn" aria-hidden="true"></i>
 	<div class="post_metadata">
 		<?php
@@ -21,13 +21,14 @@
 		<a href="<?=$postURL;?>" class="post_id">#<?=$post['relative_id'];?></a><?php if(strlen($post['title'])>0): ?>&nbsp;<span class="post_title"><a href="<?=$postURL;?>"><?=$post['title'];?></a></span><?php endif; ?>
 		<span class="post_time"><?=$post['created'];?></span>&nbsp;<span class="post_author"><?=$post['username'];?></span><?php if(strlen($post['tripcode'])>0): ?><span class="post_tripcode"><?=$post['tripcode'];?></span><?php endif; ?>
 	</div>
-	<div class="post_content">
+	<div id="post_content_<?=$post['id'];?>" class="post_content" data-id="<?=$post['id'];?>">
 		<p><?php _part('post/media'); ?><?=$post['text'];?></p>
 	</div>
+	<div id="post_additional_actions_<?=$post['id'];?>" class="post_additional_actions" data-id="<?=$post['id'];?>"></div>
 	<?php
-		if(isset($post['webLink'])&&is_array($post['webLink'])&&count($post['webLink'])>0):
+		if(isset($post['webLink'])&&is_array($post['webLink'])&&count($post['webLink'])>0&&strlen(trim($post['webLink']['description']))>0):
 	?>
-	<div class="post_link">
+	<div id="post_link_<?=$post['id'];?>" class="post_link">
 		<a href="<?=$post['webLink']['URL'];?>" rel="nofollow" target="_blank">
 			<div style="
 				background-image: url('<?=$post['webLink']['image'];?>');

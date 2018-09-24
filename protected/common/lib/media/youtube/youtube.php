@@ -92,16 +92,17 @@
 				$videoTitle = isset($videoData['title'])&&strlen(trim($videoData['title']))>0?$videoData['title']:'Youtube video';
 				$videoTitle = preg_replace('/\s+/su',' ', $videoTitle);
 				$videoTitle = preg_replace('/(^\s|\s$)/su','',$videoTitle);
-				$idVideoEmbed = preg_match('/(.*?)\?t=(.*?)/su',$idVideo)?$idVideo.'&':$idVideo.'?';
-				$text = str_replace("[Youtube:{$idVideo}]","
+				//$idVideoEmbed = preg_match('/(.*?)\?t=(.*?)/su',$idVideo)?$idVideo.'&':$idVideo.'?';
+				/*$text = str_replace("[Youtube:{$idVideo}]","
 					<div>
 						<a href=\"#\" onclick=\"document.getElementById('youtube_player_{$idVideo}').style.display='block';\">{$videoTitle}</a>
 					</div>
 					<div class=\"youtube_player\" id=\"youtube_player_{$idVideo}\" style=\"display:none;\">
 						<iframe src=\"https://www.youtube.com/embed/{$idVideoEmbed}rel=0controls=1&showinfo=0\" frameborder=\"0\" allowfullscreen=\"\"></iframe>
-					</div>", $text);
+					</div>", $text);*/
+				$text = str_replace("[Youtube:{$idVideo}]","<a href=\"{$youtubeURL}\" class=\"post_media_link post_content_link_youtube\"><i class=\"fab fa-youtube\"></i>&nbsp;{$videoTitle}</a>", $text);
 				$text = $this->parseYoutubeShortCode($text);
-				$text = $this->parseYoutubeID($text);
+				//$text = $this->parseYoutubeID($text);
 			}
 			return $text;
 		}

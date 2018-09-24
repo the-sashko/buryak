@@ -10,6 +10,7 @@
 	<?php _part('css'); ?>
 </head>
 <body>
+	<?php _part('js_init'); ?>
 	<div class="scroll_down"><i class="fa fa-arrow-down" aria-hidden="true"></i></div>
 	<div class="header_background"></div>
 	<div class="wrapper">

@@ -8,8 +8,18 @@
 			$this->redirect('/error/403/',301);
 		}
 
-		public function actionGetnewposts(int $maxPostID = -1) : void {
-			;
+		public function actionPostlist(int $page = 1) : void {
+			$page = intval($page)>1?$page:1;
+			$this->initModel('post');
+			$posts = (new Post)->getPostList(0,$page);
+			if(count($posts)>0){
+				$this->render('main',[
+					'posts' => $posts,
+					'ajaxTemplate' => true,
+					'isMainPage' => true
+				]);
+			}
+			die('');
 		}
 
 		public function actionUpdthread(array $params = []) : void {

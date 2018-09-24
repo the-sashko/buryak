@@ -427,6 +427,7 @@
 				$post['views'] = $this->getViews($post['id']);
 				if(intval($post['parent_id'])<1){
 					$post['posts'] = $this->getListByParentID($post['id']);
+					$post['posts'] = array_reverse($post['posts']);
 					$post['count_posts'] = count($post['posts']);
 					$post['count_hidden_posts'] = $post['count_posts'] - 4;
 					$post['count_hidden_posts'] = $post['count_hidden_posts']>0?$post['count_hidden_posts']:0;

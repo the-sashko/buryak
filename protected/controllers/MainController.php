@@ -24,7 +24,9 @@
 			}
 			$this->render('main',[
 				'posts' => $allPosts,
-				'isMainPage' => true
+				'isMainPage' => true,
+				'ajaxLoad' => true,
+				'ajaxAction' => 'postlist'
 			]);
 		}
 

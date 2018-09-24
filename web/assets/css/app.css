@@ -254,7 +254,7 @@ textarea:placeholder, input:placeholder{
     width: 100%;
     text-align: center;
     color: #555;
-    font-size: 1.25em;
+    font-size: 1.125em;
     line-height: 1em;
     padding: 0;
     margin: -.25em 0 .5em 0;
@@ -411,6 +411,22 @@ textarea:placeholder, input:placeholder{
 }
 .post_content p {
     overflow: auto;
+    margin-bottom: .375em;
+}
+.post_content_cutted {
+    overflow: hidden;
+    height: 450px;
+}
+.post_expand_btn{
+    color: #6A6A6A;
+    border: 1px dashed #6A6A6A;
+    text-align: center;
+    font-size: .75em;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: .5em;
+    margin: .375em 0;
+    cursor: pointer;
 }
 .post_media {
     width: 200px;
@@ -454,8 +470,11 @@ textarea:placeholder, input:placeholder{
 .utag {
     text-decoration: underline;
 }
+.post_additional_actions{
+    display: none;
+}
 .related_posts{
-    padding-left: 4em;
+    padding: 0 0 0 4em;
 }
 .pagination{
     width: 100%;
@@ -505,6 +524,9 @@ textarea:placeholder, input:placeholder{
 	margin-top: -4em;
 	box-shadow: 0 -2px 5px #DADBDD;
 }
+.resources{
+    display: none;
+}
 .scroll_down {
     display: block;
     color: #FEFEFE;
@@ -544,7 +566,7 @@ textarea:placeholder, input:placeholder{
     cursor: pointer;
 }
 .post_link {
-    margin: -.75em 0 1em 0;
+    margin: .5em 0 .875em 0;
     padding: 0 0 0 .5em;
     border-left: 4px solid #8A8;
 }

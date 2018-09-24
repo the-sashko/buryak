@@ -8,5 +8,6 @@
 	<div class="footer_background"></div>
 	<div class="scroll_top"><i class="fa fa-arrow-up" aria-hidden="true"></i></div>
 	<?php _part('js'); ?>
+	<?php _part('resources'); ?>
 </body>
 </html>
