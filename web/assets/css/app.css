@@ -111,10 +111,35 @@ textarea:placeholder, input:placeholder{
     font-size: 1.25em;
     font-weight: bold;
     margin-top: 0.25em;
+    text-transform: uppercase;
 }
 .top_menu a{
-    color: #FFF;
+    color: #FEFEFE;
     margin-right: 0.25em;
+}
+.top_menu_pda{
+    background: #FEFEFE;
+    box-shadow: 0 2px 5px #dadbdd;
+    padding: .75em 1em;
+    display: none;
+}
+.top_menu_pda h3{
+    display: block;
+    margin: 0;
+    padding: 0;
+    font-size: 1.125em;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: #CCC;
+}
+.top_menu_pda a{
+    display: block;
+    margin: 0;
+    padding: 0;
+    font-size: 1em;
+    font-weight: bold;
+    color: #6A6A6A;
+    margin-left: 1em;
 }
 .main{
     margin-bottom: 4em;
@@ -134,7 +159,7 @@ textarea:placeholder, input:placeholder{
 .sidebar_title{
     color: #6A6A6A;
 }
-.sidebar_age,.section_list_age {
+.sidebar_age,.section_list_age,.pda_menu_age {
     color: #EE6A6A;
 }
 .sidebar_count {

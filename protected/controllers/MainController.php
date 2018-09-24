@@ -45,6 +45,12 @@
 					$pageText = $this->normalizeText($pageText);
 					$pageText = $this->markup2HTML($pageText);
 					$this->commonData['pageTitle'] = $pageTitle;
+					$this->commonData['URLPath'] = [
+						0 => [
+							'url' => '#',
+							'title' => $pageTitle
+						]
+					];
 					$this->render('page',[
 						'staticPageText' => $pageText
 					]);

@@ -6,6 +6,7 @@ function appInit(){
 	initCards();
 	//checkAJAX();
 	initScrollButtons();
+	initMenuButton();
 	initPostForm();
 	initAJAX();
 }
@@ -19,6 +20,12 @@ function initAJAX(){
 			}
 		});
 	}
+}
+
+function initMenuButton(){
+	$('.top_menu_btn').bind('click',function(){
+		$('.top_menu_pda').toggle();
+	});
 }
 
 function initScrollButtons(){
