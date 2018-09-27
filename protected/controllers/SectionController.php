@@ -30,7 +30,7 @@
 				if($sectionPage > 1 && count($posts) < 1){
 					$this->redirect("/{$section['name']}/");
 				}				
-				$postPageCout = (new Post)->getThreadPageCount($section['id']);
+				$postPageCount = (new Post)->getThreadPageCount($section['id']);
 				if($sectionPage>1){
 					$this->commonData['URLPath'] = [
 						0 => [
@@ -59,7 +59,7 @@
 				if(count($posts)<1){
 					$this->redirect('/');
 				}
-				$postPageCout = (new Post)->getThreadPageCount(0);
+				$postPageCount = (new Post)->getThreadPageCount(0);
 				if($sectionPage>1){
 					$this->commonData['URLPath'] = [
 						0 => [
@@ -87,7 +87,7 @@
 				'description' => $description,
 				'posts' => $posts,
 				'sectionSlug' => $sectionSlug,
-				'pageCount' => $postPageCout,
+				'pageCount' => $postPageCount,
 				'currPage' => $sectionPage
 			]);
 		}

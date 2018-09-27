@@ -58,8 +58,32 @@ function initCards(){
 		});
 	}
 	$('.post_media_link').fancybox();
+	initLinksPreview();
 }
 
+function initLinksPreview(){
+	$('.post_external_link').hover(function(event){
+		var time = new Date().getTime();
+		$('#popup').html('<iframe id=\"link_preview_iframe_'+time+'\" src="'+$(this).attr('href')+'" scrolling="no" style="width:248px;height:248px;border:none;border-radius:.5em;"></iframe>');
+		//$('#popup').offset({top:event.pageY+10,left:event.pageX+10});
+		$('#popup').css('top',event.pageY+10);
+		$('#popup').css('left',event.pageX+10);
+		$('#link_preview_iframe_'+time).bind('load',function(){
+			$('#popup').show();
+		});
+		/*$('#link_preview_iframe_'+time).bind('click',function(){
+			$('#popup').hide();
+			$('#popup').html('');
+			$('#popup').offset({top:0,left:0});
+		});*/
+		$('.post_external_link').bind('mouseout',function(){
+			$('#popup').hide();
+			$('#popup').html('');
+			$('#popup').css('top','0');
+			$('#popup').css('left','0');
+		});
+    });
+}
 function cutContent(obj){
 	var id = $('#'+obj.id).data('id');
 	if($('#post_content_'+id).height()>500){

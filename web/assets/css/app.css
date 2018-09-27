@@ -492,6 +492,17 @@ textarea:placeholder, input:placeholder{
     line-height: 2em;
     display: block;
 }
+.spoiler {
+    filter: blur(2px);
+    color: #6A6A6A;
+    padding: 0 .5em;
+    cursor: pointer;
+}
+.spoiler:hover {
+    filter: blur(0);
+    color: #333;
+    cursor: default;
+}
 .utag {
     text-decoration: underline;
 }
@@ -610,6 +621,21 @@ textarea:placeholder, input:placeholder{
 .post_link_description{
     font-weight: normal;
     color: #282;
+}
+.popup{
+    z-index: 1000;
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 0.875em;
+    background: #F4FBF4;
+    padding: 0;/* 0.75em;*/
+    border: 1px solid #DADADA;
+    border-radius: 0.5em;
+    margin: 0 0 1em 0;
+    display: none;
+    width: 250px;
+    height: 250px;
 }
 /*
 @media(max-height: 500px){

@@ -21,6 +21,7 @@
 	*/
 	trait Markup{
 		public function normalizeSyntax(string $text = '') : string {
+			$text = str_replace('&gt;','>',$text);
 			$text = preg_replace('/~~(.*?)~~/su','[s]$1[/s]',$text);
 			$text = preg_replace('/DEL(.*?)DEL/su','[s]$1[/s]',$text);
 			$text = preg_replace('/\*\*(.*?)\*\*/su','[b]$1[/b]',$text);
@@ -28,12 +29,15 @@
 			$text = preg_replace('/\%\%(.*?)\%\%/su','[spoiler]$1[/spoiler]',$text);
 			$text = preg_replace('/\%\%(.*?)\%\%/su','[spoiler]$1[/spoiler]',$text);
 			$text = preg_replace('/\>\>([0-9]+)/su',"[Reply:$1]",$text);
-			$text = preg_replace('/\>(.*?)\n/su',"\n[q]>$1[/q]\n",$text);
+			$text = preg_replace('/\>(.*?)\n/su',"\n[q]$1[/q]\n",$text);
+			$text = preg_replace('/\>(.*?)$/su',"\n[q]$1[/q]",$text);
+			$text = preg_replace('/\[q\]/su',"[q]&gt;",$text);
+			$text = preg_replace('/\[q\]\&gt\;([\s]+)/su',"[q]&gt;",$text);
 			$text = preg_replace('/\[\/q\]([\s]+)\[q\]/su',"\n",$text);
 			$text = preg_replace('/([\s]+)\[q\]/su',"\n[q]",$text);
-			$text = preg_replace('/\[q\]([\s]+)/su',"[q]",$text);
-			$text = preg_replace('/([\s]+)\[\/q\]/su',"[\q]\n",$text);
-			$text = preg_replace('/\[\/q\]([\s]+)/su',"[\q]",$text);
+			$text = preg_replace('/([\s]+)\[\/q\]/su',"[/q]\n",$text);
+			$text = preg_replace('/\[\/q\]([\s]+)/su',"[/q]\n",$text);
+			$text = str_replace('>','&gt;',$text);
 			return $text;
 		}
 		public function markup2HTML(string $text = '') : string {
@@ -42,6 +46,12 @@
 			$text = preg_replace('/\[i\](.*?)\[\/i\]/su','<i>$1</i>',$text);
 			$text = preg_replace('/\[spoiler\](.*?)\[\/spoiler\]/su','<span class="spoiler">$1</span>',$text);
 			$text = preg_replace('/\[u\](.*?)\[\/u\]/su','<span class="utag">$1</span>',$text);
+			$text = preg_replace('/([\s]+)\[q\]/su','[q]',$text);
+			$text = preg_replace('/\[q\]([\s]+)/su','[q]',$text);
+			$text = preg_replace('/([\s]+)\[\/q\]/su','[/q]',$text);
+			$text = preg_replace('/\[\/q\]([\s]+)/su','[/q]',$text);
+			$text = preg_replace('/\[q\]/su','[q]<p>',$text);
+			$text = preg_replace('/\[\/q\]/su','</p>[/q]',$text);
 			$text = preg_replace('/\[q\](.*?)\[\/q\]/su','<blockquote>$1</blockquote>',$text);
 			$text = preg_replace('/\n+/su','</p><p>',$text);
 			$text = "{$text}";

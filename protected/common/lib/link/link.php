@@ -5,7 +5,7 @@
 			return $text;
 		}
 		function parseLinkShortCode(string $text = '') : string {
-			$text = preg_replace('/\[Link\:(.*?)\:\"(.*?)\"\]/su','<a href="$1" target="_blank" rel="nofollow"><i class="fas fa-link"></i>&nbsp;$2</a>',$text);
+			$text = preg_replace('/\[Link\:(.*?)\:\"(.*?)\"\]/su','<a href="$1" target="_blank" rel="nofollow" class="post_external_link"><i class="fas fa-link"></i>&nbsp;$2</a>',$text);
 			return $text;
 		}
 		function getWebPageMetaData(string $URL = '') : array {

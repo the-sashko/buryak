@@ -64,7 +64,18 @@
 		}
 
 		public function actionPosts(int $page = 1) : void {
-			die('Comming soon...');
+			$this->initModel('post');
+			$posts = (new Post)->getPostList(0,$page,true);
+			if(count($posts)<1&&$page!=1){
+				$page--;
+				$this->redirect("/page-{$page}/");
+			}
+			$postPageCount = (new Post)->getThreadPageCount(0,true);
+			$this->render('post/list',[
+				'posts' => $posts,
+				'pageCount' => $postPageCount,
+				'currPage' => $page
+			]);
 		}
 
 		public function actionEditpost(int $id = 0) : void {
@@ -76,7 +87,7 @@
 		}
 
 		public function actionSpam() : void {
-			die('Comming soon...');
+			$this->render('admin/spam');
 		}
 
 		public function actionBan(int $page = 1) : void {
