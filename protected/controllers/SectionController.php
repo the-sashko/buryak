@@ -102,7 +102,7 @@
 					if(count($section)>0){
 						$this->initModel('post');
 						$post = new Post();
-						$threadPost = $post->getByRelativeID($threadID);
+						$threadPost = $post->getByRelativeID($threadID,$section['id']);
 						if(count($threadPost)>0){
 							if(intval($threadPost['parent_id'])>0){
 								$realThreadPost = $post->getByID($threadPost['parent_id']);
@@ -113,6 +113,7 @@
 								}
 							}
 							$threadReplies = $post->getListByParentID($threadPost['id']);
+							$threadReplies = array_reverse($threadReplies);
 							$this->commonData['pageTitle'] = strlen($threadPost['title'])>1?$threadPost['title']:"Thread #{$threadPost['relative_id']}";
 							$this->commonData['URLPath'] = [
 								0 => [

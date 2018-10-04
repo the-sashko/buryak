@@ -30,6 +30,26 @@
 			;
 		}
 
+		public function actionPost(array $params = []) : void {
+			if(count($params)==2){
+				$postID = (int)$params[0];
+				$sectionID = (int)$params[1];
+				if($postID>0&&$sectionID>0){
+					$this->initModel('post');
+					$post = (new Post)->getByRelativeID($postID,$sectionID);
+					if(count($post)>0){
+						$this->render('snippet',[
+							'post' => $post,
+							'ajaxTemplate' => true,
+							'isMainPage' => false
+						]);
+					}
+				}
+			}
+			die('err');
+			$this->redirect('/error/404/',301);
+		}
+
 		public function actionWrite(array $params = []) : void {
 			die('Comming soon...');
 		}

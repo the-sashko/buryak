@@ -59,6 +59,7 @@ function initCards(){
 	}
 	$('.post_media_link').fancybox();
 	initLinksPreview();
+	initCardsPreview();
 }
 
 function initLinksPreview(){
@@ -82,7 +83,56 @@ function initLinksPreview(){
 			$('#popup').css('top','0');
 			$('#popup').css('left','0');
 		});
-    });
+	});
+}
+function initCardsPreview(){
+	$('.card_snippet_link_without_level').data('level',postSnippetLevel);
+	$('.card_snippet_link_without_level').removeClass('card_snippet_link_without_level');
+	$('.card_snippet_link').hover(function(event){
+		if(!postSnippetAJAXLock&&!$(this).hasClass('used')){
+			postSnippetAJAXLock = true;
+			postSnippetX = event.pageX;
+			postSnippetY = event.pageY;
+			var postID = $(this).data('id');
+			var sectionID = $(this).data('section');
+			var currLevel = $(this).data('level');
+			while(currLevel < postSnippetLevel){
+				$('.post_snippet_card_popup[data-level="'+postSnippetLevel+'"]').remove();
+				postSnippetLevel--;
+			}
+			$('.post_snippet_card_popup[data-level="'+currLevel+'"]').remove();
+			$('.used').removeClass('used');
+			$(this).addClass('used');
+			$.ajax({
+				method:'GET',
+				url:'/ajax/post/'+postID+'/'+sectionID+'/',
+				cache:true,
+				contentType: 'html/text'
+			}).done(function(data){
+				postSnippetAJAXLock = false;
+				if(data.length>0){
+					var time = new Date().getTime();
+					$('body').append('<div id="post_snippet_card_'+time+'" class="post_snippet_card_popup" data-level="'+postSnippetLevel+'">'+data+'</div>');
+					$('#post_snippet_card_'+time).css('top',postSnippetY+10);
+					$('#post_snippet_card_'+time).css('left',postSnippetX+10);
+					$('#post_snippet_card_'+time).css('z-index',1000+postSnippetLevel);
+					postSnippetLevel++;
+					initCards();
+				}
+				postSnippetX = -1;
+				postSnippetY = -1;
+			});
+		}
+		//$('#link_preview_iframe_'+time).bind('load',function(){
+		//$('#popup').show();
+		//});
+	});
+	$('body').bind('click',function(){
+		$('.post_snippet_card_popup').remove();
+		postSnippetX = -1;
+		postSnippetY = -1;
+		postSnippetLevel = 1;
+	});
 }
 function cutContent(obj){
 	var id = $('#'+obj.id).data('id');

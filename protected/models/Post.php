@@ -27,8 +27,11 @@
 			return $res;
 		}
 
-		public function getByRelativeID(int $id = 0, bool $viewHidden = false) : array {
-			$where = "p.`relative_id` = {$id}";
+		public function getByRelativeID(int $id = 0, int $sectionID = 0, bool $viewHidden = false) : array {
+			$where = "
+				p.`relative_id` = {$id} AND
+				p.`section_id` = {$sectionID}
+			";
 			$res = $this->getPosts($where,'',$viewHidden);
 			if(
 				count($res)>0 &&
@@ -53,10 +56,11 @@
 			return $this->getPosts($where,'',$viewHidden);
 		}
 
-		public function getThreadByRelativeID(int $id = 0, bool $viewHidden = false) : array {
+		public function getThreadByRelativeID(int $id = 0, int $sectionID = 0, bool $viewHidden = false) : array {
 			$where = "
 				p.`parent_id` = 0 AND
-				p.`relative_id` = {$id}
+				p.`relative_id` = {$id} AND
+				p.`section_id` = {$sectionID}
 			";
 			return $this->getPosts($where,'',$viewHidden);
 		}
@@ -123,16 +127,26 @@
 			return $posts;
 		}
 
-		public function getReplies(int $id = 0) : array {
+		public function getReplies(int $id = 0, int $sectionID = 0) : array {
 			$id = $id>0?$id:0;
 			$sql = "
 				SELECT DISTINCT
-					p.`relative_id` AS 'id'
-				FROM `posts` AS p
-				LEFT JOIN `post_citation` AS pc ON pc.`post_from_id` = p.`id`
-				WHERE pc.`post_to_id` = {$id};
+					pc.`post_from_id` AS 'id'
+				FROM `post_citation` AS pc
+				WHERE
+					pc.`post_to_id` = {$id} AND
+					pc.`section_id` = {$sectionID};
 			";
-			return $this->select($sql,'post');
+			$res = $this->select($sql,'post');
+			$replies = [];
+			foreach ($res as $reply){
+				$id = is_array($reply)&&isset($reply['id'])?(int)$reply['id']:0;
+				if($id>0){
+					$replies[$id] = $id;
+				}
+			}
+			sort($replies);
+			return $replies;
 		}
 
 		public function getViews(int $id = 0) : int {
@@ -395,6 +409,36 @@
 				$status = $this->query($sql,'post');
 				if(!$status){
 					$err = count($err)>0?$err:['Internal error!'];
+				} else{
+					if($threadID>0){
+						$sql = "
+							UPDATE `posts`
+							SET
+								`upd` = {$created}
+							WHERE `id` = {$threadID};
+						";
+						$this->query($sql,'post');
+					}
+					preg_match_all('/\[Reply\:([0-9]+)\]/su',$text,$postCitationIDArr);
+					$postCitationIDArr = is_array($postCitationIDArr)&&isset($postCitationIDArr[1])&&is_array($postCitationIDArr[1])?$postCitationIDArr[1]:[];
+					$postCitationIDArr = array_unique($postCitationIDArr);
+					foreach ($postCitationIDArr as $postToID){
+						$postToID = (int)$postToID;
+						if($postToID>0){
+							$sql = "
+								INSERT INTO `post_citation` (
+									`post_from_id`,
+									`post_to_id`,
+									`section_id`
+								) VALUES (
+									{$relativeID},
+									{$postToID},
+									{$sectionID}
+								);
+							";
+							$this->query($sql,'post');
+						}
+					}
 				}
 			}
 			return [$status,$err];
@@ -423,7 +467,7 @@
 
 		public function appendMetadata(array $post = []) : array {
 			if(count($post)>0){
-				$post['replies'] = $this->getReplies($post['id']);
+				$post['replies'] = $this->getReplies($post['relative_id'],$post['section_id']);
 				$post['views'] = $this->getViews($post['id']);
 				if(intval($post['parent_id'])<1){
 					$post['posts'] = $this->getListByParentID($post['id']);
@@ -431,8 +475,11 @@
 					$post['count_posts'] = count($post['posts']);
 					$post['count_hidden_posts'] = $post['count_posts'] - 4;
 					$post['count_hidden_posts'] = $post['count_hidden_posts']>0?$post['count_hidden_posts']:0;
+					$post['recent_posts'] = [];
 					if($post['count_hidden_posts'] > 0){
-						$post['recent_posts'] = [];
+						$post['recent_posts'] = array_slice($post['posts'],count(['posts'])-4,4);
+					} else {
+						$post['recent_posts'] = $post['posts'];
 					}
 				}
 				$post['created'] = date('d.m.Y',$post['created']).'&nbsp;'.date('H:i',$post['created']);
@@ -474,6 +521,7 @@
 				$post['text'] = $this->parseLinkShortCode($post['text']);
 				$post['text'] = $this->parseYoutubeShortCode($post['text']);
 				$post['text'] = $this->normalizeText($post['text']);
+				$post['text'] = $this->parseReplyShortCode($post['text'],$post['section_id']);
 				$post['text'] = $this->markup2HTML($post['text']);
 			}
 			return $post;

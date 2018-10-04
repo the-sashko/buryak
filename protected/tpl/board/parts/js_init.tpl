@@ -10,4 +10,8 @@
 <?php
 	endif;
 ?>
+	var postSnippetLevel = 1;
+	var postSnippetAJAXLock = false;
+	var postSnippetX = -1;
+	var postSnippetY = -1;
 </script>

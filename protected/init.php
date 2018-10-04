@@ -202,6 +202,7 @@
 			header("Location: /admin/posts/",true,301);
 			die();
 		}
+
 		/*
 			redirecting from index page admin-panel (for moderators)
 		*/
@@ -211,6 +212,17 @@
 		){
 			header("Location: /mod/posts/",true,301);
 			die();
+		}
+
+		/*
+			redirecting from ajax page with incorrect params
+		*/
+
+		if(
+			preg_match('/^\/ajax\/post\/([0-9]+)\/$/su',$uri)
+		){
+			header("Location: /err/404/",true,301);
+			die();	
 		}
 
 	}
@@ -277,6 +289,7 @@
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/write\/$/su','/post/write/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/error\/([0-9]+)\/$/su','/main/error/$1/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/remove\/([0-9]+)\/$/su','/post/remove/$1/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/ajax\/post\/([0-9]+)\/([0-9]+)\/$/su','/ajax/post/$1_$2/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/([a-z]+)\/$/su','/section/list/$1_1/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/([a-z]+)\/page\-([0-9]+)\/$/su','/section/list/$1_$2/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/([a-z]+)\/([0-9]+)\/$/su','/section/thread/$1_$2/',$_SERVER['REQUEST_URI']);

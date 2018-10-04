@@ -23,6 +23,9 @@
 	</div>
 	<div id="post_content_<?=$post['id'];?>" class="post_content" data-id="<?=$post['id'];?>">
 		<p><?php _part('post/media'); ?><?=$post['text'];?></p>
+		<?php if(count($post['replies'])>0): ?>
+		<p>Replies:<?php foreach($post['replies'] as $replyID): ?> <a href="#" class="card_snippet_link card_snippet_link_without_level" data-id="<?=$replyID;?>" data-section="<?=$post['section_id'];?>">>><?=$replyID;?></a><?php endforeach; ?>
+		<?php endif; ?>
 	</div>
 	<div id="post_additional_actions_<?=$post['id'];?>" class="post_additional_actions" data-id="<?=$post['id'];?>"></div>
 	<?php
@@ -52,7 +55,7 @@
 		):
 	?>
 	<a href="<?=$postURL;?>" class="button">Go to thread<i class="fa fa-arrow-right" aria-hidden="true" style="margin-left:0.5em"></i></a>
-	<?php if(isset($post['count_hidden_posts'])&&$post['count_hidden_posts']>0): ?><span><a href="<?=$postURL;?>"><?=$post['count_hidden_posts'];?> messages hidden</a></span><?php endif;?>
+	<?php if(!$isMainPage && isset($post['count_hidden_posts'])&&$post['count_hidden_posts']>0): ?><span><a href="<?=$postURL;?>"><?=$post['count_hidden_posts'];?> messages hidden</a></span><?php endif;?>
 	<?php
 		endif;
 	?>

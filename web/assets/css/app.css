@@ -637,6 +637,9 @@ textarea:placeholder, input:placeholder{
     width: 250px;
     height: 250px;
 }
+.post_snippet_card_popup{
+    position: absolute;
+}
 /*
 @media(max-height: 500px){
 	#sidebar{

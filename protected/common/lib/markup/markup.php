@@ -68,5 +68,9 @@
 			$text = preg_replace('/\n+/su',"\n",$text);
 			return $text;
 		}
+		public function parseReplyShortCode(string $text = '', int $sectionID = 0) : string {
+			$text = preg_replace('/\[Reply\:([0-9]+)\]/su','<a href="#" class="card_snippet_link card_snippet_link_without_level" data-id="$1" data-section="'.$sectionID.'">>>$1</a>',$text);
+			return $text;
+		}
 	}
 ?>

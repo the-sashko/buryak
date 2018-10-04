@@ -4,5 +4,10 @@
 		'post' => $originalPost,
 		'type' => 'thread'
 	]);
-	_part('post/list');
+	foreach($posts as $post):
+		_part('post/card',0,[
+			'post' => $post,
+			'type' => 'thread'
+		]);
+	endforeach;
 ?>
