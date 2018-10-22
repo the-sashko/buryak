@@ -35,34 +35,34 @@
 				if(!count($section)>0){
 					$this->redirect('/error/404/');
 				}
-					if(
-						$section['status_id'] == 1 ||
-						$section['status_id'] == 2
-					) {
-						if(strlen(trim($text)) > 0 ){
-							if(strlen($text) <=  15000){
-								if($threadID>0){
-									$threadPost = (new Post)->getByID($threadID);
-									if(count($threadPost)>0){
-										$threadReplies = (new Post)->getReplies($threadID);
-										if(count($threadReplies)>=$this->configData['main']['thread_limit']){
-											$err[] = 'Thread have maximum count od replies!';
-										}
-									} else {
-										$err[] = 'Thread is not exist!';
+				if(
+					$section['status_id'] == 1 ||
+					$section['status_id'] == 2
+				) {
+					if(strlen(trim($text)) > 0 ){
+						if(strlen($text) <=  15000){
+							if($threadID>0){
+								$threadPost = (new Post)->getByID($threadID);
+								if(count($threadPost)>0){
+									$threadReplies = (new Post)->getReplies($threadID);
+									if(count($threadReplies)>=$this->configData['main']['thread_limit']){
+										$err[] = 'Thread have maximum count od replies!';
 									}
+								} else {
+									$err[] = 'Thread is not exist!';
 								}
-								$name = strlen(trim($name))>0?$name:$section['default_user_name'];
-								$name = strlen(trim($name))>0?$name:$this->configData['main']['default_user_name'];
-							} else {
-								$err[] = 'Text is so long (more then 15000 characters)!';
 							}
+							$name = strlen(trim($name))>0?$name:$section['default_user_name'];
+							$name = strlen(trim($name))>0?$name:$this->configData['main']['default_user_name'];
 						} else {
-							$err[] = 'Text is empty!';
+							$err[] = 'Text is so long (more then 15000 characters)!';
 						}
 					} else {
-						$err[] = 'You can not post to this section!';
+						$err[] = 'Text is empty!';
 					}
+				} else {
+					$err[] = 'You can not post to this section!';
+				}
 				if(count($err)<1){
 					$tripCode = $makeTripCode?$this->makeTripCode($pswd):'';
 					$pswd = strlen($pswd)>0?$this->userHashPass($pswd):'';
@@ -97,6 +97,19 @@
 
 		public function actionRemove(int $id = 0) : void {
 			die('Comming soon...');
+		}
+
+		public function actionSearch(){
+			$this->commonData['URLPath'] = [
+				0 => [
+					'url' => '#',
+					'title' => "Search"
+				]
+			];
+			$this->commonData['pageTitle'] = 'Search';
+			$this->render('search',[
+				'ajaxSearch' => true
+			]);
 		}
 	}
 ?>

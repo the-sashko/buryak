@@ -114,6 +114,10 @@
 							}
 							$threadReplies = $post->getListByParentID($threadPost['id']);
 							$threadReplies = array_reverse($threadReplies);
+							$threadMaxReplyID = -1;
+							if(count($threadReplies)>0){
+								$threadMaxReplyID = end($threadReplies)['id'];
+							}
 							$this->commonData['pageTitle'] = strlen($threadPost['title'])>1?$threadPost['title']:"Thread #{$threadPost['relative_id']}";
 							$this->commonData['URLPath'] = [
 								0 => [
@@ -127,6 +131,7 @@
 							];
 							$this->render('thread',[
 								'threadID' => $threadPost['id'],
+								'threadMaxReplyID' => $threadMaxReplyID,
 								'section' => $section,
 								'originalPost' => $threadPost,
 								'posts' => $threadReplies

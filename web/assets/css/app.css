@@ -622,6 +622,14 @@ textarea:placeholder, input:placeholder{
     font-weight: normal;
     color: #282;
 }
+.search_form{
+    text-align: center;
+}
+.search_form form{
+    width: 100%;
+    max-width: 500px;
+    display: inline-block;
+}
 .popup{
     z-index: 1000;
     position: absolute;
@@ -636,6 +644,20 @@ textarea:placeholder, input:placeholder{
     display: none;
     width: 250px;
     height: 250px;
+}
+.popup_message{
+    z-index: 10000;
+    position: absolute;
+    top: 80px;
+    right: 100px;
+    font-size: 0.875em;
+    background: #F4FBF4;
+    padding: 0;/* 0.75em;*/
+    border: 1px solid #DADADA;
+    border-radius: 0.5em;
+    cursor: pointer;
+    padding: 1em;
+    display: none;
 }
 .post_snippet_card_popup{
     position: absolute;

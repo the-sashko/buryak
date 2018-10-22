@@ -228,6 +228,10 @@
 	}
 	function rewrite(){
 
+		/* savimg real URL path */
+
+		$_SERVER['REAL_REQUEST_URI'] = $_SERVER['REQUEST_URI'];
+
 		/* removing GET params */
 
 		$_SERVER['REQUEST_URI'] = explode('#',$_SERVER['REQUEST_URI'])[0]; // regular browsers not send part URL after '#' but for security reasons replacing it
@@ -285,11 +289,13 @@
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/page\-([0-9]+)\/$/su','/main/allposts/$1/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/page\/([a-z0-9-]+)\/$/su','/main/page/$1/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/options\/$/su','/main/options/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/search\/$/su','/post/search/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/ban\/$/su','/main/ban/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/write\/$/su','/post/write/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/error\/([0-9]+)\/$/su','/main/error/$1/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/remove\/([0-9]+)\/$/su','/post/remove/$1/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/ajax\/post\/([0-9]+)\/([0-9]+)\/$/su','/ajax/post/$1_$2/',$_SERVER['REQUEST_URI']);
+		$_SERVER['REQUEST_URI'] = preg_replace('/^\/ajax\/thread\/([0-9]+)\/([0-9]+)\/$/su','/ajax/thread/$1_$2/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/([a-z]+)\/$/su','/section/list/$1_1/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/([a-z]+)\/page\-([0-9]+)\/$/su','/section/list/$1_$2/',$_SERVER['REQUEST_URI']);
 		$_SERVER['REQUEST_URI'] = preg_replace('/^\/([a-z]+)\/([0-9]+)\/$/su','/section/thread/$1_$2/',$_SERVER['REQUEST_URI']);

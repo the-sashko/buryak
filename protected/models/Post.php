@@ -91,6 +91,20 @@
 			return $this->getPosts($where,$limit,$viewHidden);
 		}
 
+		public function search(string $keyword = '', int $page = 1, bool $viewHidden = false) : array {
+			$where = "
+				p.`title` LIKE '%{$keyword}%' OR
+				p.`text` LIKE '%{$keyword}%'
+			";
+			$page = $page>0?$page:1;9;
+			$limit = $this->countOnPage;
+			$offset = ($page-1)*$limit;
+			$limit = "
+				LIMIT {$limit}
+				OFFSET {$offset}";
+			return $this->getPosts($where,$limit,$viewHidden);
+		}
+
 		public function getPosts(string $where = '1', string $limit = '', bool $viewHidden = false) : array {
 			$viewHidden = !$viewHidden?'p.`is_active` = 1':'1';
 			$sql = "

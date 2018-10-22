@@ -4,21 +4,45 @@ window.onload = function() {
 
 function appInit(){
 	initCards();
-	//checkAJAX();
 	initScrollButtons();
 	initMenuButton();
 	initPostForm();
-	initAJAX();
+	initAJAXLoad();
+	initAJAXSearch();
+	initThreadUPD();
 }
 
-function initAJAX(){
+function initAJAXLoad(){
 	if(ajaxLoad){
 		ajaxPage++;
+		loadPosts('/'+ajaxAction+'/'+ajaxPage+'/');
 		$(document).bind('scroll',function(){
-			if($(window).scrollTop()+$(window).height()>$(document).height()-500){
+			if($(window).scrollTop()+$(window).height()>$(document).height()-1000){
 				loadPosts('/'+ajaxAction+'/'+ajaxPage+'/');
 			}
 		});
+	}
+}
+
+function initAJAXSearch(){
+	if(ajaxSearch){
+		$('#search_form_input').bind('keyup',function(){
+			AJAXSearch();
+		});
+		searchPage++;
+		/*$(document).bind('scroll',function(){
+			if($(window).scrollTop()+$(window).height()>$(document).height()-1000){
+				//loadSearchResults();
+			}
+		});*/
+	}
+}
+
+function initThreadUPD(){
+	if(currThreadID>0){
+		setInterval(function() {
+			threadUPD();
+		}, 2000);
 	}
 }
 
@@ -113,8 +137,16 @@ function initCardsPreview(){
 				if(data.length>0){
 					var time = new Date().getTime();
 					$('body').append('<div id="post_snippet_card_'+time+'" class="post_snippet_card_popup" data-level="'+postSnippetLevel+'">'+data+'</div>');
-					$('#post_snippet_card_'+time).css('top',postSnippetY+10);
-					$('#post_snippet_card_'+time).css('left',postSnippetX+10);
+					if($('#post_snippet_card_'+time).height()+postSnippetY+10<=$(window).height()){
+						$('#post_snippet_card_'+time).css('top',postSnippetY+10);
+					} else {
+						$('#post_snippet_card_'+time).css('top',postSnippetY-$('#post_snippet_card_'+time).height());
+					}
+					if($('#post_snippet_card_'+time).width()+postSnippetX+10<=$(window).width()){
+						$('#post_snippet_card_'+time).css('left',postSnippetX+10);
+					} else {
+						$('#post_snippet_card_'+time).css('left',postSnippetX-10-$('#post_snippet_card_'+time).width());
+					}
 					$('#post_snippet_card_'+time).css('z-index',1000+postSnippetLevel);
 					postSnippetLevel++;
 					initCards();
@@ -153,7 +185,6 @@ function expandContent(id){
 	$('#post_additional_actions_'+id).hide();
 	$('#post_additional_actions_'+id).html('');
 	$('#post_additional_actions_'+id).click(function(){});
-
 }
 
 function loadPosts(subURI = '/', method = 'GET'){
@@ -178,15 +209,63 @@ function loadPosts(subURI = '/', method = 'GET'){
 	}
 }
 
-function popUpAlert(message = ''){
-	alert(message);
+function AJAXSearch(){
+	if(searchKeyword != $('#search_form_input').val()){
+		var searchKeyword = $('#search_form_input').val();
+		searchPage = 2;
+		$('#search_form_result').html('');
+		console.log(searchKeyword);
+		if(searchKeyword.length > 2){
+			$.post('/ajax/search/',{
+				keyword:searchKeyword
+			}).done(function(data){
+				if(data.length>0){
+					$('#search_form_result').html('');
+					$('#search_form_result').append(data);
+					initCards();
+				}
+			});
+		}
+	}
 }
+
+function popUpAlert(message = ''){
+	$('#popup_message').html(message);
+	$('#popup_message').show();
+}
+
 function checkAJAX(){
 	//$res = reqAJAX('/test/');
 	//console.log($res);
 	//$res = reqAJAX('/test/1/');
 	//console.log($res);
 	//console.log(reqAJAX('/test/1_2_3/'));
+}
+
+function threadUPD(){
+	if(!threadUPDAJAXLock){
+		threadUPDAJAXLock = true;
+		$.ajax({
+			method:'GET',
+			url:'/ajax/thread/'+currThreadID+'/'+currThreadMaxReplyID+'/',
+			cache:true,
+			contentType: 'html/text'
+		}).done(function(data){
+			threadUPDAJAXLock = false;
+			if(data.length>0){
+				popUpAlert('New replies!');
+					//var time = new Date().getTime();
+					//$('body').append('<div id="post_snippet_card_'+time+'" class="post_snippet_card_popup" data-level="'+postSnippetLevel+'">'+data+'</div>');
+					//$('#post_snippet_card_'+time).css('top',postSnippetY+10);
+					//$('#post_snippet_card_'+time).css('left',postSnippetX+10);
+					//$('#post_snippet_card_'+time).css('z-index',1000+postSnippetLevel);
+					//postSnippetLevel++;
+					//initCards();
+			}
+			//postSnippetX = -1;
+			//postSnippetY = -1;
+		});
+	}
 }
 /*
 if(

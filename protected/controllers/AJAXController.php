@@ -13,17 +13,33 @@
 			$this->initModel('post');
 			$posts = (new Post)->getPostList(0,$page);
 			if(count($posts)>0){
-				$this->render('main',[
+				$this->render('ajax/main',[
 					'posts' => $posts,
 					'ajaxTemplate' => true,
 					'isMainPage' => true
 				]);
 			}
-			die('');
+			die();
 		}
 
-		public function actionUpdthread(array $params = []) : void {
-			;
+		public function actionThread(array $params = []) : void {
+			if(count($params)==2){
+				$threadID = (int)$params[0];
+				$postMaxID = (int)$postMaxID[1];
+				if($postMaxID>0&&$postMaxID>0){
+					$this->initModel('post');
+					$posts = (new Post)->getNewPostsByThreadID($threadID,$postMaxID);
+					if(count($post)>0){
+						$this->render('ajax/snippet',[
+							'post' => $post,
+							'ajaxTemplate' => true,
+							'isMainPage' => false
+						]);
+					}
+					die();
+				}
+			}
+			$this->redirect('/error/404/',301);
 		}
 
 		public function actionUpdmetadata(int $timestamp = 0) : void {
@@ -38,7 +54,7 @@
 					$this->initModel('post');
 					$post = (new Post)->getByRelativeID($postID,$sectionID);
 					if(count($post)>0){
-						$this->render('snippet',[
+						$this->render('ajax/snippet',[
 							'post' => $post,
 							'ajaxTemplate' => true,
 							'isMainPage' => false
@@ -46,7 +62,6 @@
 					}
 				}
 			}
-			die('err');
 			$this->redirect('/error/404/',301);
 		}
 
@@ -54,15 +69,22 @@
 			die('Comming soon...');
 		}
 
-		public function actionTest($params = []) : void {
-			var_dump($_REQUEST);
-			$res = [
-				'params' => $params,
-				'get' => $this->get,
-				'post' => $this->post,
-				'request' => $_REQUEST
-			];
-			$this->returnJSON(true,$res);
+		public function actionSearch(){
+			if(
+				isset($this->post['keyword']) &&
+				strlen($this->post['keyword']) > 3
+			){
+				$this->initModel('post');
+				$posts = (new Post)->search($this->post['keyword']);
+				if(count($posts)>0){
+					$this->render('ajax/search',[
+						'posts' => $posts,
+						'ajaxTemplate' => true,
+						'isMainPage' => true
+					]);
+				}
+			}
+			die();
 		}
 	}
 ?>
