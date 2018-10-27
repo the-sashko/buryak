@@ -115,7 +115,7 @@
 		public function checkRights(int $sectionID = 0) : bool {
 			return in_array($sectionID,$this->openSections);
 		}
-		public function list() : array{
+		public function list() : array {
 			$sql = "
 				SELECT
 					u.`id` AS 'id',

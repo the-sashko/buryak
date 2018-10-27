@@ -3,7 +3,7 @@
 		Class for dictionaries
 	*/
 	class Dictionary extends ModelCore{
-		public function getAdminRoles(){
+		public function getAdminRoles() : array {
 			$sql = "
 				SELECT
 					`id` AS 'id',
@@ -12,7 +12,7 @@
 			";
 			return $this->select($sql,'dictionary');
 		}
-		public function getSectionStatuses(){
+		public function getSectionStatuses() : array {
 			$sql = "
 				SELECT
 					`id` AS 'id',
@@ -21,7 +21,7 @@
 			";
 			return $this->select($sql,'dictionary');
 		}
-		public function getMediaTypes(){
+		public function getMediaTypes() : array {
 			$sql = "
 				SELECT
 					`id` AS 'id',
@@ -32,7 +32,7 @@
 			";
 			return $this->select($sql,'dictionary');
 		}
-		public function getShareTypes(){
+		public function getShareTypes() : array {
 			$sql = "
 				SELECT
 					`id` AS 'id',
@@ -41,4 +41,15 @@
 			";
 			return $this->select($sql,'dictionary');
 		}
+		public function getCronTypes() : array {
+			$sql = "
+				SELECT
+					`id` AS 'id',
+					`title` AS 'title',
+					`value` AS 'value'
+				FROM `dictionary_cron_types`;
+			";
+			return $this->select($sql,'dictionary');
+		}
 	}
+?>

@@ -1,5 +1,6 @@
 .vscode/
 .env/
+.ftpconfig
 protected/config/
 protected/res/sessions/
 protectes/res/log/

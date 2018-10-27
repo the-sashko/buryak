@@ -102,6 +102,41 @@
 			die('Comming soon...');
 		}
 
+		public function actionCron() : void {
+			$this->initModel('cron');
+			$this->initModel('dictionary');
+			$cron = new Cron();
+			if(
+				isset($this->post['action']) &&
+				strlen($this->post['action'])>0 &&
+				isset($this->post['value']) &&
+				intval($this->post['value'])>0 &&
+				isset($this->post['type']) &&
+				intval($this->post['type'])>0
+			){
+				$action = $this->post['action'];
+				$value = (int)$this->post['value'];
+				$type = (int)$this->post['type'];
+				if($cron->addJob($action,$value,$type)){
+					$this->redirect('/admin/cron/');
+				}
+			}
+		 	$this->render('admin/cron/list',[
+				'cronJobs' => $cron->getJobs(),
+				'cronActions' => $cron->getActions(),
+				'cronTypes' => (new Dictionary)->getCronTypes(),
+				'formData' => $this->post
+			]);
+		}
+
+		public function actionEditcron(int $id = 0) : void {
+			die('Comming soon...');
+		}
+
+		public function actionDelcron(int $id = 0) : void {
+			die('Comming soon...');
+		}
+
 		public function actionInbox(int $page = 1) : void {
 			die('Comming soon...');
 		}
@@ -157,11 +192,18 @@
 		}
 
 		public function actionSettings() : void {
-			die('Comming soon...');
+			$this->render('admin/settings');
 		}
 
 		public function actionCache() : void {
-			die('Comming soon...');
+			foreach(glob(getcwd().'/../protected/res/cache/db/*') as $cacheDir) {
+				if(is_dir($cacheDir)){
+					foreach(glob("{$cacheDir}/*") as $cacheFile) {
+						unlink($cacheFile);
+					}
+				}
+			}
+			$this->render('admin/cache');
 		}
 
 		public function actionUsers() : void {

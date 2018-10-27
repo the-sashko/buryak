@@ -8,7 +8,7 @@
 
 		use GeoIP;
 
-		public function setID(string $id = '') {
+		public function setID(string $id = '') : void {
 			$_SESSION['user_id'] = $id;
 		}
 
