@@ -1,3 +1,0 @@
-[submodule "wakizashi-toolkit"]
-	path = protected/common/lib
-	url = git@github.com:the-sashko/wakizashi-toolkit.git
