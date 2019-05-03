@@ -1,6 +1,8 @@
 {
-	"sitename" : "The Site",
-	"domain" : "site.com",
-	"email" : "email@email.email",
-	"launch_at" : "2016"
+    "site_name"     : "<SITE_TITLE>",
+    "site_slogan"   : "<SITE_SUBTITLE>",
+    "site_domain"   : "<SITE_DOMAIN>",
+    "site_protocol" : "<SITE_PROTOCOL>",
+    "site_locale"   : "<SITE_LOCATE>",
+    "launch_date"   : "<SITE_CREATION_DATE>"
 }
