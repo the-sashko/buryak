@@ -1,6 +1,9 @@
 {
-	"host":"localhost",
-	"db":"test",
-	"user":"user",
-	"pass":"123"
+    "type"           : "<DATA_BASE_TYPE>",
+    "host"           : "<DATA_BASE_HOST>",
+    "port"           : "<DATA_BASE_POST>",
+    "db"             : "<DATA_BASE_NAME>",
+    "user"           : "<DATA_BASE_USER>",
+    "password"       : "<DATA_BASE_PASSWORD>",
+    "cache_provider" : "<DATA_BASE_CACHE_PROVIDER>"
 }
