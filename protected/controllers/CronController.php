@@ -1,15 +1,14 @@
 <?php
-/**
- * Cron Controller Class
- */
 class CronController extends CronControllerCore
 {
-    /**
-     * Test Cron Job
-     */
-    public function jobTest() : void
+    public function jobShare() : void
     {
-        $this->initPlugin('logger')->log('Cron Test Job Executed', 'test');
+        //To-Do
+    }
+
+    public function jobSitemap() : void
+    {
+        //To-Do
     }
 }
 ?>
