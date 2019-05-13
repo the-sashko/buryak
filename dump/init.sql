@@ -93,6 +93,8 @@ CREATE TABLE "public"."admin_users" (
         NOT NULL,
     "pswd_hash" character varying(128)
         NOT NULL,
+    "web_token_hash" character varying(128)
+        NOT NULL,
     "role" admin_roles
         NOT NULL,
     "is_active" boolean
@@ -104,6 +106,12 @@ CREATE TABLE "public"."admin_users" (
         UNIQUE ("email", "pswd_hash"),
     CONSTRAINT "admin_users_email_pswd_hash_is_active"
         UNIQUE ("email", "pswd_hash", "is_active"),
+    CONSTRAINT "admin_users_id_web_token_hash"
+        UNIQUE ("id", "web_token_hash"),
+    CONSTRAINT "admin_users_id_web_token_hash_is_active"
+        UNIQUE ("id", "web_token_hash", "is_active"),
+    CONSTRAINT "admin_users_id_is_active"
+        UNIQUE ("id", "is_active"),
     CONSTRAINT "admin_users_id"
         PRIMARY KEY ("id"),
     CONSTRAINT "admin_users_name"
@@ -182,6 +190,8 @@ CREATE TABLE "public"."sessions" (
     "is_ban" boolean
         DEFAULT false
         NOT NULL,
+    "user_data" json
+        NULL,
     "cdate" timestamp
         DEFAULT now()
         NOT NULL,
@@ -403,6 +413,10 @@ CREATE INDEX "admin_users_is_active"
 CREATE INDEX "admin_users_pswd_hash"
     ON "public"."admin_users"
     USING btree ("pswd_hash");
+
+CREATE INDEX "admin_users_web_token_hash_is_active"
+    ON "public"."admin_users"
+    USING btree ("web_token_hash", "is_active");
 
 CREATE INDEX "admin_users_role"
     ON "public"."admin_users"

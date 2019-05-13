@@ -1,4 +1,4 @@
-<?php
+/storage/web/fajno.in/www/protected/core/storage/web/fajno.in/www/protected/core<?php
 class AjaxController extends ControllerCore
 {
     public function actionPostlist() : void
