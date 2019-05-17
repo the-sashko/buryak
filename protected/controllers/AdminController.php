@@ -3,70 +3,68 @@ class AdminController extends ControllerCore
 {
     public $templaterScope = 'admin';
 
+    public function __construct()
+    {
+        parent::__construct();
+
+        $auth = $this->initModel('auth');
+        $serverInfo =  $this->initPlugin('serverInfo');
+
+        if (
+            !$auth->isSignedIn() &&
+            $serverInfo->get('REQUEST_URI') != '/admin/login/'
+        ) {
+            $this->redirect('/admin/login/');
+        }
+    }
+
     public function actionLogin() : void
     {
-        $err      = [];
-        $formData = [];
-        $auth     = new Auth();
+        if ($this->initModel('auth')->isSignedIn()) {
+            $this->redirect('/admin/post/');
+        }
+        
+        $formData = $this->post;
 
-        if ($auth->isAdmin() || $auth->isMod()) {
-            $this->redirect("/{$scope}/posts/");
+        if (!count($formData) > 0) {
+            $this->render('login', [
+                'formData' => [],
+                'err'      => []
+            ]);
         }
 
-        if(
-            isset($this->post['email']) &&
-            isset($this->post['pswd']) &&
-            preg_match('/^(.*?)@(.*?)\.(.*?)$/su',$this->post['email']) &&
-            strlen($this->post['pswd']) > 0
-        ){
-            $formData = $this->post;
-            $pswdHash = $this->adminHashPass($this->post['pswd']);
-
-            if ($auth->login($this->post['email'], $pswdHash)) {
-                $tokenHash = $this->adminHashToken($this->post['email']);
-
-                if($auth->setToken($this->post['email'], $tokenHash)){
-                    $this->redirect("/{$scope}/posts/");
-                } else {
-                    $err[] = 'Internal server error!';
-                }
-            } else {
-                $err[] = 'Invalid login or password!';
+        if ($this->_checkUserCredentials()) {
+            if (!$this->_signIn()) {
+                throw new Exception('Internal Error');
             }
+
+            $this->redirect('/admin/post/');
         }
 
         $this->render('login', [
-            'purePage' => TRUE,
             'formData' => $formData,
-            'err'      => $err,
-            'scope'    => $scope
+            'err'      => 'Invalid Login Or Password'
         ]);
     }
 
     public function actionLogout() : void
     {
-        (new Auth)->logout();
+        $this->initModel('auth')->signout();
 
-        $this->redirect("/{$scope}/login/");
+        $this->redirect("/admin/login/");
     }
 
-    public function actionPosts() : void
+    public function actionPost() : void
     {
-        $this->initModel('post');
-
-        $posts = (new Post)->getPostList(0, $this->page, TRUE);
+        $posts = $this->initModel('post')->getList($this->page, TRUE);
 
         if (count($posts) < 1 && $this->page != 1) {
             $this->page --;
-            $this->redirect('/page-'.$this->page.'/');
+            $this->redirect('/admmin/page-'.$this->page.'/');
         }
 
-        $postPageCount = (new Post)->getThreadPageCount(0, TRUE);
-
         $this->render('post/list', [
-            'posts'     => $posts,
-            'pageCount' => $postPageCount,
-            'currPage'  => $this->page
+            'posts' => $posts
         ]);
     }
 
@@ -82,7 +80,7 @@ class AdminController extends ControllerCore
 
     public function actionSpam() : void
     {
-        $this->render('admin/spam');
+        //To-Do
     }
 
     public function actionBan() : void
@@ -102,34 +100,7 @@ class AdminController extends ControllerCore
 
     public function actionCron() : void
     {
-        $this->initModel('cron');
-        $this->initModel('dictionary');
-
-        $cron = new Cron();
-
-        if(
-            isset($this->post['action']) &&
-            strlen($this->post['action']) > 0 &&
-            isset($this->post['value']) &&
-            intval($this->post['value']) > 0 &&
-            isset($this->post['type']) &&
-            intval($this->post['type']) > 0
-        ){
-            $action = $this->post['action'];
-            $value  = (int) $this->post['value'];
-            $type   = (int) $this->post['type'];
-
-            if ($cron->addJob($action, $value, $type)) {
-                $this->redirect('/admin/cron/');
-            }
-        }
-
-        $this->render('admin/cron/list', [
-            'cronJobs'    => $cron->getJobs(),
-            'cronActions' => $cron->getActions(),
-            'cronTypes'   => (new Dictionary)->getCronTypes(),
-            'formData'    => $this->post
-        ]);
+        //To-Do
     }
 
     public function actionEditcron() : void
@@ -142,99 +113,28 @@ class AdminController extends ControllerCore
         //To-Do
     }
 
-    public function actionInbox() : void
+    public function actionSection() : void
     {
-        //To-Do
-    }
-
-    public function actionMessages() : void
-    {
-        //To-Do
-    }
-
-    public function actionSections() : void
-    {
-        $this->initModel('Section');
-        $this->initModel('Dictionary');
-
-        $succ     = FALSE;
-        $err      = [];
         $formData = $this->post;
-        $section  = new Section();
+        $sectionModel = $this->initModel('section');
+        $sectionList = $sectionModel->getList($this->page, TRUE);
 
-        if(
-            !isset($this->post['title']) ||
-            !strlen($this->post['title']) > 0 ||
-            !isset($this->post['name']) ||
-            !strlen($this->post['name']) > 0 ||
-            !isset($this->post['desription']) ||
-            !strlen($this->post['desription']) > 0
-        ){
-            $this->render('admin/section/list', [
-                'sections'       => $section->list(),
-                'statuses'       => (new Dictionary)->getSectionStatuses(),
-                'err'            => [],
-                'succ'           => FALSE,
-                'successMessage' => '',
-                'formData'       => $formData
+        if (!count($formData) > 0) {
+            $this->render('section/list', [
+                'sections' => $sectionList,
+                'err'      => [],
+                'succ'     => FALSE,
+                'formData' => []
             ]);
         }
 
-        $title           = $this->post['title'];
-        $name            = $this->post['name'];
-        $desription      = $this->post['desription'];
-        $defaultUserName = '';
-        $ageRestriction  = 0;
-        $statusID        = 1;
-        $sort            = 0;
+        list($status, $err) = $sectionModel->create($formData);
 
-        if (
-            isset($this->post['default_user_name']) &&
-            strlen($this->post['default_user_name']) > 0
-        ) {
-            $defaultUserName = $this->post['default_user_name'];
-        }
-
-        if (
-            isset($this->post['age_restriction']) &&
-            intval($this->post['age_restriction']) > 0
-        ) {
-            $ageRestriction = (int) $this->post['age_restriction'];
-        }
-
-        if (
-            isset($this->post['status_id']) &&
-            intval($this->post['status_id']) > 0
-        ) {
-            $statusID = (int) $this->post['status_id'];
-        }
-
-        if (isset($this->post['sort']) && intval($this->post['sort']) > 0) {
-            $sort = (int) $this->post['sort'];
-        }
-
-        list($status, $err) = $section->create(
-            $name,
-            $title,
-            $desription,
-            $defaultUserName,
-            $ageRestriction,
-            $statusID,
-            $sort
-        );
-
-        if ($status) {
-            $succ     = TRUE;
-            $formData = [];
-        }
-
-        $this->render('admin/section/list', [
-            'sections'       => $section->list(),
-            'statuses'       => (new Dictionary)->getSectionStatuses(),
-            'err'            => $err,
-            'succ'           => $succ,
-            'successMessage' => 'Section created!',
-            'formData'       => $formData
+        $this->render('section/list', [
+            'sections' => $sectionList,
+            'err'      => $err,
+            'succ'     => $status,
+            'formData' => $formData
         ]);
     }
 
@@ -253,30 +153,14 @@ class AdminController extends ControllerCore
         $this->render('admin/settings');
     }
 
-    public function actionCache() : void {
-        foreach (glob(getcwd().'/../protected/res/cache/db/*') as $cacheDir) {
-            if (!is_dir($cacheDir)) {
-                continue;
-            }
-
-            foreach (glob("{$cacheDir}/*") as $cacheFile) {
-                unlink($cacheFile);
-            }
-        }
-
-        $this->render('admin/cache');
+    public function actionCache() : void
+    {
+        //To-Do
     }
 
-    public function actionUsers() : void
+    public function actionUser() : void
     {
-        $this->initModel('Dictionary');
-
-        $auth = new Auth();
-
-        $this->render('admin/user/list', [
-            'users' => $auth->list(),
-            'roles' => (new Dictionary)->getAdminRoles()
-        ]);
+        //To-Do
     }
 
     public function actionEdituser() : void
@@ -286,23 +170,24 @@ class AdminController extends ControllerCore
 
     public function actionDeluser() : void
     {
-        $id = (int) $URLParam;
-
-        if ((new Auth)->remove($id)) {
-            $this->redirect('/admin/user/');
-        }
-
-        throw new Exception('Can Not Remove Admin User');
+        //To-Do
     }
 
-    public function actionRestore() : void
+    public function actionPassword() : void
     {
         //To-Do
     }
 
-    public function actionSetpassword() : void
+    private function _checkUserCredentials() : bool
     {
         //To-Do
+        return FALSE;
+    }
+
+    private function _signIn() : bool
+    {
+        //To-Do
+        return FALSE;
     }
 }
 ?>

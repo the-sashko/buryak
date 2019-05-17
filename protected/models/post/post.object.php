@@ -1,32 +1,155 @@
 <?php
 /**
- * ModelObject Class For Example Model
+ * ModelObject Class For Post Model
  */
-class ExampleObject extends ModelObjectCore
+class PostObject extends ModelObjectCore
 {
     /**
      * @var string Default Data Base Table
      */
-    public $defaultTableName = 'example';
+    public $defaultTableName = 'posts';
 
     /**
-     * @var string Data Base Table For Example Data
+     * @var string Data Base Table For Post Data
      */
-    public $tableExample = 'example';
+    public $tablePosts = 'posts';
 
     /**
-     * @var string Data Base Queries Cache Scope
+     * @var string Data Base Queries Post Scope
      */
-    public $scope = 'example';
+    public $scope = 'post';
 
     /**
-     * Geting Data From Example Table
-     *
-     * @return array List Of Example Data
+     * @var int Count Items On Page
      */
-    public function getAllExamples() : array
+    public $itemsOnPage = 10;
+
+    public function getAllPosts(
+        int  $page        = 1,
+        bool $onlyThreads = FALSE,
+        bool $viewHidden  = FALSE
+    ) : array
     {
-        return $this->getAll($this->tableExample);
+        //TO-DO
+        return [];
+    }
+
+    public function getCountAllPosts(
+        bool $onlyThreads = FALSE,
+        bool $viewHidden  = FALSE
+    ) : int
+    {
+        //TO-DO
+        return 0;
+    }
+
+    public function getPostByID(
+        int  $id         = 0,
+        bool $onlyThread = FALSE,
+        bool $viewHidden = FALSE
+    ) : array
+    {
+        //TO-DO
+        return [];
+    }
+
+    public function getPostByRelativeCode(
+        int  $relativeCode = 0,
+        bool $onlyThread   = FALSE,
+        int  $sectionID    = 0,
+        bool $viewHidden   = FALSE
+    ) : array
+    {
+        //TO-DO
+        return [];
+    }
+
+    public function getPostsByParentID(
+        int  $id         = 0,
+        bool $viewHidden = FALSE
+    ) : array
+    {
+        //TO-DO
+        return [];
+    }
+
+    public function getCountPostsByParentID(int $id = 0) : int
+    {
+        //TO-DO
+        return 0;
+    }
+
+    public function getPostsBySectionID(
+        int  $sectionID   = 0,
+        int  $page        = 0,
+        bool $onlyThreads = FALSE,
+        bool $viewHidden  = FALSE
+    ) : array
+    {
+        //TO-DO
+        return [];
+    }
+
+    public function getCountPostsBySectionID(
+        int  $sectionID   = 0,
+        bool $onlyThreads = FALSE,
+        bool $viewHidden  = FALSE
+    ) : int
+    {
+        //TO-DO
+        return 0;
+    }
+
+    public function getPostsByKeyword(
+        string $keyword = '',
+        int    $page    = 1
+    ) : array
+    {
+        //TO-DO
+        return [];
+    }
+
+    public function getPostsCountByKeyword(string $keyword) : int
+    {
+        //TO-DO
+        return 0;
+    }
+
+    public function getMaxPostRelativeCode(int $sectionID = 0) : int
+    {
+        //TO-DO
+        return 0;
+    }
+
+    public function addPost(
+        int    $relativeCode = 0,
+        string $username     = '',
+        string $password     = '',
+        string $tripCode     = '',
+        int    $sectionID    = 0,
+        int    $threadID     = 0,
+        string $title        = '',
+        string $text         = '',
+        string $mediaName    = '',
+        string $mediaPath    = '',
+        string $mediaType    = '',
+        string $ipHash       = ''
+    ) : bool
+    {
+        //TO-DO
+        return FALSE;
+    }
+
+    public function getRelativeCodeByID(int $id = 0) : int
+    {
+        //TO-DO
+        return 0;
+    }
+
+    public function removePostByID(int $id = 0) : bool
+    {
+        //TO-DO
+        return FALSE;
     }
 }
 ?>

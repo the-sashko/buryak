@@ -15,6 +15,41 @@ class PostVO extends ValuesObject
     const MEDIA_NAME_MAX_LENGTH = 32;
 
     /**
+     * @var int Max User Name Length
+     */
+    const MAX_USERNAME_LENGTH = 128;
+
+    /**
+     * @var int Max Title Length
+     */
+    const MAX_TITLE_LENGTH = 128;
+
+    /**
+     * @var int Max Text Length
+     */
+    const MAX_TEXT_LENGTH = 15000;
+
+    /**
+     * @var int Max Replies In Thread
+     */
+    const MAX_REPLIES_COUNT = 500;
+
+    /**
+     * @var int Minimal Password Length
+     */
+    const MIN_PASSWORD_LENGTH = 8;
+
+    /**
+     * @var string Redirect To Thread After Post Submit
+     */
+    const REDIRECT_TYPE_THREAD = 'thread';
+
+    /**
+     * @var string Redirect To Section After Post Submit
+     */
+    const REDIRECT_TYPE_SECTION = 'section';
+
+    /**
      * Get Post ID
      *
      * @return int Post ID

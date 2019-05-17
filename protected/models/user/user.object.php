@@ -1,32 +1,63 @@
 <?php
 /**
- * ModelObject Class For Example Model
+ * ModelObject Class For User Model
  */
-class ExampleObject extends ModelObjectCore
+class UserObject extends ModelObjectCore
 {
     /**
      * @var string Default Data Base Table
      */
-    public $defaultTableName = 'example';
+    public $defaultTableName = 'users';
 
     /**
-     * @var string Data Base Table For Example Data
+     * @var string Data Base Table For User Data
      */
-    public $tableExample = 'example';
+    public $tableUsers = 'users';
 
     /**
-     * @var string Data Base Queries Cache Scope
+     * @var string Data Base Queries User Scope
      */
-    public $scope = 'example';
+    public $scope = 'user';
 
-    /**
-     * Geting Data From Example Table
-     *
-     * @return array List Of Example Data
-     */
-    public function getAllExamples() : array
+    public function getAllUsers(int $page = 1) : array
     {
-        return $this->getAll($this->tableExample);
+        //To-Do
+        return [];
+    }
+
+    public function getCountAllUsers() : int
+    {
+        //To-Do
+        return 0;
+    }
+
+    public function getUserByID(int $userID = 0) : int
+    {
+        //To-Do
+        return 0;
+    }
+
+    public function getUserByLogin(string $login = '') : array
+    {
+        //To-Do
+        return [];
+    }
+
+    public function addUser(
+        string $name     = '',
+        string $email    = '',
+        string $role     = '',
+        bool   $isActive = FALSE
+    ) : bool
+    {
+        //To-Do
+        return FALSE;
+    }
+
+    public function removePostByID(int $userID = 0) : bool
+    {
+        //To-Do
+        return FALSE;
     }
 }
 ?>

@@ -10,5 +10,15 @@ class CronController extends CronControllerCore
     {
         //To-Do
     }
+
+    public function jobRemoveBanUsers() : void
+    {
+        //To-Do
+    }
+
+    public function jobAutoBanUsers() : void
+    {
+        //To-Do
+    }
 }
 ?>

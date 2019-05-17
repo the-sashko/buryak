@@ -212,14 +212,14 @@ CREATE TABLE "public"."ip2session" (
         NOT NULL,
     "id_session" integer
         NOT NULL,
-    "ip" character varying(40)
+    "ip_hash" character varying(64)
         NOT NULL,
     CONSTRAINT "ip2session_id"
         PRIMARY KEY ("id"),
     CONSTRAINT "ip2session_id_session_ip"
         UNIQUE ("id_session", "ip"),
     CONSTRAINT "ip2session_ip"
-        UNIQUE ("ip"),
+        UNIQUE ("ip_hash"),
     CONSTRAINT "ip2session_id_session_fkey"
         FOREIGN KEY (id_session)
         REFERENCES sessions(id)
@@ -284,7 +284,7 @@ CREATE TABLE "public"."posts" (
     "id_section" integer
         NOT NULL,
     "id_parent" integer,
-    "title" character varying(255)
+    "title" character varying(128)
         NOT NULL,
     "text" text
         NOT NULL,

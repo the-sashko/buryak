@@ -1,32 +1,80 @@
 <?php
 /**
- * ModelObject Class For Example Model
+ * ModelObject Class For Section Model
  */
-class ExampleObject extends ModelObjectCore
+class SectionObject extends ModelObjectCore
 {
     /**
      * @var string Default Data Base Table
      */
-    public $defaultTableName = 'example';
+    public $defaultTableName = 'sections';
 
     /**
-     * @var string Data Base Table For Example Data
+     * @var string Data Base Table For Sections
      */
-    public $tableExample = 'example';
+    public $tableSections = 'sections';
 
     /**
-     * @var string Data Base Queries Cache Scope
+     * @var string Data Base Queries Sections Scope
      */
-    public $scope = 'example';
+    public $scope = 'sections';
 
     /**
-     * Geting Data From Example Table
-     *
-     * @return array List Of Example Data
+     * @var int Count Items On Page
      */
-    public function getAllExamples() : array
+    public $itemsOnPage = 25;
+
+    public function getAllSection(
+        int  $page       = 1,
+        bool $viewHidden = FALSE
+    ) : array
     {
-        return $this->getAll($this->tableExample);
+        //To-Do
+        return [];
     }
+
+    public function getCountAllSection(bool $viewHidden = FALSE) : int
+    {
+        //To-Do
+        return 0;
+    }
+
+    public function getSectionByID(
+        int  $sectionID  = 1,
+        bool $viewHidden = FALSE
+    ) : array
+    {
+        //To-Do
+        return [];
+    }
+
+    public function getSectionBySlug(
+        string $sectionSlug = '',
+        bool   $viewHidden  = FALSE
+    ) : array
+    {
+        //To-Do
+        return [];
+    }
+
+    public function addSection(
+        string $slug           = '',
+        string $title          = '',
+        string $desription     = '',
+        int    $ageRestriction = 0,
+        string $status         = '',
+        int    $sort           = 0
+    ) : bool
+    {
+        //To-Do
+        return FALSE;
+    }
+
+    public function removeSectionByID(int $sectionID = 0) : bool
+    {
+        //To-Do
+        return FALSE;
+    }
+
 }
 ?>

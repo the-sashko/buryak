@@ -1,493 +1,310 @@
 <?php
 class Post extends ModelCore
 {
-    use Image;
-    use Markup;
-    use Youtube;
-    use Link;
-    use Security;
-    
-    public $countOnPage = 10;
-
-    public function getByID(int $id = 0, bool $viewHidden = false) : array
-    {
-        $where = "p.`id` = {$id}";
-        $res = $this->getPosts($where, '', $viewHidden);
-        if(
-            count($res)>0 &&
-            is_array($res[0]) &&
-            count($res[0]) > 0
-        ){
-            $res = $res[0];
-        } else {
-            $res = [];
-        }
-
-        return $res;
-    }
-
-    public function getByRelativeID(
-    	int  $id         = 0,
-    	int  $sectionID  = 0,
-    	bool $viewHidden = false
+    public function getAll(
+        int  $page       = 1,
+        bool $onlyThreads = FALSE,
+        bool $viewHidden = FALSE
     ) : array
     {
-        $where = "
-            p.`relative_id` = {$id} AND
-            p.`section_id` = {$sectionID}
-        ";
+        $posts = $this->object->getAllPosts($page, $onlyThreads, $viewHidden);
 
-        $res = $this->getPosts($where, '', $viewHidden);
-        if (count($res) > 0 && is_array($res[0]) && count($res[0]) > 0) {
-            $res = $res[0];
+        if (count($posts) < 1) {
+            return NULL;
         }
 
-        return $res;
+        return $this->getVOArray($posts);
     }
 
-    public function getListByParentID(
-    	int  $id         = 0,
-    	bool $viewHidden = false
+    public function getCountAll(
+        bool $onlyThreads = FALSE,
+        bool $viewHidden = FALSE
+    ) : int
+    {
+        return $this->object->getCountAllPosts($onlyThreads, $viewHidden);
+    }
+
+    public function getAllThreads(
+        int  $page       = 0,
+        bool $viewHidden = FALSE
     ) : array
     {
-        $where = "p.`parent_id` = {$id}";
-
-        return $this->getPosts($where, '', $viewHidden);
+        return $this->getAll($page, TRUE, $viewHidden);
     }
 
-    public function getThreadByID(int $id = 0, bool $viewHidden = false) : array {
-        $where = "
-            p.`parent_id` = 0 AND
-            p.`id` = {$id}
-        ";
-        return $this->getPosts($where,'',$viewHidden);
+    public function getCountAllThreads(bool $viewHidden = FALSE) : int
+    {
+        return $this->getCountAll(TRUE, $viewHidden);
     }
 
-    public function getThreadByRelativeID(int $id = 0, int $sectionID = 0, bool $viewHidden = false) : array {
-        $where = "
-            p.`parent_id` = 0 AND
-            p.`relative_id` = {$id} AND
-            p.`section_id` = {$sectionID}
-        ";
-        return $this->getPosts($where,'',$viewHidden);
-    }
+    public function getByID(
+        int  $postID     = 0,
+        bool $onlyThreads = FALSE,
+        bool $viewHidden = FALSE
+    ) : PostVO
+    {
+        $postData = $this->object->getPostByID($postID, $onlyThreads, $viewHidden);
 
-    public function getPostList(int $sectionID = 0, int $page = 1, bool $viewHidden = false) : array {
-        $where = $sectionID>0?"`section_id` = {$sectionID}":'1';
-        $page = $page>0?$page:1;
-        $limit = $this->countOnPage;
-        $offset = ($page-1)*$limit;
-        $limit = "
-            LIMIT {$limit}
-            OFFSET {$offset}";
-        return $this->getPosts($where,$limit,$viewHidden);
-    }
-
-    public function getThreadList(int $sectionID = 0, int $page = 1, bool $viewHidden = false) : array {
-        $where = $sectionID>0?"`section_id` = {$sectionID}":'1';
-        $where = "
-            {$where} AND
-            p.`parent_id` = 0
-        ";
-        $page = $page>0?$page:1;
-        $limit = $this->countOnPage;
-        $offset = ($page-1)*$limit;
-        $limit = "
-            LIMIT {$limit}
-            OFFSET {$offset}";
-        return $this->getPosts($where,$limit,$viewHidden);
-    }
-
-    public function search(string $keyword = '', int $page = 1, bool $viewHidden = false) : array {
-        $where = "
-            p.`title` LIKE '%{$keyword}%' OR
-            p.`text` LIKE '%{$keyword}%'
-        ";
-        $page = $page>0?$page:1;9;
-        $limit = $this->countOnPage;
-        $offset = ($page-1)*$limit;
-        $limit = "
-            LIMIT {$limit}
-            OFFSET {$offset}";
-        return $this->getPosts($where,$limit,$viewHidden);
-    }
-
-    public function getPosts(string $where = '1', string $limit = '', bool $viewHidden = false) : array {
-        $viewHidden = !$viewHidden?'p.`is_active` = 1':'1';
-        $sql = "
-            SELECT
-                p.`id` AS 'id',
-                p.`relative_id` AS 'relative_id',
-                s.`id` AS 'section_id',
-                s.`name` AS 'section_name',
-                s.`title` AS 'section_title',
-                p.`parent_id` AS 'parent_id',
-                p.`title` AS 'title',
-                p.`text` AS 'text',
-                p.`media_path` AS 'media_path',
-                p.`media_name` AS 'media_name',
-                p.`media_type_id` AS 'media_type_id',
-                p.`pswd` AS 'pswd',
-                p.`username` AS 'username',
-                p.`tripcode` AS 'tripcode',
-                p.`created` AS 'created',
-                p.`upd` AS 'upd',
-                p.`ip` AS 'ip',
-                p.`is_active` AS 'is_active'
-            FROM `posts` AS p
-            LEFT JOIN `sections` AS s ON s.`id` = p.`section_id`
-            WHERE
-                {$viewHidden} AND
-                {$where}
-            ORDER BY p.`upd` DESC
-            {$limit};
-        ";
-        $posts = $this->select($sql,'post');
-        $posts = array_map([$this,'appendMetadata'], $posts);
-        $posts = array_map([$this,'formatText'], $posts);
-        return $posts;
-    }
-
-    public function getReplies(int $id = 0, int $sectionID = 0) : array {
-        $id = $id>0?$id:0;
-        $sql = "
-            SELECT DISTINCT
-                pc.`post_from_id` AS 'id'
-            FROM `post_citation` AS pc
-            WHERE
-                pc.`post_to_id` = {$id} AND
-                pc.`section_id` = {$sectionID};
-        ";
-        $res = $this->select($sql,'post');
-        $replies = [];
-        foreach ($res as $reply){
-            $id = is_array($reply)&&isset($reply['id'])?(int)$reply['id']:0;
-            if($id>0){
-                $replies[$id] = $id;
-            }
+        if (count($postData) < 1) {
+            return NULL;
         }
-        sort($replies);
-        return $replies;
+
+        return $this->getVO($postData);
     }
 
-    public function getViews(int $id = 0) : int {
-        return 0;
+    public function getThreadByID(
+        int  $postID     = 0,
+        bool $viewHidden = FALSE
+    ) : PostVO
+    {
+        return $this->getByID($postID, TRUE, $viewHidden);
     }
 
-    public function setViews(int $id = 0) : bool {
-        return true;
-    }
+    public function getByRelativeCode(
+        int  $relativeCode = 0,
+        bool $onlyThreads   = FALSE,
+        int  $sectionID    = 0,
+        bool $viewHidden   = FALSE
+    ) : PostVO
+    {
+        $postData = $this->object->getPostByRelativeCode(
+            $relativeCode,
+            $onlyThreads,
+            $sectionID,
+            $viewHidden
+        );
 
-    public function getPostPageCount(int $sectionID = 0, bool $viewHidden = false) : int {
-        $where = $sectionID>0?"`section_id` = {$sectionID}":'1';
-        $countPosts = $this->countPosts($where,$viewHidden);
-        $countPages = intval($countPosts/$this->countOnPage);
-        if($countPages*$this->countOnPage<$countPosts){
-            $countPages++;
+        if (count($postData) < 1) {
+            return NULL;
         }
-        return $countPages;
+
+        return $this->getVO($postData);
     }
 
-    public function getThreadPageCount(int $sectionID = 0, bool $viewHidden = false) : int {
-        $where = $sectionID>0?"p.`section_id` = {$sectionID}":'1';
-        $where = "
-            {$where} AND
-            p.`parent_id` = 0
-        ";
-        $countThreads = $this->countPosts($where,$viewHidden);
-        $countPages = intval($countThreads/$this->countOnPage);
-        if($countPages*$this->countOnPage<$countThreads){
-            $countPages++;
+    public function getThreadByRelativeCode(
+        int  $relativeCode = 0,
+        int  $sectionID    = 0,
+        bool $viewHidden   = FALSE
+    ) : PostVO
+    {
+        return $this->getByRelativeCode($relativeCode, TRUE, $sectionID, $viewHidden);
+    }
+
+    public function getByParentID(
+        int  $parentID   = 0,
+        bool $viewHidden = FALSE
+    ) : array
+    {
+        $posts = $this->object->getPostsByParentID($parentID, $viewHidden);
+
+        if (count($posts) < 1) {
+            return [];
         }
-        return $countPages;
+
+        return $this->getVOArray($posts);
     }
 
-    public function countPosts(string $where = '1', bool $viewHidden = false) : int {
-        $viewHidden = !$viewHidden?'p.`is_active` = 1':'1';
-        $sql = "
-            SELECT
-                COUNT(p.`id`) AS 'count'
-            FROM `posts` AS p
-            WHERE
-                {$viewHidden} AND
-                {$where};
-        ";
-        $res = $this->select($sql,'post');
-        if(
-            count($res)>0 &&
-            is_array($res[0]) &&
-            isset($res[0]['count']) &&
-            intval($res[0]['count']) > 0
-        ){
-            return (int)$res[0]['count'];
-        } else {
+    public function getCountByParentID(int $parentID = 0) : int
+    {
+        return $this->object->getCountPostsByParentID($parentID);
+    }
+
+    public function getBySectionID(
+        int  $sectionID   = 0,
+        int  $page        = 1,
+        bool $onlyThreads = FALSE,
+        bool $viewHidden  = FALSE
+    ) : array
+    {
+        $posts = $this->object->getPostsBySectionID(
+            $sectionID,
+            $page,
+            $onlyThreads,
+            $viewHidden
+        );
+
+        if (count($posts) < 1) {
+            return [];
+        }
+
+        return $this->getVOArray($posts);
+    }
+
+    public function getCountBySectionID(
+        int  $sectionID   = 0,
+        bool $onlyThreads = FALSE,
+        bool $viewHidden  = FALSE
+    ) : int
+    {
+        return $this->object->getCountPostsBySectionID(
+            $sectionID,
+            $onlyThreads,
+            $viewHidden
+        );
+    }
+
+    public function getThreadsBySectionID(
+        int  $sectionID  = 0,
+        int  $page       = 1,
+        bool $viewHidden = FALSE
+    ) : array
+    {
+        return $this->getThreadsBySectionID(
+            $sectionID,
+            $page,
+            TRUE,
+            $viewHidden
+        );
+    }
+
+    public function getCountThreadsBySectionID(
+        int  $sectionID  = 0,
+        bool $viewHidden = FALSE
+    ) : int
+    {
+        return $this->getCountBySectionID($sectionID, TRUE, $viewHidden);
+    }
+
+    public function search(string $keyword = '', int $page = 1) : array
+    {
+        if (strlen($keyword) < 3) {
+            return [];
+        }
+
+        $posts = $this->object->getPostsByKeyword($keyword, $page);
+
+        if (count($posts) < 1) {
+            return [];
+        }
+
+        return $this->getVOArray($posts);
+    }
+
+    public function countSearch(string $keyword = '') : int
+    {
+        if (strlen($keyword) < 3) {
             return 0;
         }
+        
+        return $this->object->getPostsCountByKeyword($keyword);
     }
 
-    public function getNewPostsByThreadID(int $threadID = 0, int $offsetPostID = 0, bool $viewHidden = false) : array {
-        $where = "
-            p.`parent_id` = {$threadID},
-            p.`id` > {$offsetPostID}
-        ";
-        return $this->getPosts($where,'',$viewHidden);
-    }
-
-    public function getNewPosts(int $sectionID = 0, int $offsetPostID = 0, bool $viewHidden = false) : array {
-        $where = "
-            p.`section_id` = {$sectionID},
-            p.`id` > {$offsetPostID}
-        ";
-        return $this->getPosts($where,'',$viewHidden);
-    }
-
-    public function getNewThreads(int $sectionID = 0, int $offsetPostID = 0, bool $viewHidden = false) : array {
-        $where = "
-            p.`section_id` = {$sectionID},
-            p.`id` > {$offsetPostID},
-            p.`parent_id` = 0
-        ";
-        return $this->getPosts($where,'',$viewHidden);
-    }
-
-    public function create(string $text = '', string $title = '', string $name = '', string $pswd = '', string $tripCode = '', string $userIP = '0.0.0.0', int $threadID = 0, int $sectionID = 0) : array {
-        $status = false;
-        $err = [];
-        $created = time();
-        if(strlen(trim($text))>0){
-            $text = $this->normalizeSyntax($text);
-            $text = $this->parseYoutubeID($text);
-            $text = $this->parseLink($text);
-            $text = $this->normalizeText($text);
-        } else {
-            $text = '';
+    public function create($formData, $isCheckCaptcha = TRUE) : array
+    {
+        if ($isCheckCaptcha && !$this->_checkCaptcha($formData)) {
+            return [FALSE, 'Invalid Captcha Value'];
         }
-        $title = $this->normalizeText($title);
-        $title = preg_replace('/\s+/su',' ',$title);
-        $name = $this->normalizeText($name);
-        $name = preg_replace('/\s+/su',' ',$name);
-        $tripCode = trim($tripCode);
-        $userIP = trim($userIP);
-        $sql = "
-            SELECT
-                MAX(`relative_id`) AS 'id'
-            FROM
-                `posts`
-            WHERE `section_id` = {$sectionID};
-        ";
-        $res = $this->select($sql,'post');
-        if(count($res)>0&&is_array($res[0])&&isset($res[0]['id'])&&intval($res[0]['id'])>0){
-            $relativeID = (int)$res[0]['id'];
-            $relativeID++;
-        } else {
-            $relativeID = 1;
+
+        if (!$this->_validateFormDataFormat($formData)) {
+            return [FALSE, 'Form Data Has Invalid Format'];
         }
-        if(
-            isset($_FILES['media']) &&
-            is_array($_FILES['media']) &&
-            isset($_FILES['media']['tmp_name']) &&
-            strlen($_FILES['media']['tmp_name']) > 0 &&
-            isset($_FILES['media']['size']) &&
-            intval($_FILES['media']['size']) > 0
-        ){
-            $fileName = $_FILES['media']['name'];
-            $fileSize = (int)$_FILES['media']['size'];
-            $fileName = (string)mb_convert_case($fileName,MB_CASE_LOWER);
-            $fileExt = explode('.',$fileName);
-            $fileExt = end($fileExt);
-            $fileExt = $fileExt!='jpeg'?$fileExt:'jpg';
-            $fileName = preg_replace('/^(.*?)\.'.$fileExt.'$/su','$1',$fileName);
-            $fileType = -1;
-            $fileTypeGroup = '';
-            $sql = "
-                SELECT
-                    `id` AS 'id',
-                    `title` AS 'title',
-                    `group` AS 'group',
-                    `file_extention` AS 'file_extention'
-                FROM `dictionary_media_types`;
-            ";
-            $mediaTypeList = $this->select($sql,'dictionary');
-            foreach ($mediaTypeList as $mediaType) {
-                if(
-                    strlen($mediaType['file_extention'])>0 &&
-                    $mediaType['file_extention'] == $fileExt
-                ){
-                    $fileType = (int)$mediaType['id'];
-                    $fileTypeGroup = $mediaType['group'];
-                }
+
+        list(
+            $username,
+            $password,
+            $makeTripCode,
+            $sectionID,
+            $threadID,
+            $title,
+            $text,
+            $redirectType,
+            $withoutMedia
+        ) = $this->_getFormParams($formData);
+
+        list($status, $errors) = $this->_validateFormData(
+            $username,
+            $password,
+            $makeTripCode,
+            $sectionID,
+            $threadID,
+            $title,
+            $text,
+            $redirectType,
+            $withoutMedia
+        );
+
+        if (!$status) {
+            return [FALSE, $errors];
+        }
+
+        list($mediaName, $mediaPath, $mediaType) = $this->_uploadMedia(
+            $withoutMedia
+        );
+
+        $section = $this->initModel('section')->getByID($sectionID);
+
+        $cryptPlugin = $this->initPlugin('crypt');
+        $cryptConfig = $this->getConfig('crypt');
+
+        if (!array_key_exists('salt', $cryptConfig)) {
+            throw new Exception('Hash Salt Is Not Set');
+        }
+
+        $salt = $cryptConfig['salt'];
+
+        $tripCode = $makeTripCode ? $cryptPlugin->makeTripCode($password) : '';
+
+        if (strlen($password) > 0)
+        {
+            $password = $this->getHash($password, $salt);
+        };
+        
+        $ipHash = $this->initModel('geoip')->getIPHash();
+
+        $this->object->begin();
+
+        try {
+            $relativeCode = $this->object->getMaxPostRelativeCode(
+                $section->getID()
+            );
+
+            $relativeCode++; 
+
+            $status = $this->object->addPost(
+                $relativeCode,
+                $username,
+                $password,
+                $tripCode,
+                $sectionID,
+                $threadID,
+                $title,
+                $text,
+                $mediaName,
+                $mediaPath,
+                $mediaType,
+                $ipHash
+            );
+
+            if (!$status) {
+                throw new Exception('Internal DB Error!');
             }
-            if(!$fileType>0){
-                $err[] = 'File has bad extention!';
-            } else {
-                if($fileSize > 30 * 1024 * 1024){
-                    $err[] = 'File size is so large (> 30Mb)!';
-                } else {
-                    $fileTitle = strlen($fileName)>0?$fileName:'image';
-                    $fileName = "{$fileTitle}.{$fileExt}";
-                    $fileTitle = "{$fileSize}_{$fileTitle}";
-                    $realFileName = "{$fileSize}_{$fileName}";
-                    if($fileSize < 1024){
-                        $fileSize = "{$fileSize}b";
-                    } elseif($fileSize < 1024*1024) {
-                        $fileSize = intval($fileSize/1024);
-                        $fileSize = "{$fileSize}Kb";
-                    } elseif($fileSize < 1024*1024*1024) {
-                        $fileSize = intval($fileSize/(1024*1024));
-                        $fileSize = "{$fileSize}Mb";
-                    } elseif($fileSize < 1024*1024*1024*1024) {
-                        $fileSize = intval($fileSize/(1024*1024*1024));
-                        $fileSize = "{$fileSize}Gb";
-                    }else{
-                        $fileSize = intval($fileSize/(1024*1024*1024*1024));
-                        $fileSize = "{$fileSize}Tb";
-                    }
-                    $fileDir = $fileTypeGroup.'/'.date('Y').'/'.date('m').'/'.date('d').'/'.date('H').'/'.date('i').'/'.date('s');
-                    $res = mkdir(getcwd().'/../media/'.$fileDir,0755,true);
-                    $filePath = "{$fileDir}/{$realFileName}";
-                    if($res){
-                        $res = move_uploaded_file($_FILES['media']['tmp_name'],getcwd().'/../media/'.$filePath);
-                        if($res){
-                            chmod(getcwd().'/../media/'.$filePath,0755);
-                            if(
-                                $fileExt = 'jpg' ||
-                                $fileExt = 'png' ||
-                                $fileExt = 'gif'
-                            ){
-                                $this->imageLoad($realFileName,$fileTitle,getcwd().'/../media/'.$fileDir);
-                                $this->imageGen(['thumbnail','post']);
-                                $fileName = "{$fileName} ({$fileSize})";
-                            }
-                        } else {
-                            $err[] = 'Can not save file on server!';
-                        }
-                    } else {
-                        $err[] = 'Can not create folder (for saving file) on server!';
-                    }
-                }
-            }
-        } else {
-            $fileType = 1;
-            $fileName = '';
-            $filePath = '';
+        } catch (Exception $exp) {
+            $this->object->rollback();
+            return [FALSE, $exp->getMessage()];
         }
-        if($fileType==1){
-            if(preg_match('/(.*?)\[Youtube\:(.*?)\](.*?)/su',$text)){
-                $youtubeID = preg_replace('/(.*?)\[Youtube\:(.*?)\](.*?)/su','$2',$text);
-                $image = $this->getVideoThumbnail($youtubeID);
-                if(strlen($image)>0){
-                    $fileDir = 'img/'.date('Y').'/'.date('m').'/'.date('d').'/'.date('H').'/'.date('i').'/'.date('s');
-                    $res = mkdir(getcwd().'/../media/'.$fileDir,0755,true);
-                    copy($image,getcwd()."/../media/{$fileDir}/{$youtubeID}.jpg");
-                    $fileTitle = "{$youtubeID}";
-                    $this->imageLoad("{$youtubeID}.jpg",$fileTitle,getcwd().'/../media/'.$fileDir);
-                    $this->imageGen(['thumbnail','post']);
-                    $videoMetaData = $this->getVideoMetaData($youtubeID);
-                    $fileType = 5;
-                    $fileName = isset($videoMetaData['title'])&&strlen($videoMetaData['title'])?$this->escapeInput($videoMetaData['title']):'Youtube video';
-                    $filePath = "{$fileDir}/{$youtubeID}.jpg";
-                }
-            }
+
+        $this->object->commit();
+
+        if ($redirectType === PostVO::REDIRECT_TYPE_SECTION) {
+            $this->redirect('/'.$section->getSlug().'/');
         }
-        if(count($err)<1){
-            $sql = "
-                INSERT INTO `posts` (
-                    `relative_id`,
-                    `section_id`,
-                    `parent_id`,
-                    `title`,
-                    `text`,
-                    `media_path`,
-                    `media_name`,
-                    `media_type_id`,
-                    `pswd`,
-                    `username`,
-                    `tripcode`,
-                    `created`,
-                    `upd`,
-                    `ip`,
-                    `is_active`,
-                    `is_hidden`
-                ) VALUES (
-                    {$relativeID},
-                    {$sectionID},
-                    {$threadID},
-                    '{$title}',
-                    '{$text}',
-                    '{$filePath}',
-                    '{$fileName}',
-                    {$fileType},
-                    '{$pswd}',
-                    '{$name}',
-                    '{$tripCode}',
-                    {$created},
-                    {$created},
-                    '{$userIP}',
-                    1,
-                    0
-                );
-            ";
-            $status = $this->query($sql,'post');
-            if(!$status){
-                $err = count($err)>0?$err:['Internal error!'];
-            } else{
-                if($threadID>0){
-                    $sql = "
-                        UPDATE `posts`
-                        SET
-                            `upd` = {$created}
-                        WHERE `id` = {$threadID};
-                    ";
-                    $this->query($sql,'post');
-                }
-                preg_match_all('/\[Reply\:([0-9]+)\]/su',$text,$postCitationIDArr);
-                $postCitationIDArr = is_array($postCitationIDArr)&&isset($postCitationIDArr[1])&&is_array($postCitationIDArr[1])?$postCitationIDArr[1]:[];
-                $postCitationIDArr = array_unique($postCitationIDArr);
-                foreach ($postCitationIDArr as $postToID){
-                    $postToID = (int)$postToID;
-                    if($postToID>0){
-                        $sql = "
-                            INSERT INTO `post_citation` (
-                                `post_from_id`,
-                                `post_to_id`,
-                                `section_id`
-                            ) VALUES (
-                                {$relativeID},
-                                {$postToID},
-                                {$sectionID}
-                            );
-                        ";
-                        $this->query($sql,'post');
-                    }
-                }
-            }
+
+        if ($threadID > 0) {
+            $relativeCode = $this->object->getRelativeCodeByID($threadID);
         }
-        return [$status,$err];
+
+        $this->redirect('/'.$section->getSlug().'/'.$relativeCode.'/#last');
+
     }
 
-    public function remove(int $id = 0) : bool {
-        $sql = "
-            DELETE FROM `post_citation`
-            WHERE
-                `post_from_id` = {$id} OR
-                `post_to_id` = {$id};";
-        $res = $this->query($sql,'post');
-        $sql = "
-            DELETE FROM `post_views`
-            WHERE `post_id` = {$id};";
-        $res = $this->query($sql,'post');
-        $sql = "
-            DELETE FROM `post_share`
-            WHERE `post_id` = {$id};";
-        $res = $this->query($sql,'post');
-        $sql = "
-            DELETE FROM `posts`
-            WHERE `id` = {$id};";
-        return $this->query($sql,'post');
+    public function remove(int $postID = 0) : bool
+    {
+        return $this->object->removePostByID($postID);
     }
 
-    public function appendMetadata(array $post = []) : array {
-        if(count($post)>0){
+    public function appendMetadata(PostVO $post = NULL) : PostVO
+    {
+        /*if(count($post)>0){
             $post['replies'] = $this->getReplies($post['relative_id'],$post['section_id']);
             $post['views'] = $this->getViews($post['id']);
             if(intval($post['parent_id'])<1){
@@ -533,19 +350,224 @@ class Post extends ModelCore
             } else {
                 $post['webLink'] = [];
             }
-        }
+        }*/
+        //To-Do
         return $post;
     }
 
-    public function formatText(array $post = []) : array {
-        if(count($post)>0){
-            $post['text'] = $this->parseLinkShortCode($post['text']);
-            $post['text'] = $this->parseYoutubeShortCode($post['text']);
-            $post['text'] = $this->normalizeText($post['text']);
-            $post['text'] = $this->parseReplyShortCode($post['text'],$post['section_id']);
-            $post['text'] = $this->markup2HTML($post['text']);
+    public function formatText(string $text = '') : string
+    {
+        /*$text = $this->parseLinkShortCode($post['text']);
+        $text = $this->parseYoutubeShortCode($post['text']);
+        $text = $this->normalizeText($post['text']);
+        $text = $this->parseReplyShortCode($post['text'], $post['section_id']);
+        $text = $this->markup2HTML($post['text']);*/
+        // To-Do
+        return $text;
+    }
+
+    private function _checkCaptcha(array $formData = []) : bool
+    {
+        //To-Do
+        return FALSE;
+    }
+
+    private function _validateFormDataFormat(array $formData = []) : bool
+    {
+        return isset($formData['user_name']) &&
+               isset($formData['passwod']) &&
+               isset($formData['section_id']) &&
+               isset($formData['thread_id']) &&
+               isset($formData['title']) &&
+               isset($formData['text']) &&
+               isset($formData['redirect_type']) &&
+               isset($formData['captcah']);
+    }
+
+    private function _validateFormData(
+        string $username     = '',
+        string $password     = '',
+        bool   $makeTripCode = FALSE,
+        int    $sectionID    = 0,
+        int    $threadID     = 0,
+        string $title        = '',
+        string $text         = '',
+        string $redirectType = '',
+        bool   $withoutMedia = FALSE
+    ) : array
+    {
+        list($status, $errors) = $this->_validateUsername($username);
+
+        list($status, $errors) = $this->_validatePassword(
+            $makeTripCode,
+            $password
+        );
+
+        list($status, $errors) = $this->_validateSection($sectionID);
+        list($status, $errors) = $this->_validateThread($threadID);
+        list($status, $errors) = $this->_validateTitle($title);
+        list($status, $errors) = $this->_validateText($text, $threadID);
+        list($status, $errors) = $this->_validateRedirectType($redirectType);
+        list($status, $errors) = $this->_validateMedia($withoutMedia);
+
+        if ($this->_isPostEmpty($text, $withoutMedia)) {
+            return [FALSE, 'Post Has Not Text Or Media'];
         }
-        return $post;
+
+        return [$status, $errors];
+    }
+
+    private function _validateUsername(string $username = '') : array
+    {
+        if (strlen($username) >= PostVO::MAX_USERNAME_LENGTH) {
+            return [
+                FALSE,
+                'User Name Is Too Long! (More Than '.
+                PostVO::MAX_USERNAME_LENGTH.' Characters)'
+            ];
+        }
+
+        return [TRUE, NULL];
+    }
+
+    private function _validateSection(int $sectionID = 0) : array
+    {
+        $section = $this->initModel('section')->getByID($sectionID);
+
+        if ($section == NULL) {
+            return [FALSE, 'Invalid Section'];
+        }
+
+        if (
+            $section->getStatus() != SectionVO::STATUS_ACTIVE &&
+            $section->getStatus() != SectionVO::STATUS_HIDDEN
+        ) {
+            return [FALSE, 'You Can Not Post To This Section'];
+        }
+
+        return [TRUE, NULL];
+    }
+
+    private function _validateThread(int $threadID = 0) : array
+    {
+        if ($threadID < 1) {
+            return [TRUE, NULL];
+        }
+
+        $thread = $this->getThreadByID($threadID);
+
+        if ($thread == NULL) {
+            return [FALSE, 'Thread Is Not Exists'];
+        }
+        
+        if ($this->getCountByParentID($threadID) >= PostVO::MAX_REPLIES_COUNT) {
+            return [FALSE, 'Thread Has Maximum Count Of Replies!'];
+        }
+
+        return [TRUE, NULL];
+    }
+
+    private function _validateTitle(string $title = '') : array
+    {
+        if (strlen($title) > PostVO::MAX_TITLE_LENGTH) {
+            return [
+                FALSE,
+                'Title Is Too Long! (More Than '.
+                PostVO::MAX_TITLE_LENGTH.' Characters)'
+            ];
+        }
+
+        return [TRUE, NULL];
+    }
+
+    private function _validateText(string $text = '', int $threadID = 0) : array
+    {
+        if ($threadID < 1 && !strlen(trim($text)) > 0) {
+            return [FALSE, 'Text Is Empty!'];
+        }
+
+        if (strlen($text) >= PostVO::MAX_TEXT_LENGTH) {
+            return [
+                FALSE,
+                'Text Is Too Long! (More Than '.
+                PostVO::MAX_TEXT_LENGTH.' Characters)'
+            ];
+        }
+
+        return [TRUE, NULL];
+    }
+
+    private function _validatePassword(
+        bool   $makeTripCode = NULL,
+        string $password     = ''
+    ) : array
+    {
+        if ($makeTripCode && strlen($password) < 1) {
+            return [FALSE, 'Password Is Not Set'];
+        }
+
+        if (
+            strlen($password) > 0 &&
+            strlen($password) < PostVO::MIN_PASSWORD_LENGTH
+        ) {
+            return [FALSE, 'Password Is Too Short'];
+        }
+
+        return [TRUE, NULL];
+    }
+
+    private function _validateRedirectType(string $redirectType) : array
+    {
+        if (
+            $redirectType != PostVO::REDIRECT_TYPE_SECTION &&
+            $redirectType != PostVO::REDIRECT_TYPE_THREAD
+        ) {
+            return [FALSE, 'Invalid Redirect Type'];
+        }
+
+        return [TRUE, NULL];
+    }
+
+    private function _getFormParams(array $formData = []) : array
+    {
+        $makeTripCode = array_key_exists('make_trip_code', $formData);
+        $withoutMedia = array_key_exists('without_media', $formData);
+
+        return [
+            (string) $formData['user_name'],
+            (string) $formData['passwod'],
+            $makeTripCode,
+            (int)    $formData['section_id'],
+            (int)    $formData['thread_id'],
+            (string) $formData['title'],
+            (string) $formData['text'],
+            (string) $formData['redirect_type'],
+            $withoutMedia
+        ];
+    }
+
+    private function _validateMedia(bool $withoutMedia = FALSE) : array
+    {
+        if ($withoutMedia) {
+            return [TRUE, NULL];
+        }
+        //To-Do
+        return [FALSE, []];
+    }
+
+    private function _uploadMedia(bool $withoutMedia = FALSE) : array
+    {
+        //To-Do
+        return [];
+    }
+
+    private function _isPostEmpty(
+        string $text         = '',
+        bool   $withoutMedia = FALSE
+    ) : bool
+    {
+        //To-Do
+        return TRUE;
     }
 }
 ?>

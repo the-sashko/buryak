@@ -15,6 +15,11 @@ class UserVO extends ValuesObject
     const ROLE_MODERATOR = 'moderator';
 
     /**
+     * @var int Max Name Length
+     */
+    const MAX_NAME_LENGTH = 32;
+
+    /**
      * Get User ID
      *
      * @return int User ID

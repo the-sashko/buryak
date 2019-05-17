@@ -1,23 +1,13 @@
 <?php
 class MainController extends ControllerCore
 {
-    public function actionAllposts() : void
-    {
-        $posts = $this->initModel('post')->getAllPosts($this->page);
-
-        if (count($posts) < 1 && $this->page !== 1) {
-            $this->page --;
-            $this->redirect('/page-'.$this->page.'/');
-        }
-
-        $this->render('main', [
-            'posts' => $posts
-        ]);
-    }
-
     public function actionPage() : void
     {
-        //To-Do
+        $staticPage = $this->getStaticPage($this->URLParam);
+
+        $this->render('staticPage', [
+            'staticPage' => $staticPage
+        ]);
     }
 
     public function actionError() : void

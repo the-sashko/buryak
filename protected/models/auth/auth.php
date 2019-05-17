@@ -108,7 +108,9 @@ class Auth extends ModelCore implements IModelAuth
      */
 	public function checkToken(string $authToken = '') : bool
 	{
-		throw new Exception('Method Is Not Impemented');
+        throw new Exception('Method Is Not Impemented');
+
+		return FALSE;
 	}
 
     /**
@@ -120,7 +122,9 @@ class Auth extends ModelCore implements IModelAuth
      */
 	public function signInByToken(string $authToken = '') : bool
 	{
-		throw new Exception('Method Is Not Impemented');
+        throw new Exception('Method Is Not Impemented');
+
+		return FALSE;
 	}
 }
 ?>

@@ -20,6 +20,21 @@ class SectionVO extends ValuesObject
     const STATUC_HIDDEN = 'hidden';
 
     /**
+     * @var int Max Title Length
+     */
+    const MAX_TITLE_LENGTH = 128;
+
+    /**
+     * @var int Max Slug Length
+     */
+    const MAX_SLUG_LENGTH = 16;
+
+    /**
+     * @var int Max Description Length
+     */
+    const MAX_DESCRIPTION_LENGTH = 255;
+
+    /**
      * Get Section ID
      *
      * @return int Section ID

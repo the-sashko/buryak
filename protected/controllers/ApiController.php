@@ -1,39 +1,101 @@
 <?php
 class ApiController extends ControllerCore
 {
-    public function actionPosts() : void
+    public $isOutputJSON = true;
+
+    public function actionPost($apiMethod = 'get') : void
     {
-        // To-Do
+        switch ($apiMethod) {
+            case 'get':
+                $this->_getPosts();
+                break;
+            case 'post':
+                $this->_setPost();
+                break;
+            case 'put':
+                $this->_editPost();
+                break;
+            case 'patch':
+                $this->_editPost();
+                break;
+            case 'delete':
+                $this->_removePost();
+                break;
+            default:
+                throw new Exception('Not Implemented', 501);
+                break;
+        }
     }
 
-    public function actionPost() : void
+    public function actionThread($apiMethod = 'get') : void
     {
-        // To-Do
+        switch ($apiMethod) {
+            case 'get':
+                $this->_getThreads();
+                break;
+            default:
+                throw new Exception('Not Implemented', 501);
+                break;
+        }
     }
 
-    public function actionThreads() : void
+    public function actionSection($apiMethod = 'get') : void
     {
-        // To-Do
+        switch ($apiMethod) {
+            case 'get':
+                $this->_getSections();
+                break;
+            default:
+                throw new Exception('Not Implemented', 501);
+                break;
+        }
     }
 
-    public function actionThread() : void
+    public function actionPage($apiMethod = 'get') : void
     {
-        // To-Do
+        switch ($apiMethod) {
+            case 'get':
+                $this->_getPage();
+                break;
+            default:
+                throw new Exception('Not Implemented', 501);
+                break;
+        }
     }
 
-    public function actionSections() : void
+    private function _getPosts()
     {
-        // To-Do
+        //To-Do
     }
 
-    public function actionWrite() : void
+    private function _setPost()
     {
-        // To-Do
+        //To-Do
     }
 
-    public function actionPages() : void
+    private function _editPost()
     {
-        // To-Do
+        //To-Do
+    }
+
+    private function _removePost()
+    {
+        //To-Do
+    }
+
+    private function _getThreads()
+    {
+        //To-Do
+    }
+
+    private function _getSections()
+    {
+        //To-Do
+    }
+
+    private function _getPage()
+    {
+        //To-Do
     }
 }
 ?>
