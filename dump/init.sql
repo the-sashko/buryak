@@ -1,209 +1,590 @@
--- Inital database structure
-SET NAMES utf8;
-SET time_zone = '+00:00';
-SET foreign_key_checks = 0;
-SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
-CREATE TABLE `admin_users` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(64) NOT NULL COMMENT 'Visible name of user',
-  `email` varchar(128) NOT NULL COMMENT 'Used for login, restore password and security notifications',
-  `pswd` varchar(128) NOT NULL COMMENT 'sha512 password hash',
-  `role_id` int(2) unsigned NOT NULL DEFAULT '1' COMMENT 'Admin roles: 1 - for admin, 2 - for moderator',
-  `is_active` int(1) unsigned NOT NULL DEFAULT '1' COMMENT '1 - enable, 0 - disable',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`),
-  UNIQUE KEY `name` (`name`),
-  KEY `pswd` (`pswd`),
-  KEY `is_active` (`is_active`),
-  KEY `role_id` (`role_id`),
-  CONSTRAINT `admin_users_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `dictionary_admin_roles` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Admins & moderators';
-CREATE TABLE `dictionary_admin_roles` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `title` varchar(32) NOT NULL COMMENT 'Title of admin user role',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `title` (`title`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='List of admin users roles';
-INSERT INTO `dictionary_admin_roles` (`id`, `title`) VALUES
-(1,	'admin'),
-(2,	'moderator');
-CREATE TABLE `dictionary_media_types` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `title` varchar(64) NOT NULL COMMENT 'Title of type',
-  `file_extention` varchar(8) DEFAULT NULL COMMENT 'File extention, or NULL if it is not file',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `title` (`title`),
-  KEY `file_extention` (`file_extention`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='List of avilable type of post media ';
-INSERT INTO `dictionary_media_types` (`id`, `title`, `file_extention`) VALUES
-(1,	'Empty',	NULL),
-(2,	'Image (jpeg)',	'jpg'),
-(3,	'Image (png)',	'png'),
-(4,	'Image (gif)',	'gif'),
-(5,	'Video (Youtube)',	NULL);
-CREATE TABLE `dictionary_section_statuses` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `title` varchar(64) NOT NULL COMMENT 'Title of section type (for admin template)',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `title` (`title`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='List of statuses of section';
-INSERT INTO `dictionary_section_statuses` (`id`, `title`) VALUES
-(1,	'active'),
-(3,	'closed'),
-(2,	'hidden');
-CREATE TABLE `dictionary_share_types` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `title` varchar(32) NOT NULL COMMENT 'Title of social network or method sharing',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `title` (`title`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='List of social networks and ways for sharing posts';
-INSERT INTO `dictionary_share_types` (`id`, `title`) VALUES
-(3,	'push'),
-(2,	'telegram'),
-(1,	'twitter');
-CREATE TABLE `geoip` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `ip` varchar(40) NOT NULL COMMENT 'IP, You can use hash instead, but in this way You must extent field size',
-  `country` varchar(3) NOT NULL COMMENT 'Country code, 3 or 2 letters',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `ip` (`ip`),
-  KEY `country` (`country`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Geoip data';
-CREATE TABLE `mod2section` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `mod_id` int(11) unsigned NOT NULL COMMENT 'User ID of moderator',
-  `section_id` int(11) unsigned NOT NULL COMMENT 'ID of section, that moderator can manage',
-  PRIMARY KEY (`id`),
-  KEY `mod_id` (`mod_id`),
-  KEY `section_id` (`section_id`),
-  CONSTRAINT `mod2section_ibfk_3` FOREIGN KEY (`section_id`) REFERENCES `sections` (`id`),
-  CONSTRAINT `mod2section_ibfk_2` FOREIGN KEY (`mod_id`) REFERENCES `admin_users` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Available sections for manage by moderators';
-CREATE TABLE `posts` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `relative_id` int(11) unsigned NOT NULL COMMENT 'ID post in section',
-  `section_id` int(11) unsigned NOT NULL COMMENT 'ID of section',
-  `parent_id` int(11) unsigned DEFAULT NULL COMMENT 'ID thread, NULL - if post is thread',
-  `title` varchar(255) DEFAULT NULL COMMENT 'Title of post',
-  `text` text COMMENT 'Text content of post',
-  `media_path` varchar(128) DEFAULT NULL COMMENT 'Relative path of file, NULL - if file not set',
-  `media_name` varchar(128) DEFAULT NULL COMMENT 'Name of file, NULL - if file not set',
-  `media_type_id` int(11) unsigned NOT NULL DEFAULT '1' COMMENT 'Type of file, or ther media (like Youtube player) of post',
-  `pswd` varchar(128) DEFAULT NULL COMMENT 'sha512 hash of users password',
-  `username` varchar(128) NOT NULL DEFAULT 'Anonymous' COMMENT 'User name',
-  `tripcode` varchar(128) DEFAULT NULL COMMENT 'Trip code (unique id of user password)',
-  `created` int(11) unsigned NOT NULL COMMENT 'Time creation post',
-  `upd` int(11) unsigned NOT NULL COMMENT 'Time of update (for threads)',
-  `ip` varchar(40) NOT NULL COMMENT 'IP, You can use hash instead, but in this way You must extent field size',
-  `is_active` int(1) unsigned NOT NULL DEFAULT '1' COMMENT '1 - post visible, 0 - post hidden for all',
-  PRIMARY KEY (`id`),
-  KEY `relative_id` (`relative_id`),
-  KEY `section_id` (`section_id`),
-  KEY `parent_id` (`parent_id`),
-  KEY `title` (`title`),
-  KEY `media_path` (`media_path`),
-  KEY `media_name` (`media_name`),
-  KEY `media_type_id` (`media_type_id`),
-  KEY `pswd` (`pswd`),
-  KEY `username` (`username`),
-  KEY `tripcode` (`tripcode`),
-  KEY `created` (`created`),
-  KEY `upd` (`upd`),
-  KEY `ip` (`ip`),
-  KEY `is_active` (`is_active`),
-  CONSTRAINT `posts_ibfk_2` FOREIGN KEY (`section_id`) REFERENCES `sections` (`id`),
-  CONSTRAINT `posts_ibfk_3` FOREIGN KEY (`relative_id`) REFERENCES `posts` (`id`),
-  CONSTRAINT `posts_ibfk_4` FOREIGN KEY (`media_type_id`) REFERENCES `dictionary_media_types` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Posts';
-CREATE TABLE `post_citation` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `post_from_id` int(11) unsigned NOT NULL COMMENT 'ID post that have link to other post',
-  `post_to_id` int(11) unsigned NOT NULL COMMENT 'ID post is referred to',
-  PRIMARY KEY (`id`),
-  KEY `post_from_id` (`post_from_id`),
-  KEY `post_to_id` (`post_to_id`),
-  CONSTRAINT `post_citation_ibfk_2` FOREIGN KEY (`post_to_id`) REFERENCES `posts` (`id`),
-  CONSTRAINT `post_citation_ibfk_1` FOREIGN KEY (`post_from_id`) REFERENCES `posts` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Citation of post in other post';
-CREATE TABLE `post_share` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `post_id` int(11) unsigned NOT NULL COMMENT 'ID post (thread)',
-  `post_share_type_id` int(11) unsigned NOT NULL COMMENT 'ID of social network or sharing way',
-  `date` int(11) unsigned NOT NULL COMMENT 'Time of sharing',
-  PRIMARY KEY (`id`),
-  KEY `post_id` (`post_id`),
-  KEY `post_share_type_id` (`post_share_type_id`),
-  KEY `date` (`date`),
-  CONSTRAINT `post_share_ibfk_1` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`),
-  CONSTRAINT `post_share_ibfk_2` FOREIGN KEY (`post_share_type_id`) REFERENCES `dictionary_share_types` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sharing posts';
-CREATE TABLE `post_views` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `post_id` int(11) unsigned NOT NULL COMMENT 'ID post (thread)',
-  `count` int(11) unsigned NOT NULL DEFAULT '0' COMMENT 'Count of views by users',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `post_id` (`post_id`),
-  KEY `count` (`count`),
-  CONSTRAINT `post_views_ibfk_2` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Post views by users';
-CREATE TABLE `sections` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(8) NOT NULL COMMENT 'Name section, part of URL',
-  `title` varchar(128) NOT NULL COMMENT 'Title of section',
-  `desription` varchar(256) NOT NULL COMMENT 'Short description of section',
-  `age_restriction` int(2) unsigned NOT NULL DEFAULT '0' COMMENT 'Age restriction for users. 0 value - disable',
-  `status_id` int(2) unsigned NOT NULL DEFAULT '1' COMMENT 'ID of section status',
-  `sort` int(4) unsigned NOT NULL DEFAULT '0' COMMENT 'Sort value',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`),
-  UNIQUE KEY `title` (`title`),
-  KEY `desription` (`desription`(255)),
-  KEY `age_restriction` (`age_restriction`),
-  KEY `status_id` (`status_id`),
-  KEY `sort` (`sort`),
-  CONSTRAINT `sections_ibfk_1` FOREIGN KEY (`status_id`) REFERENCES `dictionary_section_statuses` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sections of site';
-CREATE TABLE `sessions` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `hash` varchar(255) NOT NULL COMMENT 'Unique hash of section',
-  `is_human` int(1) unsigned NOT NULL DEFAULT '1' COMMENT '1 - human, 0 - must validate humanity',
-  `is_ban` int(1) unsigned NOT NULL DEFAULT '0' COMMENT '1 - banned for posting, 0 - all good',
-  `created` int(11) unsigned NOT NULL COMMENT 'Time of creation session (first view site)',
-  `upd` int(11) unsigned NOT NULL COMMENT 'Time of update session (last view site)',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `hash` (`hash`),
-  KEY `is_human` (`is_human`),
-  KEY `is_ban` (`is_ban`),
-  KEY `created` (`created`),
-  KEY `upd` (`upd`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='User sessions';
-CREATE TABLE `session_ban` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `session_id` int(11) unsigned NOT NULL COMMENT 'ID user sesssion',
-  `admin_id` int(11) unsigned DEFAULT NULL COMMENT 'ID admin who banned, user. NULL - for nobody',
-  `mod_id` int(11) unsigned DEFAULT NULL COMMENT 'ID moderator who banned, user. NULL - for nobody',
-  `message` varchar(255) NOT NULL COMMENT 'Reason of ban or message for user',
-  `expire` int(11) unsigned NOT NULL DEFAULT '0' COMMENT 'Time of end ban, 0 - for infinity ban',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `session_id` (`session_id`),
-  KEY `admin_id` (`admin_id`),
-  KEY `mod_id` (`mod_id`),
-  KEY `message` (`message`),
-  KEY `expire` (`expire`),
-  CONSTRAINT `session_ban_ibfk_3` FOREIGN KEY (`mod_id`) REFERENCES `admin_users` (`id`) ON DELETE SET NULL ON UPDATE SET NULL,
-  CONSTRAINT `session_ban_ibfk_1` FOREIGN KEY (`session_id`) REFERENCES `sessions` (`id`),
-  CONSTRAINT `session_ban_ibfk_2` FOREIGN KEY (`admin_id`) REFERENCES `admin_users` (`id`) ON DELETE SET NULL ON UPDATE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Ban users';
-CREATE TABLE `session_ip` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `session_id` int(11) unsigned NOT NULL COMMENT 'ID user session',
-  `ip` varchar(40) NOT NULL COMMENT 'IP, You can use hash instead, but in this way You must extent field size',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `ip` (`ip`),
-  KEY `session_id` (`session_id`),
-  CONSTRAINT `session_ip_ibfk_1` FOREIGN KEY (`session_id`) REFERENCES `sessions` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='User IP list';
-DROP TABLE IF EXISTS `mod_users`;
-CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `mod_users` AS SELECT `admin_users`.`id` AS `id`,`admin_users`.`name` AS `name`,`admin_users`.`email` AS `email`,`admin_users`.`pswd` AS `pswd`,`fajno_new`.`admin_users`.`role_id` AS `role_id`,`fajno_new`.`admin_users`.`is_active` AS `is_active` FROM `admin_users` WHERE (`fajno_new`.`admin_users`.`role_id` = 2);
-DROP TABLE IF EXISTS `threads`;
-CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `threads` AS SELECT `posts`.`id` AS `id`,`posts`.`relative_id` AS `relative_id`,`posts`.`section_id` AS `section_id`,`posts`.`parent_id` AS `parent_id`,`posts`.`title` AS `title`,`posts`.`text` AS `text`,`posts`.`media_path` AS `media_path`,`posts`.`media_name` AS `media_name`,`posts`.`media_type_id` AS `media_type_id`,`posts`.`pswd` AS `pswd`,`posts`.`username` AS `username`,`posts`.`tripcode` AS `tripcode`,`posts`.`created` AS `created`,`posts`.`upd` AS `upd`,`posts`.`ip` AS `ip`,`posts`.`is_active` AS `is_active` FROM `posts` WHERE (`posts`.`parent_id` = 0);
+CREATE TYPE "admin_roles" AS ENUM (
+    'admin',
+    'moderator'
+);
+
+CREATE TYPE "section_statuses" AS ENUM (
+    'active',
+    'closed',
+    'hidden'
+);
+
+CREATE TYPE "share_types" AS ENUM (
+    'push',
+    'telegram',
+    'twitter'
+);
+
+CREATE SEQUENCE admin_users_id_seq
+    INCREMENT 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    START 1
+    CACHE 1;
+
+CREATE SEQUENCE sections_id_seq
+    INCREMENT 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    START 1
+    CACHE 1;
+
+CREATE SEQUENCE admin2section_id_seq
+    INCREMENT 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    START 1
+    CACHE 1;
+
+CREATE SEQUENCE sessions_id_seq
+    INCREMENT 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    START 1
+    CACHE 1;
+CREATE SEQUENCE ip2session_id_seq
+    INCREMENT 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    START 1
+    CACHE 1;
+
+CREATE SEQUENCE ban_id_seq
+    INCREMENT 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    START 1
+    CACHE 1;
+CREATE SEQUENCE media_types_id_seq
+    INCREMENT 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    START 5
+    CACHE 1;
+
+CREATE SEQUENCE posts_id_seq
+    INCREMENT 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    START 1
+    CACHE 1;
+
+CREATE SEQUENCE post_citation_id_seq
+    INCREMENT 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    START 1
+    CACHE 1;
+
+CREATE SEQUENCE post_share_id_seq
+    INCREMENT 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    START 1
+    CACHE 1;
+
+CREATE TABLE "public"."admin_users" (
+    "id" numeric(11,0)
+        DEFAULT nextval('admin_users_id_seq')
+        NOT NULL,
+    "name" character varying(32)
+        NOT NULL,
+    "email" character varying(128)
+        NOT NULL,
+    "pswd_hash" character varying(128)
+        NOT NULL,
+    "web_token_hash" character varying(128)
+        NOT NULL,
+    "role" admin_roles
+        NOT NULL,
+    "is_active" boolean
+        DEFAULT false
+        NOT NULL,
+    CONSTRAINT "admin_users_email"
+        UNIQUE ("email"),
+    CONSTRAINT "admin_users_email_pswd_hash"
+        UNIQUE ("email", "pswd_hash"),
+    CONSTRAINT "admin_users_email_pswd_hash_is_active"
+        UNIQUE ("email", "pswd_hash", "is_active"),
+    CONSTRAINT "admin_users_id_web_token_hash"
+        UNIQUE ("id", "web_token_hash"),
+    CONSTRAINT "admin_users_id_web_token_hash_is_active"
+        UNIQUE ("id", "web_token_hash", "is_active"),
+    CONSTRAINT "admin_users_id_is_active"
+        UNIQUE ("id", "is_active"),
+    CONSTRAINT "admin_users_id"
+        PRIMARY KEY ("id"),
+    CONSTRAINT "admin_users_name"
+        UNIQUE ("name")
+) WITH (oids = false);
+
+CREATE TABLE "public"."sections" (
+    "id" numeric(11,0)
+        DEFAULT nextval('sections_id_seq')
+        NOT NULL,
+    "slug" character varying(16)
+        NOT NULL,
+    "title" character varying(128)
+        NOT NULL,
+    "desription" character varying(255)
+        NOT NULL,
+    "age_restriction" numeric(2,0)
+        DEFAULT '0'
+        NOT NULL,
+    "status" section_statuses
+        NOT NULL,
+    "sort" numeric(4,0)
+        DEFAULT '0'
+        NOT NULL,
+    CONSTRAINT "sections_id"
+        PRIMARY KEY ("id"),
+    CONSTRAINT "sections_slug"
+        UNIQUE ("slug"),
+    CONSTRAINT "sections_slug_age_restriction"
+        UNIQUE ("slug", "age_restriction"),
+    CONSTRAINT "sections_slug_age_restriction_sort"
+        UNIQUE ("slug", "age_restriction", "sort"),
+    CONSTRAINT "sections_slug_age_restriction_status"
+        UNIQUE ("slug", "age_restriction", "status"),
+    CONSTRAINT "sections_slug_age_restriction_status_sort"
+        UNIQUE ("slug", "age_restriction", "status", "sort"),
+    CONSTRAINT "sections_slug_sort"
+        UNIQUE ("slug", "sort"),
+    CONSTRAINT "sections_slug_status"
+        UNIQUE ("slug", "status")
+) WITH (oids = false);
+
+CREATE TABLE "public"."admin2section" (
+    "id" integer
+        DEFAULT nextval('admin2section_id_seq')
+        NOT NULL,
+    "id_admin" integer
+        NOT NULL,
+    "id_section" integer
+        NOT NULL,
+    CONSTRAINT "admin2section_id"
+        PRIMARY KEY ("id"),
+    CONSTRAINT "admin2section_id_admin_id_section"
+        UNIQUE ("id_admin", "id_section"),
+    CONSTRAINT "admin2section_id_admin_fkey"
+        FOREIGN KEY (id_admin)
+        REFERENCES admin_users(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+        NOT DEFERRABLE,
+    CONSTRAINT "admin2section_id_section_fkey"
+        FOREIGN KEY (id_section)
+        REFERENCES sections(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+        NOT DEFERRABLE
+) WITH (oids = false);
+
+CREATE TABLE "public"."sessions" (
+    "id" integer
+        DEFAULT nextval('sessions_id_seq')
+        NOT NULL,
+    "is_human" boolean
+        DEFAULT true
+        NOT NULL,
+    "is_ban" boolean
+        DEFAULT false
+        NOT NULL,
+    "user_data" json
+        NULL,
+    "cdate" timestamp
+        DEFAULT now()
+        NOT NULL,
+    "mdate" timestamp,
+    CONSTRAINT "sessions_id"
+        PRIMARY KEY ("id"),
+    CONSTRAINT "sessions_id_is_ban"
+        UNIQUE ("id", "is_ban"),
+    CONSTRAINT "sessions_id_is_human"
+        UNIQUE ("id", "is_human"),
+    CONSTRAINT "sessions_id_is_human_is_ban"
+        UNIQUE ("id", "is_human", "is_ban")
+) WITH (oids = false);
+
+CREATE TABLE "public"."ip2session" (
+    "id" integer
+        DEFAULT nextval('ip2session_id_seq')
+        NOT NULL,
+    "id_session" integer
+        NOT NULL,
+    "ip_hash" character varying(64)
+        NOT NULL,
+    CONSTRAINT "ip2session_id"
+        PRIMARY KEY ("id"),
+    CONSTRAINT "ip2session_id_session_ip"
+        UNIQUE ("id_session", "ip"),
+    CONSTRAINT "ip2session_ip"
+        UNIQUE ("ip_hash"),
+    CONSTRAINT "ip2session_id_session_fkey"
+        FOREIGN KEY (id_session)
+        REFERENCES sessions(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+        NOT DEFERRABLE
+) WITH (oids = false);
+
+CREATE TABLE "public"."ban" (
+    "id" integer
+        DEFAULT nextval('ban_id_seq')
+        NOT NULL,
+    "id_session" integer
+        NOT NULL,
+    "id_admin" integer
+        NOT NULL,
+    "message" character varying(255)
+        NOT NULL,
+    "expire" timestamp,
+    "is_active" boolean
+        DEFAULT true
+        NOT NULL,
+    "cdate" timestamp
+        DEFAULT now()
+        NOT NULL,
+    "mdate" timestamp,
+    CONSTRAINT "ban_id"
+        PRIMARY KEY ("id"),
+    CONSTRAINT "ban_id_admin_fkey"
+        FOREIGN KEY (id_admin)
+        REFERENCES admin_users(id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
+        NOT DEFERRABLE,
+    CONSTRAINT "ban_id_session_fkey"
+        FOREIGN KEY (id_session)
+        REFERENCES sessions(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+        NOT DEFERRABLE
+) WITH (oids = false);
+
+CREATE TABLE "public"."media_types" (
+    "id" numeric(11,0)
+        DEFAULT nextval('media_types_id_seq')
+        NOT NULL,
+    "title" character varying(32)
+        NOT NULL,
+    "file_extention" character varying(8),
+    CONSTRAINT "media_types_id"
+        PRIMARY KEY ("id"),
+    CONSTRAINT "media_types_title"
+        UNIQUE ("title")
+) WITH (oids = false);
+
+CREATE TABLE "public"."posts" (
+    "id" integer
+        DEFAULT nextval('posts_id_seq')
+        NOT NULL,
+    "relative_code" integer
+        NOT NULL,
+    "id_section" integer
+        NOT NULL,
+    "id_parent" integer,
+    "title" character varying(128)
+        NOT NULL,
+    "text" text
+        NOT NULL,
+    "media_path" character varying(255)
+        NOT NULL,
+    "media_name" character varying(32)
+        NOT NULL,
+    "id_media_type" integer
+        NOT NULL,
+    "pswd_hash" character varying(128)
+        NOT NULL,
+    "username" character varying(128)
+        NOT NULL,
+    "tripcode" character varying(128)
+        NOT NULL,
+    "id_session" integer
+        NOT NULL,
+    "is_active" boolean
+        DEFAULT true
+        NOT NULL,
+    "views" numeric(11,0)
+        DEFAULT '0'
+        NOT NULL,
+    "cdate" timestamp
+        DEFAULT now()
+        NOT NULL,
+    "mdate" timestamp,
+    CONSTRAINT "posts_id"
+        PRIMARY KEY ("id"),
+    CONSTRAINT "posts_id_pswd_hash"
+        UNIQUE ("id", "pswd_hash"),
+    CONSTRAINT "posts_id_pswd_hash_cdate"
+        UNIQUE ("id", "pswd_hash", "cdate"),
+    CONSTRAINT "posts_id_pswd_hash_mdate"
+        UNIQUE ("id", "pswd_hash", "mdate"),
+    CONSTRAINT "posts_relative_code_id_section"
+        UNIQUE ("relative_code", "id_section"),
+    CONSTRAINT "posts_relative_code_id_section_cdate"
+        UNIQUE ("relative_code", "id_section", "cdate"),
+    CONSTRAINT "posts_relative_code_id_section_id_parent"
+        UNIQUE ("relative_code", "id_section", "id_parent"),
+    CONSTRAINT "posts_relative_code_id_section_is_active"
+        UNIQUE ("relative_code", "id_section", "is_active"),
+    CONSTRAINT "posts_relative_code_id_section_is_active_id_parent"
+        UNIQUE ("relative_code", "id_section", "is_active", "id_parent"),
+    CONSTRAINT "posts_relative_code_id_section_mdate"
+        UNIQUE ("relative_code", "id_section", "mdate"),
+    CONSTRAINT "posts_id_media_type_fkey"
+        FOREIGN KEY (id_media_type)
+        REFERENCES media_types(id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
+        NOT DEFERRABLE,
+    CONSTRAINT "posts_id_parent_fkey"
+        FOREIGN KEY (id_parent)
+        REFERENCES posts(id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
+        NOT DEFERRABLE,
+    CONSTRAINT "posts_id_section_fkey"
+        FOREIGN KEY (id_section)
+        REFERENCES sections(id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
+        NOT DEFERRABLE,
+    CONSTRAINT "posts_id_session_fkey"
+        FOREIGN KEY (id_session)
+        REFERENCES sessions(id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
+        NOT DEFERRABLE
+) WITH (oids = false);
+
+CREATE TABLE "public"."post_citation" (
+    "id" integer
+        DEFAULT nextval('post_citation_id_seq')
+        NOT NULL,
+    "id_post_from" integer
+        NOT NULL,
+    "id_post_to" integer
+        NOT NULL,
+    CONSTRAINT "post_citation_id"
+        PRIMARY KEY ("id"),
+    CONSTRAINT "post_citation_id_post_from_id_post_to"
+        UNIQUE ("id_post_from", "id_post_to"),
+    CONSTRAINT "post_citation_id_post_from_fkey"
+        FOREIGN KEY (id_post_from)
+        REFERENCES posts(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+        NOT DEFERRABLE,
+    CONSTRAINT "post_citation_id_post_to_fkey"
+        FOREIGN KEY (id_post_to)
+        REFERENCES posts(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+        NOT DEFERRABLE
+) WITH (oids = false);
+
+CREATE TABLE "public"."post_share" (
+    "id" integer
+        DEFAULT nextval('post_share_id_seq')
+        NOT NULL,
+    "id_post" integer
+        NOT NULL,
+    "share_type" share_types
+        NOT NULL,
+    "cdate" timestamp
+        NOT NULL,
+    CONSTRAINT "post_share_id"
+        PRIMARY KEY ("id"),
+    CONSTRAINT "post_share_id_post_share_type"
+        UNIQUE ("id_post", "share_type"),
+    CONSTRAINT "post_share_id_post_fkey"
+        FOREIGN KEY (id_post)
+        REFERENCES posts(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+        NOT DEFERRABLE
+) WITH (oids = false);
+
+CREATE INDEX "admin_users_is_active"
+    ON "public"."admin_users"
+    USING btree ("is_active");
+
+CREATE INDEX "admin_users_pswd_hash"
+    ON "public"."admin_users"
+    USING btree ("pswd_hash");
+
+CREATE INDEX "admin_users_web_token_hash_is_active"
+    ON "public"."admin_users"
+    USING btree ("web_token_hash", "is_active");
+
+CREATE INDEX "admin_users_role"
+    ON "public"."admin_users"
+    USING btree ("role");
+
+CREATE INDEX "sections_age_restriction"
+    ON "public"."sections"
+    USING btree ("age_restriction");
+
+CREATE INDEX "sections_age_restriction_sort"
+    ON "public"."sections"
+    USING btree ("age_restriction", "sort");
+
+CREATE INDEX "sections_age_restriction_status"
+    ON "public"."sections"
+    USING btree ("age_restriction", "status");
+
+CREATE INDEX "sections_sort"
+    ON "public"."sections"
+    USING btree ("sort");
+
+CREATE INDEX "sections_status"
+    ON "public"."sections"
+    USING btree ("status");
+
+CREATE INDEX "admin2section_id_admin"
+    ON "public"."admin2section"
+    USING btree ("id_admin");
+
+CREATE INDEX "admin2section_id_section"
+    ON "public"."admin2section"
+    USING btree ("id_section");
+
+CREATE INDEX "sessions_cdate"
+    ON "public"."sessions"
+    USING btree ("cdate");
+
+CREATE INDEX "sessions_id_cdate_mdate"
+    ON "public"."sessions"
+    USING btree ("id", "cdate", "mdate");
+
+CREATE INDEX "sessions_id_is_ban_cdate_mdate"
+    ON "public"."sessions"
+    USING btree ("id", "is_ban", "cdate", "mdate");
+
+CREATE INDEX "sessions_is_ban"
+    ON "public"."sessions"
+    USING btree ("is_ban");
+
+CREATE INDEX "sessions_is_human"
+    ON "public"."sessions"
+    USING btree ("is_human");
+
+CREATE INDEX "sessions_mdate"
+    ON "public"."sessions"
+    USING btree ("mdate");
+
+CREATE INDEX "ip2session_id_session"
+    ON "public"."ip2session"
+    USING btree ("id_session");
+
+CREATE INDEX "ban_cdate"
+    ON "public"."ban"
+    USING btree ("cdate");
+
+CREATE INDEX "ban_expire" 
+    ON "public"."ban"
+    USING btree ("expire");
+
+CREATE INDEX "ban_expire_is_active"
+    ON "public"."ban"
+    USING btree ("expire", "is_active");
+
+CREATE INDEX "ban_id_admin"
+    ON "public"."ban"
+    USING btree ("id_admin");
+
+CREATE INDEX "ban_id_admin_is_active"
+    ON "public"."ban"
+    USING btree ("id_admin", "is_active");
+
+CREATE INDEX "ban_id_session"
+    ON "public"."ban"
+    USING btree ("id_session");
+
+CREATE INDEX "ban_id_session_expire"
+    ON "public"."ban"
+    USING btree ("id_session", "expire");
+
+CREATE INDEX "ban_id_session_expire_is_active"
+    ON "public"."ban"
+    USING btree ("id_session", "expire", "is_active");
+
+CREATE INDEX "ban_is_active"
+    ON "public"."ban"
+    USING btree ("is_active");
+
+CREATE INDEX "ban_mdate"
+    ON "public"."ban"
+    USING btree ("mdate");
+
+CREATE INDEX "media_types_file_extention"
+    ON "public"."media_types"
+    USING btree ("file_extention");
+
+CREATE INDEX "posts_cdate"
+    ON "public"."posts"
+    USING btree ("cdate");
+
+CREATE INDEX "posts_id_media_type"
+    ON "public"."posts"
+    USING btree ("id_media_type");
+
+CREATE INDEX "posts_id_parent"
+    ON "public"."posts"
+    USING btree ("id_parent");
+
+CREATE INDEX "posts_id_section"
+    ON "public"."posts"
+    USING btree ("id_section");
+
+CREATE INDEX "posts_id_session"
+    ON "public"."posts"
+    USING btree ("id_session");
+
+CREATE INDEX "posts_is_active"
+    ON "public"."posts"
+    USING btree ("is_active");
+
+CREATE INDEX "posts_mdate"
+    ON "public"."posts"
+    USING btree ("mdate");
+
+CREATE INDEX "posts_pswd_hash"
+    ON "public"."posts"
+    USING btree ("pswd_hash");
+
+CREATE INDEX "posts_relative_code"
+    ON "public"."posts"
+    USING btree ("relative_code");
+
+CREATE INDEX "posts_views"
+    ON "public"."posts"
+    USING btree ("views");
+
+CREATE INDEX "post_citation_id_post_from"
+    ON "public"."post_citation"
+    USING btree ("id_post_from");
+
+CREATE INDEX "post_citation_id_post_to"
+    ON "public"."post_citation"
+    USING btree ("id_post_to");
+
+CREATE INDEX "post_share_cdate"
+    ON "public"."post_share"
+    USING btree ("cdate");
+
+CREATE INDEX "post_share_id_post"
+    ON "public"."post_share"
+    USING btree ("id_post");
+
+CREATE INDEX "post_share_share_type"
+    ON "public"."post_share"
+    USING btree ("share_type");
+
+INSERT INTO "media_types" ("id", "title", "file_extention") VALUES
+    (1, 'Empty',  NULL),
+    (2, 'Image (jpeg)', 'jpg'),
+    (3, 'Image (png)',  'png'),
+    (4, 'Image (gif)',  'gif'),
+    (5, 'Video (Youtube)',  NULL);
