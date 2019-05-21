@@ -7,7 +7,7 @@ class UserController extends ControllerCore
     {
         parent::__construct();
 
-        $this->user = $this->initModel('user')->getCurrent();
+        $this->user = $this->getModel('user')->getCurrent();
     }
 
     public function actionOptions() : void

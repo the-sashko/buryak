@@ -65,7 +65,7 @@ class ApiController extends ControllerCore
 
     private function _getPosts()
     {
-        $posts = $this->initModel('post')->getAllByPage($this->page);
+        $posts = $this->getModel('post')->getAllByPage($this->page);
 
         if (count($posts) < 1) {
             $this->returnJSON(FALSE, []);
@@ -89,7 +89,7 @@ class ApiController extends ControllerCore
         $data = $this->post['data'];
         $data = json_decode($data, TRUE);
 
-        $postModel = $this->initModel('post');
+        $postModel = $this->getModel('post');
 
         list($status, $errors) = $postModel->create($data, FALSE);
 
@@ -109,7 +109,7 @@ class ApiController extends ControllerCore
         $data = $this->post['data'];
         $data = json_decode($data, TRUE);
 
-        $postModel = $this->initModel('post');
+        $postModel = $this->getModel('post');
 
         list($status, $errors) = $postModel->edit($postID, $data);
 
@@ -126,7 +126,7 @@ class ApiController extends ControllerCore
             $this->returnJSON(FALSE, []);
         }
 
-        $postModel = $this->initModel('post');
+        $postModel = $this->getModel('post');
 
         list($status, $errors) = $postModel->edit($postID, $data);
 
@@ -137,7 +137,7 @@ class ApiController extends ControllerCore
 
     private function _getThreads()
     {
-        $threads = $this->initModel('post')->getAllThreadsByPage($this->page);
+        $threads = $this->getModel('post')->getAllThreadsByPage($this->page);
 
         if (count($threads) < 1) {
             $this->returnJSON(FALSE, []);
@@ -154,7 +154,7 @@ class ApiController extends ControllerCore
 
     private function _getSections()
     {
-        $sections = $this->initModel('section')->getAllByPage($this->page);
+        $sections = $this->getModel('section')->getAllByPage($this->page);
 
         if (count($sections) < 1) {
             $this->returnJSON(FALSE, []);

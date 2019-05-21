@@ -5,14 +5,14 @@ class AjaxController extends ControllerCore
 
     public function actionAllposts() : void
     {
-        $posts = $this->initModel('post')->getList($this->page, FALSE);
+        $posts = $this->getModel('post')->getList($this->page, FALSE);
 
         $this->returnJSON(TRUE, $posts);
     }
 
     public function actionAllthreads() : void
     {
-        $posts = $this->initModel('post')->getList($this->page, FALSE);
+        $posts = $this->getModel('post')->getList($this->page, FALSE);
 
         $this->returnJSON(TRUE, $posts);
     }
@@ -25,7 +25,7 @@ class AjaxController extends ControllerCore
             $this->returnJSON(FALSE, []);
         }
         
-        $post = $this->initModel('post')->getByID($postID);
+        $post = $this->getModel('post')->getByID($postID);
 
         if ($post === NULL) {
             $this->returnJSON(FALSE, []);
@@ -44,7 +44,7 @@ class AjaxController extends ControllerCore
             $this->returnJSON(FALSE, []);
         }
         
-        $post = $this->initModel('post')->getThreadByID($postID);
+        $post = $this->getModel('post')->getThreadByID($postID);
 
         if ($post === NULL) {
             $this->returnJSON(FALSE, []);
@@ -57,7 +57,7 @@ class AjaxController extends ControllerCore
 
     public function actionWrite() : void
     {
-        list($status, $errors) = $this->initModel('post')->create($this->post);
+        list($status, $errors) = $this->getModel('post')->create($this->post);
 
         if ($status) {
             $errors = [];
@@ -80,7 +80,7 @@ class AjaxController extends ControllerCore
             $this->returnJSON(FALSE, []);
         }
 
-        $posts = $this->initModel('post')->search($keyword, $this->page);
+        $posts = $this->getModel('post')->search($keyword, $this->page);
 
         if (!count($posts) < 1) {
             $this->returnJSON(FALSE, []);

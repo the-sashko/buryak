@@ -3,20 +3,20 @@ class CronController extends CronControllerCore
 {
     public function jobShare() : void
     {
-        $this->initModel('post')->shareThreads();
+        $this->getModel('post')->shareThreads();
     }
 
     public function jobSitemap() : void
     {
-        $sitemap     = $this->initPlugin('sitemap');
-        $sections    = $this->initModel('sections')->getAllThreads();
+        $sitemap     = $this->getPlugin('sitemap');
+        $sections    = $this->getModel('sections')->getAllThreads();
         $sitemapList = [];
 
         foreach ($sections as $section) {
             $postLinks = [];
             $page      = 1;
 
-            $posts = $this->initModel('post')->getBySectionID(
+            $posts = $this->getModel('post')->getBySectionID(
                 $section->getID(),
                 $page
             );
@@ -38,12 +38,12 @@ class CronController extends CronControllerCore
 
     public function jobRemoveBanUsers() : void
     {
-        $this->initModel('user')->removeBans();
+        $this->getModel('user')->removeBans();
     }
 
     public function jobAutoBanUsers() : void
     {
-        $this->initModel('user')->autoBan();
+        $this->getModel('user')->autoBan();
     }
 
     private function _getThreadLink(
@@ -51,7 +51,7 @@ class CronController extends CronControllerCore
         SectionVO $section = NULL
     ) : string
     {
-        $mainConfig = $this->initConfig('main');
+        $mainConfig = $this->getConfig('main');
 
         $host = $mainConfig['site_protocol'].'://'.$mainConfig['site_domain'];
 
@@ -60,7 +60,7 @@ class CronController extends CronControllerCore
 
     private function _getSitemapLink(string $sitemapName = '') : string
     {
-        $mainConfig = $this->initConfig('main');
+        $mainConfig = $this->getConfig('main');
 
         $host = $mainConfig['site_protocol'].'://'.$mainConfig['site_domain'];
 

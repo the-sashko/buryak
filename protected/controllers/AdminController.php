@@ -7,12 +7,12 @@ class AdminController extends ControllerCore
     {
         parent::__construct();
 
-        $auth = $this->initModel('auth');
-        $serverInfo =  $this->initPlugin('serverInfo');
+        $authModel        = $this->getModel('auth');
+        $serverInfoPlugin = $this->getPlugin('serverInfo');
 
         if (
-            !$auth->isSignedIn() &&
-            $serverInfo->get('REQUEST_URI') != '/admin/login/'
+            !$authModel->isSignedIn() &&
+            $serverInfoPlugin->get('REQUEST_URI') != '/admin/login/'
         ) {
             $this->redirect('/admin/login/');
         }
@@ -20,7 +20,7 @@ class AdminController extends ControllerCore
 
     public function actionLogin() : void
     {
-        if ($this->initModel('auth')->isSignedIn()) {
+        if ($this->getModel('auth')->isSignedIn()) {
             $this->redirect('/admin/post/');
         }
         
@@ -49,14 +49,14 @@ class AdminController extends ControllerCore
 
     public function actionLogout() : void
     {
-        $this->initModel('auth')->signout();
+        $this->getModel('auth')->signout();
 
         $this->redirect("/admin/login/");
     }
 
     public function actionPost() : void
     {
-        $posts = $this->initModel('post')->getList($this->page, TRUE);
+        $posts = $this->getModel('post')->getList($this->page, TRUE);
 
         if (count($posts) < 1 && $this->page != 1) {
             $this->page --;
@@ -77,7 +77,7 @@ class AdminController extends ControllerCore
         if (count($this->post) > 0) {
             $formData = $this->post;
 
-            $postModel             = $this->initModel('post');
+            $postModel             = $this->getModel('post');
             list($status, $errors) = $postModel->edit($postID, $formData);
 
             if ($status) {
@@ -95,8 +95,7 @@ class AdminController extends ControllerCore
     {
         $postID = (int) $this->URLParam;
 
-        $this->initModel('post')->remove($postID);
-
+        $this->getModel('post')->remove($postID);
         $this->redirect('/admin/post/');
     }
 
@@ -107,7 +106,7 @@ class AdminController extends ControllerCore
 
     public function actionBan() : void
     {
-        $banList = $this->initModel('user')->getBanList($this->page);
+        $banList = $this->getModel('user')->getBanList($this->page);
 
         if (count($banList) < 1 && $this->page != 1) {
             $this->page --;
@@ -128,7 +127,7 @@ class AdminController extends ControllerCore
         if (count($this->post) > 0) {
             $formData = $this->post;
 
-            $userModel             = $this->initModel('user');
+            $userModel             = $this->getModel('user');
             list($status, $errors) = $userModel->editBan($banID, $formData);
 
             if ($status) {
@@ -146,14 +145,14 @@ class AdminController extends ControllerCore
     {
         $userID = (int) $this->URLParam;
 
-        $this->initModel('user')->removeBan($userID);
+        $this->getModel('user')->removeBan($userID);
 
         $this->redirect('/admin/ban/');
     }
 
     public function actionCron() : void
     {
-        $cronList = $this->initModel('cron')->getList($this->page);
+        $cronList = $this->getModel('cron')->getList($this->page);
 
         if (count($cronList) < 1 && $this->page != 1) {
             $this->page --;
@@ -174,7 +173,7 @@ class AdminController extends ControllerCore
         if (count($this->post) > 0) {
             $formData = $this->post;
 
-            $cronModel             = $this->initModel('cron');
+            $cronModel             = $this->getModel('cron');
             list($status, $errors) = $cronModel->edit($cronID, $formData);
 
             if ($status) {
@@ -192,7 +191,7 @@ class AdminController extends ControllerCore
     {
         $cronID = (int) $this->URLParam;
 
-        $this->initModel('cron')->remove($cronID);
+        $this->getModel('cron')->remove($cronID);
 
         $this->redirect('/admin/cron/');
     }
@@ -200,7 +199,7 @@ class AdminController extends ControllerCore
     public function actionSection() : void
     {
         $formData = $this->post;
-        $sectionModel = $this->initModel('section');
+        $sectionModel = $this->getModel('section');
         $sectionList = $sectionModel->getList($this->page, TRUE);
 
         if (!count($formData) > 0) {
@@ -231,7 +230,7 @@ class AdminController extends ControllerCore
         if (count($this->post) > 0) {
             $formData = $this->post;
 
-            $sectionModel          = $this->initModel('section');
+            $sectionModel          = $this->getModel('section');
             list($status, $errors) = $sectionModel->edit($sectionID, $formData);
 
             if ($status) {
@@ -249,7 +248,7 @@ class AdminController extends ControllerCore
     {
         $sectionID = (int) $this->URLParam;
 
-        $this->initModel('section')->remove($sectionID);
+        $this->getModel('section')->remove($sectionID);
 
         $this->redirect('/admin/section/');
     }
@@ -278,7 +277,7 @@ class AdminController extends ControllerCore
         if (count($this->post) > 0) {
             $formData = $this->post;
 
-            $userModel             = $this->initModel('user');
+            $userModel             = $this->getModel('user');
             list($status, $errors) = $userModel->edit($userID, $formData);
 
             if ($status) {
@@ -296,7 +295,7 @@ class AdminController extends ControllerCore
     {
         $cronID = (int) $this->URLParam;
 
-        $this->initModel('cron')->removeBan($cronID);
+        $this->getModel('cron')->removeBan($cronID);
 
         $this->redirect('/admin/cron/');
     }
