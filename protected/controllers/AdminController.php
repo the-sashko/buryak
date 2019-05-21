@@ -70,12 +70,34 @@ class AdminController extends ControllerCore
 
     public function actionEditpost() : void
     {
-        //To-Do
+        $postID = (int) $this->URLParam;
+        $formData = [];
+        $errors   = [];
+
+        if (count($this->post) > 0) {
+            $formData = $this->post;
+
+            $postModel             = $this->initModel('post');
+            list($status, $errors) = $postModel->edit($postID, $formData);
+
+            if ($status) {
+                $this->redirect('/admin/post/');
+            }
+        }
+
+        $this->render('post/form', [
+            'formData' => $formData,
+            'errors'   => $errors
+        ]);
     }
 
     public function actionDelpost() : void
     {
-        //To-Do
+        $postID = (int) $this->URLParam;
+
+        $this->initModel('post')->remove($postID);
+
+        $this->redirect('/admin/post/');
     }
 
     public function actionSpam() : void
@@ -85,32 +107,94 @@ class AdminController extends ControllerCore
 
     public function actionBan() : void
     {
-        //To-Do
+        $banList = $this->initModel('user')->getBanList($this->page);
+
+        if (count($banList) < 1 && $this->page != 1) {
+            $this->page --;
+            $this->redirect('/ban/page-'.$this->page.'/');
+        }
+
+        $this->render('user/ban/list', [
+            'banList' => $banList
+        ]);
     }
 
     public function actionEditban() : void
     {
-        //To-Do
+        $banID = (int) $this->URLParam;
+        $formData = [];
+        $errors   = [];
+
+        if (count($this->post) > 0) {
+            $formData = $this->post;
+
+            $userModel             = $this->initModel('user');
+            list($status, $errors) = $userModel->editBan($banID, $formData);
+
+            if ($status) {
+                $this->redirect('/admin/post/');
+            }
+        }
+
+        $this->render('user/ban/form', [
+            'formData' => $formData,
+            'errors'   => $errors
+        ]);
     }
 
     public function actionDelban() : void
     {
-        //To-Do
+        $userID = (int) $this->URLParam;
+
+        $this->initModel('user')->removeBan($userID);
+
+        $this->redirect('/admin/ban/');
     }
 
     public function actionCron() : void
     {
-        //To-Do
+        $cronList = $this->initModel('cron')->getList($this->page);
+
+        if (count($cronList) < 1 && $this->page != 1) {
+            $this->page --;
+            $this->redirect('/cron/page-'.$this->page.'/');
+        }
+
+        $this->render('cron/list', [
+            'cronList' => $cronList
+        ]);
     }
 
     public function actionEditcron() : void
     {
-        //To-Do
+        $cronID = (int) $this->URLParam;
+        $formData = [];
+        $errors   = [];
+
+        if (count($this->post) > 0) {
+            $formData = $this->post;
+
+            $cronModel             = $this->initModel('cron');
+            list($status, $errors) = $cronModel->edit($cronID, $formData);
+
+            if ($status) {
+                $this->redirect('/admin/cron/');
+            }
+        }
+
+        $this->render('cron/form', [
+            'formData' => $formData,
+            'errors'   => $errors
+        ]);
     }
 
     public function actionDelcron() : void
     {
-        //To-Do
+        $cronID = (int) $this->URLParam;
+
+        $this->initModel('cron')->remove($cronID);
+
+        $this->redirect('/admin/cron/');
     }
 
     public function actionSection() : void
@@ -140,12 +224,34 @@ class AdminController extends ControllerCore
 
     public function actionEditsection() : void
     {
-        //To-Do
+        $sectionID = (int) $this->URLParam;
+        $formData  = [];
+        $errors    = [];
+
+        if (count($this->post) > 0) {
+            $formData = $this->post;
+
+            $sectionModel          = $this->initModel('section');
+            list($status, $errors) = $sectionModel->edit($sectionID, $formData);
+
+            if ($status) {
+                $this->redirect('/admin/section/');
+            }
+        }
+
+        $this->render('section/form', [
+            'formData' => $formData,
+            'errors'   => $errors
+        ]);
     }
 
     public function actionDelsection() : void
     {
-        //To-Do
+        $sectionID = (int) $this->URLParam;
+
+        $this->initModel('section')->remove($sectionID);
+
+        $this->redirect('/admin/section/');
     }
 
     public function actionSettings() : void
@@ -165,12 +271,34 @@ class AdminController extends ControllerCore
 
     public function actionEdituser() : void
     {
-        //To-Do
+        $userID   = (int) $this->URLParam;
+        $formData = [];
+        $errors   = [];
+
+        if (count($this->post) > 0) {
+            $formData = $this->post;
+
+            $userModel             = $this->initModel('user');
+            list($status, $errors) = $userModel->edit($userID, $formData);
+
+            if ($status) {
+                $this->redirect('/admin/user/');
+            }
+        }
+
+        $this->render('user/form', [
+            'formData' => $formData,
+            'errors'   => $errors
+        ]);
     }
 
     public function actionDeluser() : void
     {
-        //To-Do
+        $cronID = (int) $this->URLParam;
+
+        $this->initModel('cron')->removeBan($cronID);
+
+        $this->redirect('/admin/cron/');
     }
 
     public function actionPassword() : void
