@@ -231,10 +231,9 @@ class Post extends ModelCore
             $withoutMedia
         );
 
-        $section = $this->initModel('section')->getByID($sectionID);
-
-        $cryptPlugin = $this->initPlugin('crypt');
-        $cryptConfig = $this->getConfig('crypt');
+        $section = $this->getModel('section')->getByID($sectionID);
+        $cryptPlugin =  $this->getPlugin('crypt');
+        $cryptConfig =  $this->getConfig('crypt');
 
         if (!array_key_exists('salt', $cryptConfig)) {
             throw new Exception('Hash Salt Is Not Set');
@@ -249,7 +248,7 @@ class Post extends ModelCore
             $password = $this->getHash($password, $salt);
         };
         
-        $ipHash = $this->initModel('geoip')->getIPHash();
+        $ipHash = $this->getModel('geoip')->getIPHash();
 
         $this->object->begin();
 
@@ -294,7 +293,6 @@ class Post extends ModelCore
         }
 
         $this->redirect('/'.$section->getSlug().'/'.$relativeCode.'/#last');
-
     }
 
     public function remove(int $postID = 0) : bool
@@ -432,7 +430,7 @@ class Post extends ModelCore
 
     private function _validateSection(int $sectionID = 0) : array
     {
-        $section = $this->initModel('section')->getByID($sectionID);
+        $section = $this->getModel('section')->getByID($sectionID);
 
         if ($section == NULL) {
             return [FALSE, 'Invalid Section'];

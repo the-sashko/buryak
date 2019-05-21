@@ -6,7 +6,7 @@ class SectionController extends ControllerCore
         $slug = $this->URLParam;
 
         if ($slug == 'all') {
-            $posts = $this->initModel('post')->getAllThreads($this->page);
+            $posts = $this->getModel('post')->getAllThreads($this->page);
 
             if (count($posts) < 1 && $this->page !== 1) {
                 $this->page --;
@@ -18,13 +18,13 @@ class SectionController extends ControllerCore
             ]);
         }
 
-        $section = $this->initModel('section')->getBySlug();
+        $section = $this->getModel('section')->getBySlug();
 
         if ($section == NULL) {
             $this->redirect('/error/404/');
         }
 
-        $posts = $this->initModel('post')->getBySectionID(
+        $posts = $this->getModel('post')->getBySectionID(
             $section->getID(),
             $this->page
         );

@@ -3,7 +3,7 @@ class PostController extends ControllerCore
 {
     public function actionWrite() : void
     {
-        $user = $this->initModel('user')->getCurrent();
+        $user = $this->getModel('user')->getCurrent();
 
         if (!$user->isBan()) {
             $this->redirect('/user/ban/');
@@ -13,7 +13,7 @@ class PostController extends ControllerCore
             $this->redirect('/user/check/');
         }
 
-        list($status, $errors) = $this->initModel('post')->create($this->post);
+        list($status, $errors) = $this->getModel('post')->create($this->post);
 
         if ($status) {
             $user->setFlashSuccess();
@@ -30,9 +30,9 @@ class PostController extends ControllerCore
 
     public function actionRemove() : void
     {
-        $user = $this->initModel('user')->getCurrent();
+        $user = $this->getModel('user')->getCurrent();
 
-        list($status, $errors) = $this->initModel('post')->remove($this->post);
+        list($status, $errors) = $this->getModel('post')->remove($this->post);
 
         if ($status) {
             $user->setFlashSuccess();
@@ -52,13 +52,13 @@ class PostController extends ControllerCore
     {
         list($sectionSlug, $postRelativeCode) = $this->_parseThreadURLParams();
 
-        $sectionID = $this->initModel('section')->getBySlug($sectionSlug);
+        $sectionID = $this->getModel('section')->getBySlug($sectionSlug);
 
         if (!$sectionID > 0) {
             $this->redirect('/error/404/');
         }
 
-        $postModel = $this->initModel('post');
+        $postModel = $this->getModel('post');
 
         $post = $postModel->getPostBySection($sectionID, $postRelativeCode);
 
@@ -79,7 +79,7 @@ class PostController extends ControllerCore
 
     public function actionAll() : void
     {
-        $posts = $this->initModel('post')->getAllPosts($this->page);
+        $posts = $this->getModel('post')->getAllPosts($this->page);
 
         if (count($posts) < 1 && $this->page !== 1) {
             $this->page --;

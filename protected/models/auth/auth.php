@@ -14,7 +14,7 @@ class Auth extends ModelCore implements IModelAuth
 	{
 		parent::__construct();
 
-		$this->user = $this->initModel('user');
+		$this->user = $this->getModel('user');
 	}
 
     /**

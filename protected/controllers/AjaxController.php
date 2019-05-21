@@ -5,14 +5,14 @@ class AjaxController extends ControllerCore
 
     public function actionAllposts() : void
     {
-        $posts = $this->initModel('post')->getList($this->page, FALSE);
+        $posts = $this->getModel('post')->getList($this->page, FALSE);
 
         $this->returnJSON(TRUE, $posts);
     }
 
     public function actionAllthreads() : void
     {
-        $posts = $this->initModel('post')->getList($this->page, FALSE);
+        $posts = $this->getModel('post')->getList($this->page, FALSE);
 
         $this->returnJSON(TRUE, $posts);
     }
@@ -25,7 +25,7 @@ class AjaxController extends ControllerCore
             $this->returnJSON(FALSE, []);
         }
         
-        $post = $this->initModel('post')->getByID($postID);
+        $post = $this->getModel('post')->getByID($postID);
 
         if ($post === NULL) {
             $this->returnJSON(FALSE, []);
@@ -38,12 +38,32 @@ class AjaxController extends ControllerCore
 
     public function actionThread() : void
     {
-        //To-Do
+        $postID = (int) $this->URLParam;
+
+        if ($postID < 1) {
+            $this->returnJSON(FALSE, []);
+        }
+        
+        $post = $this->getModel('post')->getThreadByID($postID);
+
+        if ($post === NULL) {
+            $this->returnJSON(FALSE, []);
+        }
+
+        $this->returnJSON(TRUE, [
+            'post' => $post
+        ]);
     }
 
     public function actionWrite() : void
     {
-        //To-Do
+        list($status, $errors) = $this->getModel('post')->create($this->post);
+
+        if ($status) {
+            $errors = [];
+        }
+
+        $this->returnJSON($status, $errors);
     }
 
     public function actionSearch() : void
@@ -60,7 +80,7 @@ class AjaxController extends ControllerCore
             $this->returnJSON(FALSE, []);
         }
 
-        $posts = $this->initModel('post')->search($keyword, $this->page);
+        $posts = $this->getModel('post')->search($keyword, $this->page);
 
         if (!count($posts) < 1) {
             $this->returnJSON(FALSE, []);
