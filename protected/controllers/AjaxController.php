@@ -38,12 +38,32 @@ class AjaxController extends ControllerCore
 
     public function actionThread() : void
     {
-        //To-Do
+        $postID = (int) $this->URLParam;
+
+        if ($postID < 1) {
+            $this->returnJSON(FALSE, []);
+        }
+        
+        $post = $this->initModel('post')->getThreadByID($postID);
+
+        if ($post === NULL) {
+            $this->returnJSON(FALSE, []);
+        }
+
+        $this->returnJSON(TRUE, [
+            'post' => $post
+        ]);
     }
 
     public function actionWrite() : void
     {
-        //To-Do
+        list($status, $errors) = $this->initModel('post')->create($this->post);
+
+        if ($status) {
+            $errors = [];
+        }
+
+        $this->returnJSON($status, $errors);
     }
 
     public function actionSearch() : void
