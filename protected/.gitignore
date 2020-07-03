@@ -1,0 +1,8 @@
+public/img/
+public/xml/
+public/sitemap.xml
+
+protected/config/
+protected/res/cache/
+protected/res/lock/
+protected/res/logs/

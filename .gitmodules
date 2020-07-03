@@ -1,0 +1,3 @@
+[submodule "protected/core"]
+	path = protected/core
+	url = git@github.com:the-sashko/php-common-toolkit.git

@@ -1,0 +1,9 @@
+{
+    "type"           : "pgsql",
+    "host"           : "localhost",
+    "port"           : "5432",
+    "db"             : "fajno",
+    "user"           : "postgres",
+    "password"       : "z__0hYb49bw-emrPqr2",
+    "cache_provider" : "mock"
+}
