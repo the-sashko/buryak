@@ -1,24 +1,16 @@
 <?php
-/**
- * Trait For Processing Forms In Cron Model
- */
 trait CronForm
 {
-    /**
-     * Processing Form For Cron Jobs
-     *
-     * @param array $formData Data From Form
-     * @param int   $cronID   Cron Job ID
-     *
-     * @return array Result Of Form Processing
-     */
-    public function formHandler(array $formData = [], int $cronID = -1) : array
+    public function formHandler(
+        ?array $formData = null,
+        ?int   $cronID   = null
+    ): array
     {
         list(
             $action,
             $interval,
             $isActive
-        ) = $this->_getFormFields($formData, $cronID);
+        ) = $this->_getFormFields($formData);
 
         list($res, $error) = $this->_validateFormFields(
             $action,
@@ -28,50 +20,31 @@ trait CronForm
 
         if (!$res) {
             return [
-                FALSE,
+                false,
                 $error
             ];
         }
 
-        if ($cronID > 0) {
-            $res = $this->_updateByID($action, $interval, $isActive, $cronID);
-
-            if (!$res) {
-                $error = 'Internal Database Error';
-                return [
-                    FALSE,
-                    $error
-                ];
-            }
-
-            return [TRUE, ''];
+        if (empty($cronID)) {
+            $res = $this->_create($action, $interval, $isActive);
         }
 
-        $res = $this->_create($action, $interval, $isActive);
+        if (!empty($cronID)) {
+            $res = $this->_updateByID($action, $interval, $isActive, $cronID);
+        }
 
         if (!$res) {
             $error = 'Internal Database Error';
             return [
-                FALSE,
+                false,
                 $error
             ];
         }
 
-        return [TRUE, ''];
+        return [true, null];
     }
 
-    /**
-     * Get Prepared Form Data
-     *
-     * @param array $formData Data From Form
-     * @param int   $cronID   Cron ID
-     *
-     * @return array Prepared Form Data
-     */
-    private function _getFormFields(
-        array $formData = [],
-        int   $cronID   = -1
-    ) : array
+    protected function _getFormFields(?array $formData = null): array
     {
         $cronVO = $this->getVO($formData);
 
@@ -84,25 +57,16 @@ trait CronForm
         return [$action, $interval, $isActive];
     }
 
-    /**
-     * Validate Data From Form
-     *
-     * @param string $action   Cron Job Action
-     * @param int    $interval Cron Job Execution Interval
-     * @param bool   $isActive Is Cron Job Active
-     *
-     * @return array Result Of Form Data Validation
-     */
-    private function _validateFormFields(
-        string $action   = '',
-        int    $interval = -1,
-        bool   $isActive = FALSE
-    ) : array
+    protected function _validateFormFields(
+        ?string $action   = null,
+        ?int    $interval = null,
+        bool    $isActive = false
+    ): array
     {
         if (!preg_match('/^job([A-Z])([a-z]+)$/su', $action)) {
             $error = 'Cron Job Has Invalid Format';
             return [
-                FALSE,
+                false,
                 $error
             ];
         }
@@ -110,7 +74,7 @@ trait CronForm
         if ($interval < 1) {
             $error = 'Invalid Internal Value';
             return [
-                FALSE,
+                false,
                 $error
             ];
         }
@@ -118,12 +82,11 @@ trait CronForm
         if ($this->_isCronExists($action, $interval)) {
             $error = 'This Job Is Already Set';
             return [
-                FALSE,
+                false,
                 $error
             ];
         }
 
-        return [TRUE, ''];
+        return [true, null];
     }
 }
-?>
