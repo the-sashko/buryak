@@ -7,57 +7,57 @@ trait Router
     /**
      * Perform Redirect Rules
      *
-     * @param string $uri HTTP Request URI
+     * @param string $url HTTP Request URL
      */
-    public function routeRedirect(?string $uri = null): void
+    public function routeRedirect(?string $url = null): void
     {
-        if (empty($uri)) {
-            $uri = '/';
+        if (empty($url)) {
+            $url = '/';
         }
 
-        if (!preg_match('/^(.*?)\/$/su', $uri)) {
-            header("Location: {$uri}/", true, 301);
+        /*if (!preg_match('/^(.*?)\/$/su', $url)) {
+            header("Location: {$url}/", true, 301);
+            exit(0);
+        }*/
+
+        if (preg_match('/^(.*?)\/\/(.*?)$/su', $url)) {
+            $url = preg_replace('/([\/]+)/su', '', $url);
+            header("Location: {$url}", true, 301);
             exit(0);
         }
 
-        if (preg_match('/^(.*?)\/\/(.*?)$/su', $uri)) {
-            $url = preg_replace('/([\/]+)/su', '', $uri);
-            header("Location: {$uri}", true, 301);
-            exit(0);
-        }
-
-        if (preg_match('/^(.*?)\/page-0\/$/su', $uri)) {
-            $url = preg_replace('/^(.*?)\/page-0\/$/su', '$1/', $uri);
+        if (preg_match('/^(.*?)\/page-0\/$/su', $url)) {
+            $url = preg_replace('/^(.*?)\/page-0\/$/su', '$1/', $url);
             header('Location: '.$url, true, 301);
             exit(0);
         }
 
-        if (preg_match('/^(.*?)\/page-1\/$/su', $uri)) {
-            $url = preg_replace('/^(.*?)\/page-1\/$/su', '$1/', $uri);
+        if (preg_match('/^(.*?)\/page-1\/$/su', $url)) {
+            $url = preg_replace('/^(.*?)\/page-1\/$/su', '$1/', $url);
             header('Location: '.$url, true, 301);
             exit(0);
         }
 
-        if (preg_match('/^\/([a-z]{2})\/(.*?)\/$/su', $uri)) {
-            $url = preg_replace('/^\/([a-z]{2})\/(.*?)\/$/su', '$2', $uri);
+        if (preg_match('/^\/([a-z]{2})\/(.*?)\/$/su', $url)) {
+            $url = preg_replace('/^\/([a-z]{2})\/(.*?)\/$/su', '$2', $url);
         }
 
-        if (preg_match('/^\/thread\/(.*?)\/$/su', $uri)) {
+        if (preg_match('/^\/thread\/(.*?)\/$/su', $url)) {
             header('Location: /error/404/', true, 301);
             exit(0);
         }
 
-        if (preg_match('/^\/board\/(.*?)\/$/su', $uri)) {
+        if (preg_match('/^\/board\/(.*?)\/$/su', $url)) {
             header('Location: /error/404/', true, 301);
             exit(0);
         }
 
-        if (preg_match('/^\/main\/(.*?)\/$/su', $uri)) {
+        if (preg_match('/^\/main\/(.*?)\/$/su', $url)) {
             header('Location: /error/404/', true, 301);
             exit(0);
         }
 
-        if (preg_match('/^\/page\/$/su', $uri)) {
+        if (preg_match('/^\/page\/$/su', $url)) {
             header('Location: /error/404/', true, 301);
             exit(0);
         }
@@ -66,74 +66,78 @@ trait Router
     /**
      * Perform Rewrite Rules
      *
-     * @param string $uri HTTP Request URI
+     * @param string $url HTTP Request URL
      *
-     * @return string Rewrited HTTP Request URI
+     * @return string Rewrited HTTP Request URL
      */
-    public function routeRewrite(?string $uri = null): ?string
+    public function routeRewrite(?string $url = null): ?string
     {
-        if (empty($uri)) {
-            $uri = '/';
+        if (empty($url)) {
+            $url = '/';
         }
 
-        if ($uri == '/') {
+        if ($url == '/') {
             return '/ua/main/index/';
         }
 
-        if (preg_match('/^\/page\-([0-9]+)\/$/su', $uri)) {
+        if (preg_match('/^\/page\-([0-9]+)\/$/su', $url)) {
             return preg_replace(
                 '/^\/page\-([0-9]+)\/$/su',
-                '/ua/main/index/$1/',
-                $uri
+                '/ua/main/index/page-$1/',
+                $url
             );
         }
 
-        if (preg_match('/^\/error\/([0-9]+)\/$/su', $uri)) {
+        if (preg_match('/^\/error\/([0-9]+)\/$/su', $url)) {
             return preg_replace(
                 '/^\/error\/([0-9]+)\/$/su',
-                '/ua/main/error/$1/',
-                $uri
+                '/ua/main/error/?code=$1',
+                $url
             );
         }
 
-        if (preg_match('/^\/([a-z]+)\/([0-9]+)\/$/su', $uri)) {
+        if (preg_match('/^\/([a-z]+)\/([0-9]+)\/$/su', $url)) {
             return preg_replace(
                 '/^\/([a-z]+)\/([0-9]+)\/$/su',
-                '/ua/post/thread/$1_$2/',
-                $uri
+                '/ua/post/thread/?board=$1&thread_id=$2',
+                $url
             );
         }
 
-        if (preg_match('/^\/([a-z]+)\/$/su', $uri)) {
-            return '/ua/post/board/$1/page-1/';
+        if (preg_match('/^\/([a-z]+)\/$/su', $url)) {
+            return preg_replace(
+                '/^\/([a-z]+)\/$/su',
+                '/ua/post/board/page-1/?board=$1',
+                $url
+            );
         }
 
-        if (preg_match('/^\/([a-z]+)\/page\-([0-9]+)\/$/su', $uri)) {
+        if (preg_match('/^\/([a-z]+)\/page\-([0-9]+)\/$/su', $url)) {
             return preg_replace(
                 '/^\/([a-z]+)\/page\-([0-9]+)\/$/su',
-                '/ua/post/board/$1/page-$2/',
-                $uri
+                '/ua/post/board/page-$2/?board=$1',
+                $url
             );
         }
 
-        if (preg_match('/^\/page\/([a-z]+)\/$/su', $uri)) {
+        if (preg_match('/^\/page\/([a-z]+)\/$/su', $url)) {
             return preg_replace(
                 '/^\/page\/([a-z]+)\/$/su',
-                '/ua/main/page/$1/',
-                $uri
+                '/ua/main/page/?slug=$1',
+                $url
             );
         }
 
-        if (preg_match('/^\/search\/$/su', $uri)) {
+        if (preg_match('/^\/search\/$/su', $url)) {
             return preg_replace(
                 '/^\/main\/search\/$/su',
                 '/ua/main/search/',
-                $uri
+                $url
             );
         }
 
-        $uri = sprintf('/ua%s', $uri);
+        $url = sprintf('/ua%s', $url);
 
-        return $uri;
+        return $url;
     }
 }

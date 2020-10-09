@@ -1,8 +1,5 @@
 <?php
-/**
- * ModelObject Class For Example Model
- */
-class ExampleObject extends ModelObjectCore
+class PostObject extends ModelObjectCore
 {
     /**
      * @var string Default Data Base Table

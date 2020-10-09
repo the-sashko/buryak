@@ -10,7 +10,7 @@ class MainController extends ControllerCore
     public $templaterScope = 'site';
 
     /**
-     * Default Site Action
+     * Main Ppage
      */
     public function actionIndex(): void
     {

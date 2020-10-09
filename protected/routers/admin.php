@@ -7,15 +7,15 @@ trait Router
     /**
      * Perform Redirect Rules
      *
-     * @param string $uri HTTP Request URI
+     * @param string $url HTTP Request URL
      */
-    public function routeRedirect(?string $uri = null): void
+    public function routeRedirect(?string $url = null): void
     {
-        if (empty($uri)) {
-            $uri = '/';
+        if (empty($url)) {
+            $url = '/';
         }
 
-        if (!preg_match('/^\/$/su', $uri)) {
+        if (!preg_match('/^\/$/su', $url)) {
             header('Location: /');
             exit(0);
         }
@@ -24,20 +24,20 @@ trait Router
     /**
      * Perform Rewrite Rules
      *
-     * @param string $uri HTTP Request URI
+     * @param string $url HTTP Request URL
      *
-     * @return string Rewrited HTTP Request URI
+     * @return string Rewrited HTTP Request URL
      */
-    public function routeRewrite(?string $uri = null): string
+    public function routeRewrite(?string $url = null): string
     {
-        if (empty($uri)) {
-            $uri = '/';
+        if (empty($url)) {
+            $url = '/';
         }
 
-        if (preg_match('/^\/$/su', $uri)) {
+        if (preg_match('/^\/$/su', $url)) {
             return '/en/main/index/';
         }
 
-        return $uri;
+        return $url;
     }
 }

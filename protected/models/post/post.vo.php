@@ -2,7 +2,7 @@
 /**
  * ValuesObject Class For Example Model
  */
-class ExampleVO extends ValuesObject
+class PostVO extends ValuesObject
 {
     /**
      * Get Example ID

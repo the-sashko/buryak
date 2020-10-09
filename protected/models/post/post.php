@@ -1,8 +1,8 @@
 <?php
 /**
- * ModelCore Class For Example Model
+ * Class For Imageboard Posts
  */
-class Example extends ModelCore
+class Post extends ModelCore
 {
     /**
      * Get All Example Data
