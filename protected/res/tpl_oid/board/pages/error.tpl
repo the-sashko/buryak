@@ -1,0 +1,1 @@
+<h2>Error <span><?=$code;?></span></h2>

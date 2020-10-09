@@ -1,0 +1,16 @@
+{
+    "telegram" : {
+        "token" : "",
+        "chats" : ["-1"]
+    },
+    "twitter" : {
+        "consumer" : {
+            "key"    : "",
+            "secret" : ""
+        },
+        "access" : {
+            "token"  : "",
+            "secret" : ""
+        }
+    }
+}

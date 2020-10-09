@@ -1,32 +1,14 @@
 <?php
-/**
- * ModelObject Class For Cron Model
- */
 class CronObject extends ModelObjectCore
 {
-    /**
-     * @var string Default Data Base Table
-     */
     public $defaultTableName = 'cron_jobs';
+    public $tableCrons       = 'cron_jobs';
+    public $scope            = 'cron';
 
     /**
-     * @var string Data Base Table For Cron Jobs Data
+     * summary
      */
-    public $tableCrons = 'cron_jobs';
-
-    /**
-     * @var string Data Base Queries Cache Scope
-     */
-    public $scope = 'cron';
-
-    /**
-     * Insert Cron Job Data To Data Base
-     *
-     * @param array $values Cron Job Data
-     *
-     * @return bool Is Cron Job Data Successfully Saved
-     */
-    public function create(array $values = []) : bool
+    public function create(?array $values = null): bool
     {
         $columns = [
             'action',
@@ -38,42 +20,31 @@ class CronObject extends ModelObjectCore
     }
 
     /**
-     * Update Cron Job Data In Data Base By Job ID
-     *
-     * @param array $columns Cron Job Columns In Data Base Table
-     * @param array $values  Cron Job Data
-     * @param int   $id      Cron Job ID
-     *
-     * @return bool Is Cron Job Data Successfully Updated
+     * summary
      */
     public function updateCronByID(
-        array  $columns = [],
-        array  $values  = [],
-        int    $id      = -1
-    ) : bool
+        ?array  $columns = null,
+        ?array  $values  = null,
+        ?int    $id      = null
+    ): bool
     {
         return $this->updateByID($this->tableCrons, $columns, $values, $id);
     }
 
     /**
-     * Get All Cron Jobs
-     *
-     * @return array List Of All Cron Jobs
+     * summary
      */
-    public function getAllCrons() : array
+    public function getAllCrons(): array
     {
         return $this->getAll($this->tableCrons);
     }
 
     /**
-     * Get Cron Jobs For Execution
-     *
-     * @return array List Of All Cron Jobs For Execution
+     * summary
      */
-    public function getJobs() : array
+    public function getJobs(): array
     {
         $condition = '"time_next_exec" <= '.time().' AND "is_active" = true';
-        return $this->getAllByCondition($this->tableCrons, [], $condition);
+        return $this->getAllByCondition($this->tableCrons, null, $condition);
     }
 }
-?>

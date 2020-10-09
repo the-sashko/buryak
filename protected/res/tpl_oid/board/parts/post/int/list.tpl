@@ -1,0 +1,1 @@
+<?php _part('post/int/card'); ?>
