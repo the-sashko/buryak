@@ -1,4 +1,50 @@
-test
+<!DOCTYPE html>
+<html>
+<head>
+    <title>dev</title>
+</head>
+<body>
+    <form method="POST" enctype="multipart/form-data" action="/post/write/">
+        <div>
+            <input type="text" name="title" placeholder="Заголовок">
+        </div>
+        <div>
+            <input type="file" name="media">
+        </div>
+        <div>
+            <input type="checkbox" name="without_media">&nbsp;Без&nbsp;медіафайлу
+        </div>
+        <div>
+            <input type="text" name="name" placeholder="Ім'я">
+        </div>
+        <div>
+            <input type="password" name="password" placeholder="Пароль">
+        </div>
+        <div>
+            <input type="checkbox" name="trip_code">&nbsp;Трипкод
+        </div>
+        <div>
+            <textarea name="text" placeholder="Текст"></textarea>
+        </div>
+        <div>
+            <img src="https://fajno.in/1602487165/captcha.png">
+        </div>
+        <div>
+            <input type="text" name="captcha_text" placeholder="Введіть слова з картинки">
+        </div>
+        <div>
+            <input type="radio" name="redirect_to" value="thread" checked="">&nbsp;До&nbsp;теми
+            <input type="radio" name="redirect_to" value="section">&nbsp;До&nbsp;розділу
+        </div>
+        <div>
+            <input type="submit" value="Написати">
+        </div>
+        <input type="hidden" name="thread_id" value="0">
+        <input type="hidden" name="section" value="b">
+    </form>
+</body>
+</html>
+
 <?php
 //_part('header');
 //_page($template);

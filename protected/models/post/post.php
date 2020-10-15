@@ -4,15 +4,31 @@
  */
 class Post extends ModelCore
 {
-    /**
-     * Get All Example Data
-     *
-     * @return array List Of Example Data
-     */
-    public function getAll(): ?array
+    public function write(?array $postData = null): PostForm
     {
-        $data = $this->object->getAllExamples();
+        $this->object->test();
 
-        return $this->getVOArray($data);
+        $postForm = new PostForm($postData);
+
+        $postForm->checkInputParams();
+
+        if (!$postForm->getStatus()) {
+            return $postForm;
+        }
+
+        //$postVO = $this->_mapPostForm($postForm);
+
+        return $postForm;
     }
+
+    /*private function _mapPostForm(PostForm &$postForm): PostValuesObject
+    {
+        $postVO = $this->getVO();
+
+        $text = $postForm->getText();
+
+        $postVO->setText() = $text;
+
+        return $postVO;
+    }*/
 }

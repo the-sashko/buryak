@@ -26,7 +26,17 @@ class PostController extends ControllerCore
 
     public function actionWrite(): void
     {
-        //
+        $postModel = $this->getModel('post');
+
+        $postForm = $postModel->write($this->post);
+
+        if ($postForm->getStatus()) {
+            die('OK!');
+        }
+
+        foreach ($postForm->getErrors() as $error) {
+            echo '<h3>'.$error.'</h2>';
+        }
     }
 
     public function actionRemove(): void

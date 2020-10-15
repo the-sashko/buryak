@@ -1,28 +1,11 @@
 <?php
 class PostObject extends ModelObjectCore
 {
-    /**
-     * @var string Default Data Base Table
-     */
-    public $defaultTableName = 'example';
+    public $scope = 'posts';
 
-    /**
-     * @var string Data Base Table For Example Data
-     */
-    public $tableExample = 'example';
-
-    /**
-     * @var string Data Base Queries Cache Scope
-     */
-    public $scope = 'example';
-
-    /**
-     * Geting Data From Example Table
-     *
-     * @return array List Of Example Data
-     */
-    public function getAllExamples(): ?array
+    public function test(): ?array
     {
-        return $this->getAll($this->tableExample);
+        var_dump($this->getRows('SELECT \'123\';'));
+        die();
     }
 }
