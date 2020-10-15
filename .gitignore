@@ -3,7 +3,7 @@
 .ftpconfig
 protected/config/
 protected/res/sessions/
-protectes/res/log/
+protected/res/log/
 protected/res/cache/
 media/img/
 protected/common/lib/media/youtube/cache/

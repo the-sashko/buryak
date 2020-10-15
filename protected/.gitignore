@@ -10,4 +10,6 @@ protected/res/log/
 protected/res/config/crypt.json
 protected/res/config/redis.json
 protected/res/config/push.json
+protected/res/config/sms.json
+protected/red/config/cron.json
 protected/res/config/database.json
