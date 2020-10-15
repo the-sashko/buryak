@@ -5,4 +5,9 @@ public/sitemap.xml
 protected/config/
 protected/res/cache/
 protected/res/lock/
-protected/res/logs/
+protected/res/log/
+
+protected/res/config/crypt.json
+protected/res/config/redis.json
+protected/res/config/push.json
+protected/res/config/database.json
