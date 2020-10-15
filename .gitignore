@@ -1,0 +1,12 @@
+.vscode/
+.env/
+.ftpconfig
+protected/config/
+protected/res/sessions/
+protectes/res/log/
+protected/res/cache/
+media/img/
+protected/common/lib/media/youtube/cache/
+protected/common/lib/media/youtube/res/img/
+protected/common/lib/link/cache/
+protected/common/lib/share/credentials.php
