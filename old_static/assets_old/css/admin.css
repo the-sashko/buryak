@@ -139,13 +139,13 @@ p {
 		width: 15%;
 	}
 	.menu a {
-		margin: 0 .25em .5em .25em;
+		margin: 0 .25em .5em;
 		display: block;
 		text-align: left;
 	}
 	.main {
 		position: absolute;
-		padding: 0 .5em .5em .5em;
+		padding: 0 .5em .5em;
 		padding-top: 41px;
 		width: 84%;
 		top: 0;

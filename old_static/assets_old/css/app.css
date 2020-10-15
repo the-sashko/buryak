@@ -81,7 +81,7 @@ textarea:placeholder, input:placeholder{
     text-transform: uppercase;
     font-size: 1.5em;
     cursor: pointer;
-    margin: 0.125em 0 0 0;
+    margin: 0.125em 0 0;
     padding: 0;
 }
 .logo img {
@@ -199,7 +199,7 @@ textarea:placeholder, input:placeholder{
 }
 .section_list nav{
     margin: 0;
-    padding: 1em 1em 1em 1em;
+    padding: 1em;
     font-size: 0.875em;
     line-height: 1.125em;
     background: url('/assets/img/bg.png') 50% 50% no-repeat;
@@ -272,7 +272,7 @@ textarea:placeholder, input:placeholder{
     font-size: 1.375em;
     line-height: 0;
     padding: 0;
-    margin: 1em 0 1em 0;
+    margin: 1em 0;
     font-weight: bold;
 }
 .main_subtitle{
@@ -282,7 +282,7 @@ textarea:placeholder, input:placeholder{
     font-size: 1.125em;
     line-height: 1em;
     padding: 0;
-    margin: -.25em 0 .5em 0;
+    margin: -.25em 0 .5em;
     font-weight: normal;
 }
 .post_form{
@@ -307,7 +307,7 @@ textarea:placeholder, input:placeholder{
     display: inline-block;
     text-align: left;
     padding: .5em 0;
-    margin: 0 0 1em 0;
+    margin: 0 0 1em;
     list-style: none;
 }
 .form_error li{
@@ -396,7 +396,7 @@ textarea:placeholder, input:placeholder{
     padding: 0.75em;
     border: 1px solid #DADADA;
     border-radius: 0.5em;
-    margin: 0 0 1em 0;
+    margin: 0 0 1em;
     display: inline-block;
 }
 .post_options_btn {
@@ -602,7 +602,7 @@ textarea:placeholder, input:placeholder{
     cursor: pointer;
 }
 .post_link {
-    margin: .5em 0 .875em 0;
+    margin: .5em 0 .875em;
     padding: 0 0 0 .5em;
     border-left: 4px solid #8A8;
 }
@@ -640,7 +640,7 @@ textarea:placeholder, input:placeholder{
     padding: 0;/* 0.75em;*/
     border: 1px solid #DADADA;
     border-radius: 0.5em;
-    margin: 0 0 1em 0;
+    margin: 0 0 1em;
     display: none;
     width: 250px;
     height: 250px;
