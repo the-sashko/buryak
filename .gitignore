@@ -3,13 +3,9 @@
 .ftpconfig
 protected/config/
 protected/res/sessions/
-<<<<<<< HEAD
 protectes/res/log/
-=======
-protected/res/log/
->>>>>>> develop
 protected/res/cache/
-media/img/
+files/
 protected/common/lib/media/youtube/cache/
 protected/common/lib/media/youtube/res/img/
 protected/common/lib/link/cache/
