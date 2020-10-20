@@ -27,7 +27,6 @@ class PostForm extends FormObject
 
         $this->setSuccess();
 
-        $this->_checkText();
         $this->_checkSection();
 
         if ($this->getThreadId() < 1) {
@@ -100,7 +99,7 @@ class PostForm extends FormObject
         return (int) $this->get('thread_id');
     }
 
-    public function getSection(): ?string
+    public function getSectionSlug(): ?string
     {
         if (!$this->has('section')) {
             return null;
@@ -109,70 +108,13 @@ class PostForm extends FormObject
         return $this->get('section');
     }
 
-    public function getSectionUrl(): ?string
+    public function getUsername(): ?string
     {
-        if (!$this->has('section_url')) {
+        if (!$this->has('username')) {
             return null;
         }
 
-        return $this->get('section_url');
-    }
-
-    public function setTitle(?string $title = null): bool
-    {
-        return $this->set('title', $title);
-    }
-
-    public function setText(?string $text = null): bool
-    {
-        return $this->set('text', $text);
-    }
-
-    public function setName(?string $name = null): bool
-    {
-        return $this->set('name', $name);
-    }
-
-    public function setPassword(?string $password = null): bool
-    {
-        return $this->set('password', $password);
-    }
-
-    public function setCaptchaText(?string $captchaText = null): bool
-    {
-        return $this->set('captcha_text', $captchaText);
-    }
-
-    public function setRedirectTo(?string $redirectTo = null): bool
-    {
-        return $this->set('redirect_to', $redirectTo);
-    }
-
-    public function setThreadId(int $idThread = null): bool
-    {
-        return $this->set('thread_id', $idThread);
-    }
-
-    public function setSection(?string $section = null): bool
-    {
-        return $this->set('section', $section);
-    }
-
-    public function setSectionUrl(?string $sectionUrl = null): bool
-    {
-        if (!empty($sectionUrl)) {
-            return $this->set('section_url', $sectionUrl);
-        }
-
-        $section = $this->getSection();
-
-        if (empty($section)) {
-            return $this->set('section_url', '/');
-        }
-
-        $sectionUrl = sprintf('/%s/', $section);
-
-        return $this->set('section_url', $sectionUrl);
+        return $this->get('username');
     }
 
     private function _checkCaptchaText(): void
@@ -187,9 +129,9 @@ class PostForm extends FormObject
 
     private function _checkSection(): void
     {
-        $section = $this->getSection();
+        $sectionSlug = $this->getSectionSlug();
 
-        if (empty($section)) {
+        if (empty($sectionSlug)) {
             $this->setFail();
             $this->setError(static::ERROR_SECTION_IS_NOT_SET);
         }
