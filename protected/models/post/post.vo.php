@@ -1,38 +1,105 @@
 <?php
-/**
- * ValuesObject Class For Example Model
- */
-class PostVO extends ValuesObject
+class PostValuesObject extends ValuesObject
 {
-    /**
-     * Get Example ID
-     *
-     * @return int Example ID
-     */
-    public function getID(): int
+    const DEFAULT_USERNAME = 'Anonymous';
+
+    const MEDIA_DIR_PATH = __DIR__.'/../../../files/media';
+
+    const IMAGE_SIZES = [
+        'thumbnail' => [
+            'height'      => 64,
+            'width'       => 64,
+            'file_prefix' => 'thumb'
+        ],
+        'post' => [
+            'height'      => null,
+            'width'       => 248,
+            'file_prefix' => 'p'
+        ]
+    ];
+
+    public function getId(): int
     {
         return (int) $this->get('id');
     }
 
-    /**
-     * Get Foo Param Value
-     *
-     * @return string Foo Param Value
-     */
-    public function getFoo(): string
+    public function getRelativeCode(): int
     {
-        return (string) $this->get('foo');
+        return (int) $this->get('relative_code');
     }
 
-    /**
-     * Set Foo Param Value
-     *
-     * @param string $value Foo Param Value
-     *
-     * @return bool Is Foo Param Value Set
-     */
-    public function setFoo(?string $value = null): bool
+    public function getSectionId(): int
     {
-        return $this->set('foo', $value);
+        return (int) $this->get('id_section');
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->get('title');
+    }
+
+    public function getText(): ?string
+    {
+        return $this->get('text');
+    }
+
+    public function getUsername(): ?string
+    {
+        return $this->get('username');
+    }
+
+    public function getSessionId(): int
+    {
+        return (int) $this->set('id_session');
+    }
+
+    public function getMediaName(): ?string
+    {
+        return $this->set('media_name');
+    }
+
+    public function getMediaDir(): ?string
+    {
+        return $this->set('media_dir');
+    }
+
+    public function setRelativeCode(?int $relativeCode = null): void
+    {
+        $this->set('relative_code', $relativeCode);
+    }
+
+    public function setSectionId(?int $idSection = null): void
+    {
+        $this->set('id_section', $idSection);
+    }
+
+    public function setTitle(?string $title = null): void
+    {
+        $this->set('title', $title);
+    }
+
+    public function setText(?string $text = null): void
+    {
+        $this->set('text', $text);
+    }
+
+    public function setUsername(?string $username = null): void
+    {
+        $this->set('username', $username);
+    }
+
+    public function setSessionId(?int $idSession = null): void
+    {
+        $this->set('id_session', $idSession);
+    }
+
+    public function setMediaName(?string $mediaName = null): void
+    {
+        $this->set('media_name', $mediaName);
+    }
+
+    public function setMediaDir(?string $mediaDir = null): void
+    {
+        $this->set('media_dir', $mediaDir);
     }
 }
