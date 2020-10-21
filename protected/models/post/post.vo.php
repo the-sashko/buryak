@@ -3,21 +3,6 @@ class PostValuesObject extends ValuesObject
 {
     const DEFAULT_USERNAME = 'Anonymous';
 
-    const MEDIA_DIR_PATH = __DIR__.'/../../../files/media';
-
-    const IMAGE_SIZES = [
-        'thumbnail' => [
-            'height'      => 64,
-            'width'       => 64,
-            'file_prefix' => 'thumb'
-        ],
-        'post' => [
-            'height'      => null,
-            'width'       => 248,
-            'file_prefix' => 'p'
-        ]
-    ];
-
     public function getId(): int
     {
         return (int) $this->get('id');
@@ -63,6 +48,26 @@ class PostValuesObject extends ValuesObject
         return $this->set('media_dir');
     }
 
+    public function getMediaType(): ?string
+    {
+        return $this->get('media_type');
+    }
+
+    public function getMedia(): ?MediaValuesObject
+    {
+        return $this->get('media');
+    }
+
+    public function getPassword(): ?string
+    {
+        return $this->get('password');
+    }
+
+    public function getTripCode(): ?string
+    {
+        return $this->get('tripcode');
+    }
+
     public function setRelativeCode(?int $relativeCode = null): void
     {
         $this->set('relative_code', $relativeCode);
@@ -101,5 +106,25 @@ class PostValuesObject extends ValuesObject
     public function setMediaDir(?string $mediaDir = null): void
     {
         $this->set('media_dir', $mediaDir);
+    }
+
+    public function setMediaType(?string $mediaType = null): void
+    {
+        $this->set('media_type', $mediaType);
+    }
+
+    public function setMedia(?MediaValuesObject $media = null): void
+    {
+        $this->set('media', $media);
+    }
+
+    public function setPassword(?string $password = null): void
+    {
+        $this->set('password', $password);
+    }
+
+    public function setTripCode(?string $tripcode = null): void
+    {
+        $this->set('tripcode', $tripcode);
     }
 }
