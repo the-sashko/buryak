@@ -8,7 +8,7 @@ class Post extends ModelCore
     {
         $this->object->start();
 
-        //try {
+        try {
             $postForm = new PostForm($postData);
 
             $postForm->checkInputParams();
@@ -26,18 +26,6 @@ class Post extends ModelCore
 
                 return $postForm;
             }
-
-            $uploadPlugin = $this->getPlugin('upload');
-            $uploadPlugin->upload(['jpeg','jpg','gif','png'], 1024*1024*16, 'media');
-
-            if (!empty($uploadPlugin->getError())) {
-                throw new Exception('message');
-            }
-
-            $file = $uploadPlugin->getFiles();
-            $file = $file['media'][0];
-
-            $imagePlugin = $this->getPlugin('image');
 
             $row = $postVO->exportRow();
 
@@ -61,60 +49,80 @@ class Post extends ModelCore
                 return $postForm;
             }
 
+            if ($postForm->isWithoutMedia()) {
+                $this->object->commit();
+
+                return $postForm;
+            }
+
             $mediaDir = sprintf('%s/%d', date('Y/m/d/H/i/s'), $idPost);
 
-            $mediaDirPath = sprintf(
-                '%s/%s',
-                PostValuesObject::MEDIA_DIR_PATH,
-                $mediaDir
-            );
+            $media = $this->getModel('media');
 
-            $imagePlugin->resize(
-                $file,
-                $mediaDirPath,
-                'image',
-                'png',
-                PostValuesObject::IMAGE_SIZES
-            );
+            $mediaVO = $media->upload($mediaDir);
 
-            $mediaFileName = explode('/', $file);
-            $mediaFileName = end($mediaFileName);
+            if (empty($mediaVO) && false) {
+                //$this->object->rollback();
+                //throw new Exception('');
+                $this->object->rollback();
 
-            if (preg_match('/^(.*?)\.gif$/su', $mediaFileName)) {
-                copy($file, $mediaDirPath.'/'.$mediaFileName);
-                chmod($mediaDirPath.'/'.$mediaFileName, 0775);
+                return $postForm;
             }
+
+            if (empty($mediaVO)) {
+                $this->object->commit();
+
+                return $postForm;
+            }
+
+            $mediaFileName = $mediaVO->getFileName();
+            $mediaType     = $mediaVO->getType();
 
             $postVO->setMediaName($mediaFileName);
             $postVO->setMediaDir($mediaDir);
+            $postVO->setMediaType($mediaType);
 
             $row = $postVO->exportRow();
 
             if (!$this->object->updatePostById($row, $idPost)) {
                 //$this->object->rollback();
                 //throw new Exception('');
-
                 $this->object->rollback();
 
                 return $postForm;
             }
-        //} catch (\Exception $exp) {
-        //    $this->object->rollback();
-        //    throw $exp;
-        //}
 
-        $this->object->commit();
+            $this->object->commit();
+        } catch (\Exception $exp) {
+            $this->object->rollback();
+            throw $exp;
+        }
 
         return $postForm;
     }
 
     private function _mapPostForm(PostForm &$postForm): PostValuesObject
     {
+        $cryptPlugin = $this->getPlugin('crypt');
+        $cryptConfig = $this->getConfig('crypt');
+
+        if (
+            !array_key_exists('salt', $cryptConfig) ||
+            empty($cryptConfig['salt'])
+        ) {
+            throw new Exception('message1');
+        }
+
+        $cryptSalt = (string) $cryptConfig['salt'];
+
         $postVO = $this->getVO();
+
+        $tripCode = null;
 
         $text        = $postForm->getText();
         $title       = $postForm->getTitle();
         $username    = $postForm->getUsername();
+        $password    = $postForm->getPassword();
         $sectionSlug = $postForm->getSectionSlug();
 
         $sectionVO = $this->getModel('section')->getVOBySlug($sectionSlug);
@@ -137,11 +145,21 @@ class Post extends ModelCore
             $username = PostValuesObject::DEFAULT_USERNAME;
         }
 
+        if (!empty($password) && $postForm->isGenerateTripCode()) {
+            $tripCode = $cryptPlugin->getTripCode($password);
+        }
+
+        if (!empty($password)) {
+            $password = $cryptPlugin->getHash($password, $cryptSalt);
+        }
+
         $postVO->setText($text);
         $postVO->setTitle($title);
         $postVO->setUsername($username);
         $postVO->setSectionId($idSection);
         $postVO->setRelativeCode($relativeCode);
+        $postVO->setPassword($password);
+        $postVO->setTripCode($tripCode);
         $postVO->setSessionId(1);
 
         return $postVO;

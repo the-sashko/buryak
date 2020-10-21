@@ -117,6 +117,16 @@ class PostForm extends FormObject
         return $this->get('username');
     }
 
+    public function isWithoutMedia(): bool
+    {
+        return $this->has('without_media');
+    }
+
+    public function isGenerateTripCode(): bool
+    {
+        return $this->has('trip_code');
+    }
+
     private function _checkCaptchaText(): void
     {
         $captchaText = $this->getCaptchaText();
