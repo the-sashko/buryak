@@ -30,7 +30,7 @@ class PostController extends ControllerCore
 
         $postForm = $postModel->write($this->post);
 
-        if ($postForm->getStatus()) {
+        if ($postForm->isStatusSuccess()) {
             die('OK!');
         }
 

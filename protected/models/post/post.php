@@ -15,7 +15,7 @@ class Post extends ModelCore
 
             $postForm->checkInputParams();
 
-            if (!$postForm->getStatus()) {
+            if (!$postForm->isStatusSuccess()) {
                 $this->object->rollback();
 
                 return $postForm;
@@ -23,7 +23,7 @@ class Post extends ModelCore
 
             $postVO = $this->_mapPostForm($postForm);
 
-            if (empty($postVO) || !$postForm->getStatus()) {
+            if (empty($postVO) || !$postForm->isStatusSuccess()) {
                 $postForm->setFail();
                 $this->object->rollback();
 

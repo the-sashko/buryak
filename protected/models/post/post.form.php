@@ -33,7 +33,7 @@ class PostForm extends FormObject
             $this->_checkCaptchaText();
         }
 
-        return $this->getStatus();
+        return $this->isStatusSuccess();
     }
 
     public function getTitle(): ?string
