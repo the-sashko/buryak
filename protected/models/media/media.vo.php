@@ -4,7 +4,7 @@
  */
 class MediaValuesObject extends ValuesObject
 {
-    const MEDIA_DIR_PATH = __DIR__.'/../../../files/media';
+    const MEDIA_DIR_PATH = __DIR__.'/../../res/media';
 
     const IMAGE_SIZES = [
         'thumbnail' => [

@@ -52,4 +52,22 @@ class PostObject extends ModelObjectCore
 
         return (int) $this->getOne($sql);
     }
+
+    public function getThreadIdByRelativeCode(?int $relativeCode = null): int
+    {
+        if (empty($relativeCode)) {
+            return null;
+        }
+
+        $sql = '
+            SELECT
+                "id"
+            FROM "%s"
+            WHERE "relative_code" = %d AND "id_parent" IS NULL;
+        ';
+
+        $sql = sprintf($sql, static::TABLE_POSTS, $relativeCode);
+
+        return (int) $this->getOne($sql);
+    }
 }

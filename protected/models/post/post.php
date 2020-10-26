@@ -15,7 +15,7 @@ class Post extends ModelCore
 
             $postForm->checkInputParams();
 
-            if (!$postForm->getStatus()) {
+            if (!$postForm->isStatusSuccess()) {
                 $this->object->rollback();
 
                 return $postForm;
@@ -23,7 +23,7 @@ class Post extends ModelCore
 
             $postVO = $this->_mapPostForm($postForm);
 
-            if (empty($postVO) || !$postForm->getStatus()) {
+            if (empty($postVO) || !$postForm->isStatusSuccess()) {
                 $postForm->setFail();
                 $this->object->rollback();
 
@@ -50,6 +50,10 @@ class Post extends ModelCore
                 $this->object->rollback();
 
                 return $postForm;
+            }
+
+            if (empty($postForm->getThreadCode())) {
+                $postForm->setThreadCode($postVO->getRelativeCode());
             }
 
             if ($postForm->isWithoutMedia()) {
@@ -180,6 +184,39 @@ class Post extends ModelCore
 
         $sessonId = $user->getSessionId();
 
+        $idThread   = null;
+        $threadCode = $postForm->getThreadCode();
+
+        if (empty($threadCode) || !$user->isHuman()) {
+            $captchaSettings = [
+                'hash_salt' => $cryptSalt
+            ];
+
+            $captchaPlugin = $this->getPlugin('captcha');
+            $captchaPlugin->setSettings($captchaSettings);
+            
+            if (!$captchaPlugin->check(
+                $postForm->getCaptchaText(),
+                $this->session->getFlash('captcha_hash')
+            )) {
+                $postForm->setFail();
+                $postForm->setError('Invalid Captcha Text');
+
+                return null;                
+            }
+        }
+
+        if (!empty($threadCode)) {
+            $idThread = $this->object->getThreadIdByRelativeCode($threadCode);
+        }
+
+        if (!empty($threadCode) && empty($idThread)) {
+            $postForm->setFail();
+            $postForm->setError('This Thread Is Not Exists');
+
+            return null;
+        }
+
         $postVO->setText($text);
         $postVO->setTitle($title);
         $postVO->setUsername($username);
@@ -188,6 +225,10 @@ class Post extends ModelCore
         $postVO->setPassword($password);
         $postVO->setTripCode($tripCode);
         $postVO->setSessionId($sessonId);
+
+        if (!empty($idThread)) {
+            $postVO->setParentId($idThread);
+        }
 
         return $postVO;
     }
