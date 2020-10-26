@@ -29,7 +29,7 @@ class PostForm extends FormObject
 
         $this->_checkSection();
 
-        if ($this->getThreadId() < 1) {
+        if ($this->getThreadCode() < 1) {
             $this->_checkCaptchaText();
         }
 
@@ -90,13 +90,13 @@ class PostForm extends FormObject
         return $this->get('redirect_to');
     }
 
-    public function getThreadId(): int
+    public function getThreadCode(): int
     {
-        if (!$this->has('thread_id')) {
+        if (!$this->has('thread_code')) {
             return null;
         }
 
-        return (int) $this->get('thread_id');
+        return (int) $this->get('thread_code');
     }
 
     public function getSectionSlug(): ?string
@@ -117,6 +117,38 @@ class PostForm extends FormObject
         return $this->get('username');
     }
 
+    public function getFormUrl(): ?string
+    {
+        if (!$this->has('form_url')) {
+            return '/';
+        }
+
+        return $this->get('form_url');
+    }
+
+    public function getRedirectUrl(): ?string
+    {
+        $redirectTo = $this->getRedirectTo();
+
+        if (!$this->has('section')) {
+            return '/';
+        }
+
+        if ($redirectTo == 'section') {
+            return sprintf('/%s/', $this->getSectionSlug());
+        }
+
+        if (!$this->has('thread_code')) {
+            return sprintf('/%s/', $this->getSectionSlug());
+        }
+
+        return sprintf(
+            '/%s/%d/',
+            $this->getSectionSlug(),
+            $this->getThreadCode()
+        );
+    }
+
     public function isWithoutMedia(): bool
     {
         return $this->has('without_media');
@@ -125,6 +157,11 @@ class PostForm extends FormObject
     public function isGenerateTripCode(): bool
     {
         return $this->has('trip_code');
+    }
+
+    public function setThreadCode(?int $threadCode = null): void
+    {
+        $this->set('thread_code', $threadCode);
     }
 
     private function _checkCaptchaText(): void

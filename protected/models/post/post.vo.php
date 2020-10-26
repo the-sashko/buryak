@@ -73,6 +73,11 @@ class PostValuesObject extends ValuesObject
         $this->set('relative_code', $relativeCode);
     }
 
+    public function setParentId(?int $idParent = null): void
+    {
+        $this->set('id_parent', $idParent);
+    }
+
     public function setSectionId(?int $idSection = null): void
     {
         $this->set('id_section', $idSection);
