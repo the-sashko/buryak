@@ -4,27 +4,38 @@
     <title>dev</title>
 </head>
 <body>
+    <?php
+        if (isset($formErrors)):
+            foreach ($formErrors as $formError):
+    ?>
+    <h3><?=$formError;?></h3>
+    <?php
+            endforeach;
+        endif;
+    ?>
     <form method="POST" enctype="multipart/form-data" action="/post/write/">
         <div>
-            <input type="text" name="title" placeholder="Заголовок">
+            <input type="text" name="title" placeholder="Заголовок" value="<?=array_key_exists('title', $formData)?$formData['title']:'';?>">
         </div>
         <div>
             <input type="file" name="media">
         </div>
         <div>
-            <input type="checkbox" name="without_media">&nbsp;Без&nbsp;медіафайлу
+            <?php $checked = array_key_exists('without_media', $formData)?' checked=""':'';?>
+            <input type="checkbox" name="without_media"<?=$checked;?>>&nbsp;Без&nbsp;медіафайлу
         </div>
         <div>
-            <input type="text" name="name" placeholder="Ім'я">
+            <input type="text" name="name" placeholder="Ім'я" value="<?=array_key_exists('name', $formData)?$formData['name']:'';?>">
         </div>
         <div>
-            <input type="password" name="password" placeholder="Пароль">
+            <input type="password" name="password" placeholder="Пароль" value="<?=array_key_exists('password', $formData)?$formData['password']:'';?>">
         </div>
         <div>
-            <input type="checkbox" name="trip_code">&nbsp;Трипкод
+            <?php $checked = array_key_exists('trip_code', $formData)?' checked=""':'';?>
+            <input type="checkbox" name="trip_code"<?=$checked;?>>&nbsp;Трипкод
         </div>
         <div>
-            <textarea name="text" placeholder="Текст"></textarea>
+            <textarea name="text" placeholder="Текст"><?=array_key_exists('text', $formData)?$formData['text']:'';?></textarea>
         </div>
         <div>
             <img src="https://fajno.in/1602487165/captcha.png">

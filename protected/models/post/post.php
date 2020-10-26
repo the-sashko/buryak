@@ -6,6 +6,8 @@ class Post extends ModelCore
 {
     public function write(?array $postData = null): PostForm
     {
+        $postForm = null;
+
         $this->object->start();
 
         try {
@@ -21,7 +23,8 @@ class Post extends ModelCore
 
             $postVO = $this->_mapPostForm($postForm);
 
-            if (!$postForm->getStatus()) {
+            if (empty($postVO) || !$postForm->getStatus()) {
+                $postForm->setFail();
                 $this->object->rollback();
 
                 return $postForm;
@@ -30,8 +33,8 @@ class Post extends ModelCore
             $row = $postVO->exportRow();
 
             if (!$this->object->insertPost($row)) {
-                //$this->object->rollback();
-                //throw new Exception('');
+                $postForm->setFail();
+                $postForm->setError('Can Not Save Post');
 
                 $this->object->rollback();
 
@@ -41,8 +44,8 @@ class Post extends ModelCore
             $idPost = $this->object->getMaxId();
 
             if (empty($idPost)) {
-                //$this->object->rollback();
-                //throw new Exception('');
+                $postForm->setFail();
+                $postForm->setError('Can Not Save Post');
 
                 $this->object->rollback();
 
@@ -62,8 +65,9 @@ class Post extends ModelCore
             $mediaVO = $media->upload($mediaDir);
 
             if (empty($mediaVO) && false) {
-                //$this->object->rollback();
-                //throw new Exception('');
+                $postForm->setFail();
+                $postForm->setError('Media File Is Not Set');
+
                 $this->object->rollback();
 
                 return $postForm;
@@ -85,23 +89,35 @@ class Post extends ModelCore
             $row = $postVO->exportRow();
 
             if (!$this->object->updatePostById($row, $idPost)) {
-                //$this->object->rollback();
-                //throw new Exception('');
+                $postForm->setFail();
+                $postForm->setError('Can Not Save Media File');
+
                 $this->object->rollback();
 
                 return $postForm;
             }
 
             $this->object->commit();
+        } catch (
+            Core\Plugins\Database\Exceptions\DatabasePluginException $exp
+        ) {
+            $errorMessage = $exp->getMessage();
+
+            if (APP_MODE != 'dev') {
+                $errorMessage = 'Database Error';
+            }
+
+            $postForm->setFail();
+            $postForm->setError($errorMessage);
         } catch (\Exception $exp) {
-            $this->object->rollback();
-            throw $exp;
+            $postForm->setFail();
+            $postForm->setError($exp->getMessage());
         }
 
         return $postForm;
     }
 
-    private function _mapPostForm(PostForm &$postForm): PostValuesObject
+    private function _mapPostForm(PostForm &$postForm): ?PostValuesObject
     {
         $cryptPlugin = $this->getPlugin('crypt');
         $cryptConfig = $this->getConfig('crypt');
@@ -110,7 +126,10 @@ class Post extends ModelCore
             !array_key_exists('salt', $cryptConfig) ||
             empty($cryptConfig['salt'])
         ) {
-            throw new Exception('message1');
+            $postForm->setFail();
+            $postForm->setError('Crypt Config File Has Bad Format');
+
+            return null;
         }
 
         $cryptSalt = (string) $cryptConfig['salt'];
@@ -128,7 +147,10 @@ class Post extends ModelCore
         $sectionVO = $this->getModel('section')->getVOBySlug($sectionSlug);
 
         if (empty($sectionVO)) {
-            throw new Exception('');
+            $postForm->setFail();
+            $postForm->setError('This Section Is Not Exists');
+
+            return null;
         }
 
         $idSection       = $sectionVO->getId();
@@ -153,6 +175,11 @@ class Post extends ModelCore
             $password = $cryptPlugin->getHash($password, $cryptSalt);
         }
 
+        $user = $this->getModel('user');
+        $user->init();
+
+        $sessonId = $user->getSessionId();
+
         $postVO->setText($text);
         $postVO->setTitle($title);
         $postVO->setUsername($username);
@@ -160,7 +187,7 @@ class Post extends ModelCore
         $postVO->setRelativeCode($relativeCode);
         $postVO->setPassword($password);
         $postVO->setTripCode($tripCode);
-        $postVO->setSessionId(1);
+        $postVO->setSessionId($sessonId);
 
         return $postVO;
     }
