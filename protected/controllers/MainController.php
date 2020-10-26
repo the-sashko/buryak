@@ -14,7 +14,24 @@ class MainController extends ControllerCore
      */
     public function actionIndex(): void
     {
-        $this->render('main');
+        $formData   = null;
+        $formErrors = null;
+
+        if ($this->session->hasFlash('post_form_errors')) {
+            $formErrors = $this->session->getFlash('post_form_errors');
+        }
+
+        if ($this->session->hasFlash('post_form_data')) {
+            $formData = $this->session->getFlash('post_form_data');
+        }
+
+        $this->render(
+            'main',
+            [
+                'formErrors' => (array) $formErrors,
+                'formData'   => (array) $formData
+            ]
+        );
     }
 
     /**

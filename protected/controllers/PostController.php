@@ -34,9 +34,9 @@ class PostController extends ControllerCore
             die('OK!');
         }
 
-        foreach ($postForm->getErrors() as $error) {
-            echo '<h3>'.$error.'</h2>';
-        }
+        $this->session->setFlash('post_form_data', $postForm->exportRow());
+        $this->session->setFlash('post_form_errors', $postForm->getErrors());
+        $this->redirect('/');
     }
 
     public function actionRemove(): void
