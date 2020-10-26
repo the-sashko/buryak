@@ -12,13 +12,16 @@ class PostObject extends ModelObjectCore
         return $this->addRow(static::TABLE_POSTS, $row);
     }
 
-    public function updatePostById(?array $row = null, ?int $idPost = null): bool
+    public function updatePostById(
+        ?array $row    = null,
+        ?int   $idPost = null
+    ): bool
     {
-        $condition = null;
-
-        if (!empty($idPost)) {
-            $condition = sprintf('"id" = %d', $idPost);
+        if (empty($row) && empty($idPost)) {
+            return false;
         }
+
+        $condition = sprintf('"id" = %d', $idPost);
 
         return $this->updateRows(static::TABLE_POSTS, $row, $condition);
     }
