@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>dev</title>
+</head>
+<body>
+    <?php
+        if (isset($formErrors)):
+            foreach ($formErrors as $formError):
+    ?>
+    <h3><?=$formError;?></h3>
+    <?php
+            endforeach;
+        endif;
+    ?>
+    <form method="POST" enctype="multipart/form-data" action="/post/write/">
+        <div>
+            <input type="text" name="title" placeholder="Заголовок" value="<?=array_key_exists('title', $formData)?$formData['title']:'';?>">
+        </div>
+        <div>
+            <input type="file" name="media">
+        </div>
+        <div>
+            <?php $checked = array_key_exists('without_media', $formData)?' checked=""':'';?>
+            <input type="checkbox" name="without_media"<?=$checked;?>>&nbsp;Без&nbsp;медіафайлу
+        </div>
+        <div>
+            <input type="text" name="name" placeholder="Ім'я" value="<?=array_key_exists('name', $formData)?$formData['name']:'';?>">
+        </div>
+        <div>
+            <input type="password" name="password" placeholder="Пароль" value="<?=array_key_exists('password', $formData)?$formData['password']:'';?>">
+        </div>
+        <div>
+            <?php $checked = array_key_exists('trip_code', $formData)?' checked=""':'';?>
+            <input type="checkbox" name="trip_code"<?=$checked;?>>&nbsp;Трипкод
+        </div>
+        <div>
+            <textarea name="text" placeholder="Текст"><?=array_key_exists('text', $formData)?$formData['text']:'';?></textarea>
+        </div>
+        <div>
+            <img src="<?=$captchaImageUrl;?>">
+        </div>
+        <div>
+            <input type="text" name="captcha_text" placeholder="Введіть слова з картинки">
+        </div>
+        <div>
+            <input type="radio" name="redirect_to" value="thread" checked="">&nbsp;До&nbsp;теми
+            <input type="radio" name="redirect_to" value="section">&nbsp;До&nbsp;розділу
+        </div>
+        <div>
+            <input type="submit" value="Написати">
+        </div>
+        <input type="text" name="thread_code" value="0">
+        <input type="text" name="section" value="<?=$section->getSlug();?>">
+        <input type="text" name="form_url" value="/">
+    </form>
+</body>
+</html>
+
+<?php
+//_part('header');
+//_page($template);
+//_part('footer');
