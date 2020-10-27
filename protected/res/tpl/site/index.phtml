@@ -2,62 +2,288 @@
 <html>
 <head>
     <title>dev</title>
+    <link rel="stylesheet" type="text/css" href="https://blog.sashko.me/assets/css/lib/normalize.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.6.3/dist/css/foundation.min.css" integrity="sha256-ogmFxjqiTMnZhxCqVmcqTvjfe1Y/ec4WaRj/aQPvn+I=" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i&subset=cyrillic,cyrillic-ext,latin-ext" rel="stylesheet">
+    <meta name="theme-color" content="#F31">
+    <!--[if lt IE 9]>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
+    <![endif]-->
+    <style type="text/css">
+        html, body {
+            font-family: open sans, Arial, sans-serif;
+            color: #333;
+            background: #f8f8ec;
+            font-size: 15px;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+        .underline {
+            text-decoration: underline;
+        }
+        .header{height:40px; background: #f31;
+box-shadow: 0px 0px 4px 1px #6a6a6a;
+}
+
+        .wrapper {
+            min-height: 100%;
+            margin: -40px 0;
+            padding: 40px 0;
+        }
+        .content {
+            padding: 0 .5rem;
+        }
+        .side-menu-wrapper {
+            padding: .5rem 0;
+        }
+        .side-menu {
+            position: fixed;
+        }
+        .main {
+            padding: .5rem;
+        }
+        .post-form-wrapper {
+            text-align: center;
+        }
+        .post-form-wrapper>form {
+            text-align: left;
+            width: 500px;
+            display: inline-block;
+            border: 1px solid #cacaca;
+            border-radius: .25rem;
+            padding: .5rem;
+        }
+
+        .post-form-wrapper>form>div {
+            display: inline-block;
+        }
+        .post-form-wrapper>form>div>textarea {
+            height: 16rem;
+        }
+        .footer{height:40px; background: #333; color: #FEFEFE;
+box-shadow: 0px 0px 2px 1px #6a6a6a;}
+        textarea {
+            resize: none;
+        }
+        textarea::placeholder, input::placeholder {
+            color: #4a4a4a;
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+        input[type="text"], input[type="password"] {
+            height: 2rem !important;
+            font-size: 1.25rem;
+        }
+    </style>
 </head>
 <body>
-    <?php
-        if (isset($formErrors)):
-            foreach ($formErrors as $formError):
-    ?>
-    <h3><?=$formError;?></h3>
-    <?php
-            endforeach;
-        endif;
-    ?>
-    <form method="POST" enctype="multipart/form-data" action="/post/write/">
-        <div>
-            <input type="text" name="title" placeholder="Заголовок" value="<?=array_key_exists('title', $formData)?$formData['title']:'';?>">
+    <header class="top-bar header">
+        HEADER
+    </header>
+    <div class="wrapper">
+        <div class="grid-x content">
+            <div class="cell hide-for-small-only medium-1 large-2 side-menu-wrapper">
+                <ul class="side-menu">
+                    <li>Main0</li>
+                    <li>Main1</li>
+                    <li>Main2</li>
+                    <li>Main3</li>
+                    <li>Main4</li>
+                    <li>Main5</li>
+                    <li>Main6</li>
+                    <li>Main7</li>
+                    <li>Main8</li>
+                    <li>Main9</li>
+                </ul>
+            </div>
+            <div class="cell small-12 medium-11 large-10 main">
+                <h1>Header 1</h1>
+            <?php
+                if (isset($formErrors)):
+                    foreach ($formErrors as $formError):
+            ?>
+                <h3><?=$formError;?></h3>
+            <?php
+                    endforeach;
+                endif;
+            ?>
+                <div class="post-form-wrapper">
+                    <form method="POST"
+                          enctype="multipart/form-data"
+                          action="/post/write/"
+                          class="grid-x">
+                        <div class="cell small-12 medium-12 large-12">
+                            <input type="text"
+                                   name="title"
+                                   placeholder="Заголовок"
+                                   value="<?=array_key_exists('title', $formData)?$formData['title']:'';?>">
+                        </div>
+                        <div class="cell small-12 medium-12 large-12">
+                            <input type="file" name="media">
+                        </div>
+                        <div class="cell small-12 medium-12 large-12">
+                            <?php
+                                $checked = array_key_exists('without_media', $formData)?' checked=""':'';
+                            ?>
+                            <input type="checkbox"
+                                   name="without_media"<?=$checked;?>>&nbsp;Без&nbsp;медіафайлу
+                        </div>
+                        <div class="cell small-4 medium-4 large-4">
+                            <input type="text"
+                                   name="name"
+                                   placeholder="Ім'я"
+                                   value="<?=array_key_exists('name', $formData)?$formData['name']:'';?>">
+                        </div>
+                        <div class="cell small-4 medium-4 large-4">
+                            <input type="password"
+                                   name="password"
+                                   placeholder="Пароль"
+                                   value="<?=array_key_exists('password', $formData)?$formData['password']:'';?>">
+                        </div>
+                        <div class="cell small-4 medium-4 large-4">
+                            <?php
+                                $checked = array_key_exists('trip_code', $formData)?' checked=""':'';
+                            ?>
+                            <input type="checkbox"
+                                   name="trip_code"<?=$checked;?>>&nbsp;Трипкод
+                        </div>
+                        <div class="cell small-12 medium-12 large-12">
+                            <textarea name="text"
+                                      placeholder="Текст"><?=array_key_exists('text', $formData)?$formData['text']:'';?></textarea>
+                        </div>
+                        <div class="cell small-6 medium-6 large-6">
+                            <div class="captcha_wrapper">
+                                <img src="<?=$captchaImageUrl;?>">
+                            </div>
+                            <div>
+                                <a href="#">New Image</a>
+                            </div>
+                            <div>
+                                <input type="text"
+                                       name="captcha_text"
+                                       placeholder="Введіть слова з картинки">
+                            </div>
+                            <div>
+                                <input type="checkbox"
+                                       name="do_not_up">&nbsp;Не піднімати тему
+                            </div>
+                        </div>
+                        <div class="cell small-6 medium-6 large-6">
+                            <div>
+                                <input type="radio"
+                                       name="redirect_to"
+                                       value="thread"
+                                       checked="">&nbsp;До&nbsp;теми
+                                <input type="radio"
+                                       name="redirect_to"
+                                       value="section">&nbsp;До&nbsp;розділу
+                            </div>
+                            <div>
+                                <input type="submit" value="Написати">
+                            </div>
+                        </div>
+                        <input type="hidden" name="thread_code" value="0">
+                        <input type="hidden"
+                               name="section"
+                               value="<?=$section->getSlug();?>">
+                        <input type="hidden"
+                               name="form_url"
+                               value="<?=$currentUrl;?>">
+                    </form>
+                </div>
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ornare arcu odio ut sem nulla pharetra diam sit amet. Commodo odio aenean sed adipiscing diam donec adipiscing. Convallis posuere morbi leo urna molestie at elementum. Ac tortor dignissim convallis aenean et tortor at risus viverra. Risus ultricies tristique nulla aliquet enim tortor at auctor urna. Vestibulum sed arcu non odio. Lacus sed viverra tellus in hac habitasse. Augue lacus viverra vitae congue. Fringilla est ullamcorper eget nulla facilisi etiam dignissim diam.
+                </p>
+                <h2>Header 2</h2>
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ornare arcu odio ut sem nulla pharetra diam sit amet. Commodo odio aenean sed adipiscing diam donec adipiscing. Convallis posuere morbi leo urna molestie at elementum. Ac tortor dignissim convallis aenean et tortor at risus viverra. Risus ultricies tristique nulla aliquet enim tortor at auctor urna. Vestibulum sed arcu non odio. Lacus sed viverra tellus in hac habitasse. Augue lacus viverra vitae congue. Fringilla est ullamcorper eget nulla facilisi etiam dignissim diam.
+                </p>
+                <h3>Header 3</h3>
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ornare arcu odio ut sem nulla pharetra diam sit amet. Commodo odio aenean sed adipiscing diam donec adipiscing. Convallis posuere morbi leo urna molestie at elementum. Ac tortor dignissim convallis aenean et tortor at risus viverra. Risus ultricies tristique nulla aliquet enim tortor at auctor urna. Vestibulum sed arcu non odio. Lacus sed viverra tellus in hac habitasse. Augue lacus viverra vitae congue. Fringilla est ullamcorper eget nulla facilisi etiam dignissim diam.
+                </p>
+                <h4>Header 4</h4>
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ornare arcu odio ut sem nulla pharetra diam sit amet. Commodo odio aenean sed adipiscing diam donec adipiscing. Convallis posuere morbi leo urna molestie at elementum. Ac tortor dignissim convallis aenean et tortor at risus viverra. Risus ultricies tristique nulla aliquet enim tortor at auctor urna. Vestibulum sed arcu non odio. Lacus sed viverra tellus in hac habitasse. Augue lacus viverra vitae congue. Fringilla est ullamcorper eget nulla facilisi etiam dignissim diam.
+                </p>
+                <h5>Header 5</h5>
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ornare arcu odio ut sem nulla pharetra diam sit amet. Commodo odio aenean sed adipiscing diam donec adipiscing. Convallis posuere morbi leo urna molestie at elementum. Ac tortor dignissim convallis aenean et tortor at risus viverra. Risus ultricies tristique nulla aliquet enim tortor at auctor urna. Vestibulum sed arcu non odio. Lacus sed viverra tellus in hac habitasse. Augue lacus viverra vitae congue. Fringilla est ullamcorper eget nulla facilisi etiam dignissim diam.
+                </p>
+                <h6>Header 6</h6>
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ornare arcu odio ut sem nulla pharetra diam sit amet. Commodo odio aenean sed adipiscing diam donec adipiscing. Convallis posuere morbi leo urna molestie at elementum. Ac tortor dignissim convallis aenean et tortor at risus viverra. Risus ultricies tristique nulla aliquet enim tortor at auctor urna. Vestibulum sed arcu non odio. Lacus sed viverra tellus in hac habitasse. Augue lacus viverra vitae congue. Fringilla est ullamcorper eget nulla facilisi etiam dignissim diam.
+                </p>
+                <div>
+                    <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ornare arcu odio ut sem nulla pharetra diam sit amet. Commodo odio aenean sed adipiscing diam donec adipiscing. Convallis posuere morbi leo urna molestie at elementum. Ac tortor dignissim convallis aenean et tortor at risus viverra. Risus ultricies tristique nulla aliquet enim tortor at auctor urna. Vestibulum sed arcu non odio. Lacus sed viverra tellus in hac habitasse. Augue lacus viverra vitae congue. Fringilla est ullamcorper eget nulla facilisi etiam dignissim diam.
+                    </p>
+                    <p>
+                        Lorem <strong>ipsum</strong> <i>dolor</i> <a href="#">sit amet</a>, <span class="underline">consectetur</span> <strike>adipiscing</strike> elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ornare arcu odio ut sem nulla pharetra diam sit amet. Commodo odio aenean sed adipiscing diam donec adipiscing. Convallis posuere morbi leo urna molestie at elementum. Ac tortor dignissim convallis aenean et tortor at risus viverra. Risus ultricies tristique nulla aliquet enim tortor at auctor urna. Vestibulum sed arcu non odio. Lacus sed viverra tellus in hac habitasse. Augue lacus viverra vitae congue. Fringilla est ullamcorper eget nulla facilisi etiam dignissim diam.
+                    </p>
+                    <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ornare arcu odio ut sem nulla pharetra diam sit amet. Commodo odio aenean sed adipiscing diam donec adipiscing. Convallis posuere morbi leo urna molestie at elementum. Ac tortor dignissim convallis aenean et tortor at risus viverra. Risus ultricies tristique nulla aliquet enim tortor at auctor urna. Vestibulum sed arcu non odio. Lacus sed viverra tellus in hac habitasse. Augue lacus viverra vitae congue. Fringilla est ullamcorper eget nulla facilisi etiam dignissim diam.
+                    </p>
+                </div>
+                <div>
+                    <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ornare arcu odio ut sem nulla pharetra diam sit amet. Commodo odio aenean sed adipiscing diam donec adipiscing. Convallis posuere morbi leo urna molestie at elementum. Ac tortor dignissim convallis aenean et tortor at risus viverra. Risus ultricies tristique nulla aliquet enim tortor at auctor urna. Vestibulum sed arcu non odio. Lacus sed viverra tellus in hac habitasse. Augue lacus viverra vitae congue. Fringilla est ullamcorper eget nulla facilisi etiam dignissim diam.
+                    </p>
+                    <img src="https://files.fajno.in/img/2020/10/20/02/08/58/76e169b9f3737722f8d777dd7202fd9d.png">
+                    <p> 
+                        <img src="https://files.fajno.in/img/2020/10/20/02/08/58/76e169b9f3737722f8d777dd7202fd9d.png">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ornare arcu odio ut sem nulla pharetra diam sit amet. Commodo odio aenean sed adipiscing diam donec adipiscing. Convallis posuere morbi leo urna molestie at elementum. Ac tortor dignissim convallis aenean et tortor at risus viverra. Risus ultricies tristique nulla aliquet enim tortor at auctor urna. Vestibulum sed arcu non odio. Lacus sed viverra tellus in hac habitasse. Augue lacus viverra vitae congue. Fringilla est ullamcorper eget nulla facilisi etiam dignissim diam.
+                    </p>
+                </div>
+                <div>
+                    <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ornare arcu odio ut sem nulla pharetra diam sit amet. Commodo odio aenean sed adipiscing diam donec adipiscing. Convallis posuere morbi leo urna molestie at elementum. Ac tortor dignissim convallis aenean et tortor at risus viverra. Risus ultricies tristique nulla aliquet enim tortor at auctor urna. Vestibulum sed arcu non odio. Lacus sed viverra tellus in hac habitasse. Augue lacus viverra vitae congue. Fringilla est ullamcorper eget nulla facilisi etiam dignissim diam.
+                    </p>
+                    <blockquote>
+                        > Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ornare arcu odio ut sem nulla pharetra diam sit amet. Commodo odio aenean sed adipiscing diam donec adipiscing.<br>
+                        > Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ornare arcu odio ut sem nulla pharetra diam sit amet. Commodo odio aenean sed adipiscing diam donec adipiscing.<br>
+                        > Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ornare arcu odio ut sem nulla pharetra diam sit amet. Commodo odio aenean sed adipiscing diam donec adipiscing.
+                    </blockquote>
+                    <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ornare arcu odio ut sem nulla pharetra diam sit amet. Commodo odio aenean sed adipiscing diam donec adipiscing. Convallis posuere morbi leo urna molestie at elementum. Ac tortor dignissim convallis aenean et tortor at risus viverra. Risus ultricies tristique nulla aliquet enim tortor at auctor urna. Vestibulum sed arcu non odio. Lacus sed viverra tellus in hac habitasse. Augue lacus viverra vitae congue. Fringilla est ullamcorper eget nulla facilisi etiam dignissim diam.
+                    </p>
+                </div>
+                <div>
+                    <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ornare arcu odio ut sem nulla pharetra diam sit amet. Commodo odio aenean sed adipiscing diam donec adipiscing. Convallis posuere morbi leo urna molestie at elementum. Ac tortor dignissim convallis aenean et tortor at risus viverra. Risus ultricies tristique nulla aliquet enim tortor at auctor urna. Vestibulum sed arcu non odio. Lacus sed viverra tellus in hac habitasse. Augue lacus viverra vitae congue. Fringilla est ullamcorper eget nulla facilisi etiam dignissim diam.
+                    </p>
+                    <ul>
+                        <li>Foo</li>
+                        <li>Bar</li>
+                        <li>Test</li>
+                    </ul>
+                    <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ornare arcu odio ut sem nulla pharetra diam sit amet. Commodo odio aenean sed adipiscing diam donec adipiscing. Convallis posuere morbi leo urna molestie at elementum. Ac tortor dignissim convallis aenean et tortor at risus viverra. Risus ultricies tristique nulla aliquet enim tortor at auctor urna. Vestibulum sed arcu non odio. Lacus sed viverra tellus in hac habitasse. Augue lacus viverra vitae congue. Fringilla est ullamcorper eget nulla facilisi etiam dignissim diam.
+                    </p>
+                </div>
+                <div>
+                    <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ornare arcu odio ut sem nulla pharetra diam sit amet. Commodo odio aenean sed adipiscing diam donec adipiscing. Convallis posuere morbi leo urna molestie at elementum. Ac tortor dignissim convallis aenean et tortor at risus viverra. Risus ultricies tristique nulla aliquet enim tortor at auctor urna. Vestibulum sed arcu non odio. Lacus sed viverra tellus in hac habitasse. Augue lacus viverra vitae congue. Fringilla est ullamcorper eget nulla facilisi etiam dignissim diam.
+                    </p>
+                    <ol>
+                        <li>One</li>
+                        <li>Two</li>
+                        <li>Three</li>
+                    </ol>
+                    <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ornare arcu odio ut sem nulla pharetra diam sit amet. Commodo odio aenean sed adipiscing diam donec adipiscing. Convallis posuere morbi leo urna molestie at elementum. Ac tortor dignissim convallis aenean et tortor at risus viverra. Risus ultricies tristique nulla aliquet enim tortor at auctor urna. Vestibulum sed arcu non odio. Lacus sed viverra tellus in hac habitasse. Augue lacus viverra vitae congue. Fringilla est ullamcorper eget nulla facilisi etiam dignissim diam.
+                    </p>
+                </div>
+            </div>
         </div>
-        <div>
-            <input type="file" name="media">
-        </div>
-        <div>
-            <?php $checked = array_key_exists('without_media', $formData)?' checked=""':'';?>
-            <input type="checkbox" name="without_media"<?=$checked;?>>&nbsp;Без&nbsp;медіафайлу
-        </div>
-        <div>
-            <input type="text" name="name" placeholder="Ім'я" value="<?=array_key_exists('name', $formData)?$formData['name']:'';?>">
-        </div>
-        <div>
-            <input type="password" name="password" placeholder="Пароль" value="<?=array_key_exists('password', $formData)?$formData['password']:'';?>">
-        </div>
-        <div>
-            <?php $checked = array_key_exists('trip_code', $formData)?' checked=""':'';?>
-            <input type="checkbox" name="trip_code"<?=$checked;?>>&nbsp;Трипкод
-        </div>
-        <div>
-            <textarea name="text" placeholder="Текст"><?=array_key_exists('text', $formData)?$formData['text']:'';?></textarea>
-        </div>
-        <div>
-            <img src="<?=$captchaImageUrl;?>">
-        </div>
-        <div>
-            <input type="text" name="captcha_text" placeholder="Введіть слова з картинки">
-        </div>
-        <div>
-            <input type="radio" name="redirect_to" value="thread" checked="">&nbsp;До&nbsp;теми
-            <input type="radio" name="redirect_to" value="section">&nbsp;До&nbsp;розділу
-        </div>
-        <div>
-            <input type="submit" value="Написати">
-        </div>
-        <input type="text" name="thread_code" value="0">
-        <input type="text" name="section" value="<?=$section->getSlug();?>">
-        <input type="text" name="form_url" value="/">
-    </form>
+    </div>
+    <footer class="footer">
+        FOOTER
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/foundation-sites@6.6.3/dist/js/foundation.min.js" integrity="sha256-pRF3zifJRA9jXGv++b06qwtSqX1byFQOLjqa2PTEb2o=" crossorigin="anonymous"></script>
 </body>
 </html>
-
-<?php
-//_part('header');
-//_page($template);
-//_part('footer');
